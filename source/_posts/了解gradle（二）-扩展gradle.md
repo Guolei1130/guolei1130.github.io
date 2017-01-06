@@ -1,6 +1,7 @@
 ---
 title: 了解gradle（二）-扩展gradle
 date: 2016-12-06 11:41:32
+categories: Gradle
 tags: gradle
 
 ---

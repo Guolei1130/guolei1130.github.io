@@ -1,6 +1,7 @@
 ---
 title: broadcast流程浅析
 date: 2016-12-27 15:45:50
+categories: Android
 tags: framework
 
 ---

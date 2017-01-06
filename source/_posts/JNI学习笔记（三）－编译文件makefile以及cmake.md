@@ -1,6 +1,7 @@
 ---
 title: JNI学习笔记（三）－编译文件makefile以及cmake
 date: 2016-11-29 18:38:27
+categories: Android
 tags: jni
 
 ---

@@ -1,6 +1,7 @@
 ---
 title: 记不住adb命令？试试shell吧
 date: 2016-12-20 23:06:36
+categories: shell
 tags: shell
 
 ---

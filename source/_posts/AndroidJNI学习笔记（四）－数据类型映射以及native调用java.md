@@ -1,6 +1,7 @@
 ---
 title: AndroidJNI学习笔记（四）－数据类型映射以及native调用java
 date: 2016-11-30 00:05:36
+categories: Android
 tags: jni
 
 ---

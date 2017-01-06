@@ -1,6 +1,7 @@
 ---
 title: ContentProvider凑数文
 date: 2016-12-29 18:33:56
+categories: Android
 tags: framework
 
 ---

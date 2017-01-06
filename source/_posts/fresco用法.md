@@ -1,6 +1,7 @@
 ---
 title: fresco用法
 date: 2016-12-12 14:27:12
+categories: Android
 tags: fresco
 
 ---

@@ -1,6 +1,7 @@
 ---
 title: Android消息机制浅析
 date: 2016-12-21 23:32:56
+categories: Android
 tags: framework
 
 ---

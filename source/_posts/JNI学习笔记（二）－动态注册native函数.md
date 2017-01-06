@@ -1,6 +1,7 @@
 layout: android
 title: JNI学习笔记（二）－动态注册native函数
 date: 2016-11-29 16:33:30
+categories: Android
 tags: jni
 
 ---

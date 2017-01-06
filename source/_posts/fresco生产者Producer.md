@@ -1,6 +1,7 @@
 ---
 title: fresco生产者Producer
 date: 2016-12-13 11:26:58
+categories: Android
 tags: fresco
 
 ---

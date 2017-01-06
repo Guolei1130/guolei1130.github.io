@@ -1,6 +1,7 @@
 ---
 title: AMS中的进程管理部分－上
 date: 2017-01-05 11:41:01
+categories: Android
 tags: framework
 
 ---

@@ -1,6 +1,7 @@
 ---
 title: Activity启动流程
 date: 2016-12-25 15:20:05
+categories: Android
 tags: framework
 
 ---

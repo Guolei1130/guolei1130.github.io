@@ -1,6 +1,7 @@
 ---
 title: fresco内存管理
 date: 2016-12-14 14:24:25
+categories: Android
 tags: fresco
 
 ---

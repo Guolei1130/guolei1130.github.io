@@ -1,6 +1,7 @@
 ---
 title: fresco初始化过程
 date: 2016-12-12 14:27:31
+categories: Android
 tags: fresco
 
 ---

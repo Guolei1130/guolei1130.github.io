@@ -1,6 +1,7 @@
 ---
 title: 脚本打怪-shell篇
 date: 2016-12-03 01:05:38
+categories: shell
 tags: shell
 
 ---

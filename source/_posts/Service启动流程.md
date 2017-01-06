@@ -1,6 +1,7 @@
 ---
 title: Service启动流程
 date: 2016-12-26 15:19:04
+categories: Android
 tags: framework
 
 ---

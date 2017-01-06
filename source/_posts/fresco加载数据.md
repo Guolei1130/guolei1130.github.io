@@ -1,6 +1,7 @@
 ---
 title: fresco加载数据
 date: 2016-12-12 23:51:23
+categories: Android
 tags: fresco
 
 ---

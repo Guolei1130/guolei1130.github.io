@@ -1,6 +1,7 @@
 ---
 title: Android应用程序是如何安装的
 date: 2017-01-04 20:24:27
+categories: Android
 tags: framework
 
 ---

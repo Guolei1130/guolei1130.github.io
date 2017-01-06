@@ -1,6 +1,7 @@
 ---
 title: 了解gradle（一）
 date: 2016-12-05 21:27:31
+categories: Gradle
 tags: gradle
 
 ---

@@ -1,6 +1,7 @@
 ---
 title: android应用进程是如何启动的
 date: 2017-01-02 00:55:08
+categories: Android
 tags: framework
 
 ---

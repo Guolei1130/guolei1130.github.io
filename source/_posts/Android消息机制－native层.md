@@ -1,6 +1,7 @@
 ---
 title: Android消息机制－native层
 date: 2016-12-24 16:25:04
+categories: Android
 tags: framework
 
 ---

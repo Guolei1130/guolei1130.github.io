@@ -1,6 +1,7 @@
 ---
 title: fresco图片decode的大体流程
 date: 2016-12-13 16:10:51
+categories: Android
 tags: fresco
 
 ---
