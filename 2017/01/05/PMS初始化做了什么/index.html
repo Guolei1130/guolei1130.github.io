@@ -90,7 +90,7 @@
 <meta property="og:url" content="http://guolei1130.github.io/2017/01/05/PMS初始化做了什么/index.html">
 <meta property="og:site_name" content="_StriveG Blog">
 <meta property="og:description" content="1.前言在SystemServer初始化过程当中，会调用PackageManagerService.main方法进行pms的初始化，那么我们就看看pms的初始化过程经历了什么。">
-<meta property="og:updated_time" content="2017-01-06T03:41:59.000Z">
+<meta property="og:updated_time" content="2017-01-06T05:19:25.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="PMS初始化做了什么">
 <meta name="twitter:description" content="1.前言在SystemServer初始化过程当中，会调用PackageManagerService.main方法进行pms的初始化，那么我们就看看pms的初始化过程经历了什么。">
@@ -451,6 +451,10 @@
 <li><a href="http://gityuan.com/2016/11/06/packagemanager/" target="_blank" rel="external">gityuan</a></li>
 <li>Android 5.0 源代码</li>
 </ul>
+<hr>
+<h3 id="最近访客"><a href="#最近访客" class="headerlink" title="最近访客"></a>最近访客</h3><ul class="ds-recent-visitors" data-num-items="46" data-avatar-size="40"></ul>
+
+
 
       
     </div>
@@ -665,7 +669,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-前言"><span class="nav-number">1.</span> <span class="nav-text">1.前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-从pms构造函数说起"><span class="nav-number">2.</span> <span class="nav-text">2.从pms构造函数说起</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-BOOT-PROGRESS-PMS-START"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 BOOT_PROGRESS_PMS_START</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-PMS-SYSTEM-SCAN-START"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 PMS_SYSTEM_SCAN_START</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-BOOT-PROGRESS-PMS-DATA-SCAN-START"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 BOOT_PROGRESS_PMS_DATA_SCAN_START</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-PMS-SCAN-END"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 PMS_SCAN_END</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5-BOOT-PROGRESS-PMS-READY"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 BOOT_PROGRESS_PMS_READY</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Settings"><span class="nav-number">3.</span> <span class="nav-text">3.Settings</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-scanDirLI"><span class="nav-number">4.</span> <span class="nav-text">4.scanDirLI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-dex优化"><span class="nav-number">5.</span> <span class="nav-text">4. dex优化</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-前言"><span class="nav-number">1.</span> <span class="nav-text">1.前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-从pms构造函数说起"><span class="nav-number">2.</span> <span class="nav-text">2.从pms构造函数说起</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-BOOT-PROGRESS-PMS-START"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 BOOT_PROGRESS_PMS_START</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-PMS-SYSTEM-SCAN-START"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 PMS_SYSTEM_SCAN_START</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-BOOT-PROGRESS-PMS-DATA-SCAN-START"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 BOOT_PROGRESS_PMS_DATA_SCAN_START</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-PMS-SCAN-END"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 PMS_SCAN_END</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5-BOOT-PROGRESS-PMS-READY"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 BOOT_PROGRESS_PMS_READY</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Settings"><span class="nav-number">3.</span> <span class="nav-text">3.Settings</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-scanDirLI"><span class="nav-number">4.</span> <span class="nav-text">4.scanDirLI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-dex优化"><span class="nav-number">5.</span> <span class="nav-text">4. dex优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最近访客"><span class="nav-number">6.</span> <span class="nav-text">最近访客</span></a></li></ol></div>
             
 
           </div>
@@ -827,6 +831,21 @@
   
 
   
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
 
   
 
