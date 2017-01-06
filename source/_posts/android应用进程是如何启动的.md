@@ -792,7 +792,7 @@ static void com_android_internal_os_RuntimeInit_nativeZygoteInit(JNIEnv* env, jo
 在点击luncher上的图标，会通过startactivity启动我们的程序，但是，这时候没有进程，通过上面这些繁琐的流程启动之后，在启动activity，这样，应用程序也启动起来了。
 
 
-
+---### 最近访客<ul class="ds-recent-visitors" data-num-items="46" data-avatar-size="40"></ul>
 
 
 

@@ -91,7 +91,7 @@
 <meta property="og:site_name" content="_StriveG Blog">
 <meta property="og:description" content="1. 从DecodeProducer说fresco的解码过程DecodeProducer负责用未解码的数据生产出解码的数据。先看produceResults方法。">
 <meta property="og:image" content="http://guolei1130.github.io/images/fresco/fresco_3.png">
-<meta property="og:updated_time" content="2017-01-06T04:36:31.000Z">
+<meta property="og:updated_time" content="2017-01-06T05:31:35.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="fresco图片decode的大体流程">
 <meta name="twitter:description" content="1. 从DecodeProducer说fresco的解码过程DecodeProducer负责用未解码的数据生产出解码的数据。先看produceResults方法。">
@@ -438,6 +438,12 @@
 </ul>
 <p>我们需要注意的BitmapFactory.Options参数是options.inPurgeable = true，这样decode出来的bitmap是在Ashmem内存中，gc是无法自动回收的。</p>
 <p>而在pinBitmap中，是通过Bitmaps调用native将bitmap pin住，这样即使在系统内存不够的时候 也不会回收，当我们不需要使用的时候，调用nativeReleaseByteBuffer这个native函数，将bitmap unpin，就可以被回收了。</p>
+<hr>
+<h3 id="最近访客"><a href="#最近访客" class="headerlink" title="最近访客"></a>最近访客</h3><ul class="ds-recent-visitors" data-num-items="46" data-avatar-size="40"></ul>
+
+
+
+
 
       
     </div>
@@ -656,7 +662,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-从DecodeProducer说fresco的解码过程"><span class="nav-number">1.</span> <span class="nav-text">1. 从DecodeProducer说fresco的解码过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-ImageDecoder"><span class="nav-number">2.</span> <span class="nav-text">2. ImageDecoder</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-ImageFormatChecker"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 ImageFormatChecker</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-解析种类"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 解析种类</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-AnimatedImageFactory"><span class="nav-number">3.</span> <span class="nav-text">3. AnimatedImageFactory</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-PlatformDecoder"><span class="nav-number">4.</span> <span class="nav-text">4.PlatformDecoder</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-从DecodeProducer说fresco的解码过程"><span class="nav-number">1.</span> <span class="nav-text">1. 从DecodeProducer说fresco的解码过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-ImageDecoder"><span class="nav-number">2.</span> <span class="nav-text">2. ImageDecoder</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-ImageFormatChecker"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 ImageFormatChecker</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-解析种类"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 解析种类</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-AnimatedImageFactory"><span class="nav-number">3.</span> <span class="nav-text">3. AnimatedImageFactory</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-PlatformDecoder"><span class="nav-number">4.</span> <span class="nav-text">4.PlatformDecoder</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最近访客"><span class="nav-number">5.</span> <span class="nav-text">最近访客</span></a></li></ol></div>
             
 
           </div>

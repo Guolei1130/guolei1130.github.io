@@ -90,7 +90,7 @@
 <meta property="og:url" content="http://guolei1130.github.io/2016/12/24/Android消息机制－native层/index.html">
 <meta property="og:site_name" content="_StriveG Blog">
 <meta property="og:description" content="1. 前言前面的文章介绍了java层的消息机制，这篇来简要学习下native层的消息机制。">
-<meta property="og:updated_time" content="2017-01-06T04:34:54.000Z">
+<meta property="og:updated_time" content="2017-01-06T05:29:51.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android消息机制－native层">
 <meta name="twitter:description" content="1. 前言前面的文章介绍了java层的消息机制，这篇来简要学习下native层的消息机制。">
@@ -478,6 +478,13 @@
 <li>向管道mWakeEventFd写入字符,因为有输入，所以读的一端就会被唤醒,r然后nativepollonce函数就会返回。这些继续处理消息了。</li>
 </ul>
 <h3 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h3><p>当消息队列里没有消息的时候，会调用nativePollOnce方法 进入阻塞状态，当消息来的时候，会用nativeWake进行唤醒操作。并且，在主线程空闲状态时，会处理注册的mPendingIdleHandlers的任务。</p>
+<hr>
+<h3 id="最近访客"><a href="#最近访客" class="headerlink" title="最近访客"></a>最近访客</h3><ul class="ds-recent-visitors" data-num-items="46" data-avatar-size="40"></ul>
+
+
+
+
+
 
       
     </div>
@@ -696,7 +703,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-前言"><span class="nav-number">1.</span> <span class="nav-text">1. 前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-初始化"><span class="nav-number">2.</span> <span class="nav-text">2.初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-nativePollOnce"><span class="nav-number">3.</span> <span class="nav-text">3. nativePollOnce</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-nativeWake"><span class="nav-number">4.</span> <span class="nav-text">4.nativeWake</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#补充"><span class="nav-number">5.</span> <span class="nav-text">补充</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-前言"><span class="nav-number">1.</span> <span class="nav-text">1. 前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-初始化"><span class="nav-number">2.</span> <span class="nav-text">2.初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-nativePollOnce"><span class="nav-number">3.</span> <span class="nav-text">3. nativePollOnce</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-nativeWake"><span class="nav-number">4.</span> <span class="nav-text">4.nativeWake</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#补充"><span class="nav-number">5.</span> <span class="nav-text">补充</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最近访客"><span class="nav-number">6.</span> <span class="nav-text">最近访客</span></a></li></ol></div>
             
 
           </div>

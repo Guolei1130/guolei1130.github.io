@@ -248,6 +248,9 @@ Handler target
 Android中的消息传递机制是一个非常重要的东西，我们需要简单的了解下他的简单原理，所以，大家也去看看源代码吧。
 
 
+---### 最近访客<ul class="ds-recent-visitors" data-num-items="46" data-avatar-size="40"></ul>
+
+
 
 
 

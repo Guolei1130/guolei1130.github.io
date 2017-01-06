@@ -92,7 +92,7 @@
 <meta property="og:description" content="1. 前言前几篇学习了jni开发的基本流程、动态注册native函数以及相关编译文件的编写，咱们也算是知道了jni开发，但是还不够，今天咱们来学习下，java和jni的数据类型映射（说白了就是对应关系），以及如何在jni层调用java层的一些东西。偷偷告诉你们，这些全在jni.h文件里。">
 <meta property="og:image" content="http://img.blog.csdn.net/20161129225511135">
 <meta property="og:image" content="http://img.blog.csdn.net/20161129225901230">
-<meta property="og:updated_time" content="2017-01-06T04:35:21.000Z">
+<meta property="og:updated_time" content="2017-01-06T05:30:27.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="AndroidJNI学习笔记（四）－数据类型映射以及native调用java">
 <meta name="twitter:description" content="1. 前言前几篇学习了jni开发的基本流程、动态注册native函数以及相关编译文件的编写，咱们也算是知道了jni开发，但是还不够，今天咱们来学习下，java和jni的数据类型映射（说白了就是对应关系），以及如何在jni层调用java层的一些东西。偷偷告诉你们，这些全在jni.h文件里。">
@@ -433,6 +433,10 @@
 <li>第二行代码，调用init那个方法（构造方法）进行初始化,注意，只能初始化一次。</li>
 </ul>
 <h3 id="4-总结"><a href="#4-总结" class="headerlink" title="4. 总结"></a>4. 总结</h3><p>现在我们明白了jni 和 java的数据类型映射关系，以及在jni层调用java层的方法。</p>
+<hr>
+<h3 id="最近访客"><a href="#最近访客" class="headerlink" title="最近访客"></a>最近访客</h3><ul class="ds-recent-visitors" data-num-items="46" data-avatar-size="40"></ul>
+
+
 
       
     </div>
@@ -651,7 +655,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-前言"><span class="nav-number">1.</span> <span class="nav-text">1. 前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-数据类型映射"><span class="nav-number">2.</span> <span class="nav-text">2. 数据类型映射</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-native-如何调用c"><span class="nav-number">3.</span> <span class="nav-text">3. native 如何调用c</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-如何找到类"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 如何找到类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-如何获取方法、或者字段"><span class="nav-number">3.2.</span> <span class="nav-text">3.2  如何获取方法、或者字段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-如何调用方法"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 如何调用方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-如何修改字段的值"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 如何修改字段的值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-5-如何构造一个对象出来"><span class="nav-number">3.5.</span> <span class="nav-text">3.5 如何构造一个对象出来</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-总结"><span class="nav-number">4.</span> <span class="nav-text">4. 总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-前言"><span class="nav-number">1.</span> <span class="nav-text">1. 前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-数据类型映射"><span class="nav-number">2.</span> <span class="nav-text">2. 数据类型映射</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-native-如何调用c"><span class="nav-number">3.</span> <span class="nav-text">3. native 如何调用c</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-如何找到类"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 如何找到类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-如何获取方法、或者字段"><span class="nav-number">3.2.</span> <span class="nav-text">3.2  如何获取方法、或者字段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-如何调用方法"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 如何调用方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-如何修改字段的值"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 如何修改字段的值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-5-如何构造一个对象出来"><span class="nav-number">3.5.</span> <span class="nav-text">3.5 如何构造一个对象出来</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-总结"><span class="nav-number">4.</span> <span class="nav-text">4. 总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最近访客"><span class="nav-number">5.</span> <span class="nav-text">最近访客</span></a></li></ol></div>
             
 
           </div>

@@ -16,3 +16,7 @@ file.writelines("\r\n\r\n")
 file.writelines("+ <!-- more -->\n")
 file.writelines("<The rest of contents | 余下全文>\n")
 file.writelines("除摘要外其他内容")
+
+file.writelines("_ _ _\n")
+file.writelines("### 最近访客\n")
+file.writelines("<ul class=\"ds-recent-visitors\" data-num-items=\"46\" data-avatar-size=\"40\"></ul>")

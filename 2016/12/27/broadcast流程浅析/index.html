@@ -93,7 +93,7 @@
 <meta property="og:description" content="1. 前言个人看法。
 前两篇粗略的看了下四大组件里面的Activity、Service的启动流程，今天，我们来简单的看下BroadcastReceiver的流程。包括">
 <meta property="og:image" content="http://guolei1130.github.io/images/framework/broadcast/broadcast流程.png">
-<meta property="og:updated_time" content="2017-01-06T04:35:30.000Z">
+<meta property="og:updated_time" content="2017-01-06T05:30:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="broadcast流程浅析">
 <meta name="twitter:description" content="1. 前言个人看法。
@@ -441,6 +441,8 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ClassLoader cl =  mReceiver.getClass().getClassLoader();</div><div class="line">intent.setExtrasClassLoader(cl);</div><div class="line">setExtrasClassLoader(cl);</div><div class="line">receiver.setPendingResult(this);</div><div class="line">receiver.onReceive(mContext, intent);</div></pre></td></tr></table></figure>
 <p>这样，BroadcastReceiver就创建并调用了onReceive方法。</p>
 <h3 id="6-上图"><a href="#6-上图" class="headerlink" title="6. 上图"></a>6. 上图</h3><p><img src="/images/framework/broadcast/broadcast流程.png" alt=""></p>
+<hr>
+<h3 id="最近访客"><a href="#最近访客" class="headerlink" title="最近访客"></a>最近访客</h3><ul class="ds-recent-visitors" data-num-items="46" data-avatar-size="40"></ul>
 
       
     </div>
@@ -659,7 +661,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-前言"><span class="nav-number">1.</span> <span class="nav-text">1. 前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-静态广播的注册过程"><span class="nav-number">2.</span> <span class="nav-text">2. 静态广播的注册过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-动态广播注册"><span class="nav-number">3.</span> <span class="nav-text">3. 动态广播注册</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-发送广播"><span class="nav-number">4.</span> <span class="nav-text">4. 发送广播</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-动态注册广播接收者对广播的处理"><span class="nav-number">5.</span> <span class="nav-text">5. 动态注册广播接收者对广播的处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-上图"><span class="nav-number">6.</span> <span class="nav-text">6. 上图</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-前言"><span class="nav-number">1.</span> <span class="nav-text">1. 前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-静态广播的注册过程"><span class="nav-number">2.</span> <span class="nav-text">2. 静态广播的注册过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-动态广播注册"><span class="nav-number">3.</span> <span class="nav-text">3. 动态广播注册</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-发送广播"><span class="nav-number">4.</span> <span class="nav-text">4. 发送广播</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-动态注册广播接收者对广播的处理"><span class="nav-number">5.</span> <span class="nav-text">5. 动态注册广播接收者对广播的处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-上图"><span class="nav-number">6.</span> <span class="nav-text">6. 上图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最近访客"><span class="nav-number">7.</span> <span class="nav-text">最近访客</span></a></li></ol></div>
             
 
           </div>

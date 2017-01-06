@@ -92,3 +92,5 @@ length: 150
 
 * 将图片放在source/images／文件下，通过/images/xx.png 来引用，注意使用mackdown的语法
 * 找根目录的配置文件中，将post_asset_folder: true 打开，每次用命令生成post的时候就会生成一个对应的文件夹
+
+---### 最近访客<ul class="ds-recent-visitors" data-num-items="46" data-avatar-size="40"></ul>

@@ -100,3 +100,8 @@ filename="power_state"
 
 总之，用shell 和 python等一些脚本，能够做出很多好玩的事。
 
+
+---### 最近访客<ul class="ds-recent-visitors" data-num-items="46" data-avatar-size="40"></ul>
+
+
+

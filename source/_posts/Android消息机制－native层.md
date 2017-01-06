@@ -252,8 +252,11 @@ void Looper::wake() {
 
 ### 补充
 
+
 当消息队列里没有消息的时候，会调用nativePollOnce方法 进入阻塞状态，当消息来的时候，会用nativeWake进行唤醒操作。并且，在主线程空闲状态时，会处理注册的mPendingIdleHandlers的任务。
 
+
+---### 最近访客<ul class="ds-recent-visitors" data-num-items="46" data-avatar-size="40"></ul>
 
 
 
