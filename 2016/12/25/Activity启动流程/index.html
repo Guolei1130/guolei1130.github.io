@@ -1,0 +1,794 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="framework," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="1.前言我们每天都在使用startActivity去启动一个新的activty，可有想过这中间的流程是什么？可有想过这涉及到哪些东西？今天，就走一下流程，了解下，activity是如何启动的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Activity启动流程">
+<meta property="og:url" content="http://guolei1130.github.io/2016/12/25/Activity启动流程/index.html">
+<meta property="og:site_name" content="_StriveG Blog">
+<meta property="og:description" content="1.前言我们每天都在使用startActivity去启动一个新的activty，可有想过这中间的流程是什么？可有想过这涉及到哪些东西？今天，就走一下流程，了解下，activity是如何启动的。">
+<meta property="og:image" content="http://guolei1130.github.io/images/framework/activity/Activity启动流程图.png">
+<meta property="og:updated_time" content="2017-01-06T03:26:54.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Activity启动流程">
+<meta name="twitter:description" content="1.前言我们每天都在使用startActivity去启动一个新的activty，可有想过这中间的流程是什么？可有想过这涉及到哪些东西？今天，就走一下流程，了解下，activity是如何启动的。">
+<meta name="twitter:image" content="http://guolei1130.github.io/images/framework/activity/Activity启动流程图.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"always"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'guolei1130',
+      author: '菜鸡郭'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://guolei1130.github.io/2016/12/25/Activity启动流程/"/>
+
+
+
+
+
+  <title> Activity启动流程 | _StriveG Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">_StriveG Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle"></p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://guolei1130.github.io/2016/12/25/Activity启动流程/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="_StriveG">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/img/head.png">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="_StriveG Blog">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="_StriveG Blog" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Activity启动流程
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-25T15:20:05+08:00">
+                2016-12-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/12/25/Activity启动流程/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/12/25/Activity启动流程/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><excerpt in="" index="" |="" 首页摘要=""></excerpt></p>
+<h3 id="1-前言"><a href="#1-前言" class="headerlink" title="1.前言"></a>1.前言</h3><p>我们每天都在使用startActivity去启动一个新的activty，可有想过这中间的流程是什么？可有想过这涉及到哪些东西？今天，就走一下流程，了解下，activity是如何启动的。</p>
+<ul>
+<li><a id="more"></a>
+<the rest="" of="" contents="" |="" 余下全文="">
+
+</the></li>
+</ul>
+<h3 id="2-从startActivity说起"><a href="#2-从startActivity说起" class="headerlink" title="2.从startActivity说起"></a>2.从startActivity说起</h3><p>不管我们是通过startActivity,还是通过startActivityForResult去启动一个activity，最终都会调用，startActivityForResult这个方法，这个方法的核心代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">Instrumentation.ActivityResult ar =</div><div class="line">    mInstrumentation.execStartActivity(</div><div class="line">        <span class="keyword">this</span>, mMainThread.getApplicationThread(), mToken, <span class="keyword">this</span>,</div><div class="line">        intent, requestCode, options);</div><div class="line"><span class="keyword">if</span> (ar != <span class="keyword">null</span>) &#123;</div><div class="line">    mMainThread.sendActivityResult(</div><div class="line">        mToken, mEmbeddedID, requestCode, ar.getResultCode(),</div><div class="line">        r.getResultData());</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>通过Instrumentation去启动activiy，</li>
+</ul>
+<h3 id="3-Instrumentation-execStartActivity"><a href="#3-Instrumentation-execStartActivity" class="headerlink" title="3.Instrumentation#execStartActivity"></a>3.Instrumentation#execStartActivity</h3><p>Instrumentation是一个很关键的类，我们知道Activity也是一个java类，但是他确有声明周期，而声明周期的方法，就是由这个类来控制的。而我们能看到一些插件话框架如DroidPlugin也是通过hook这个类，来做到替换的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> result = ActivityManagerNative.getDefault()</div><div class="line">    .startActivity(whoThread, who.getBasePackageName(), intent,</div><div class="line">            intent.resolveTypeIfNeeded(who.getContentResolver()),</div><div class="line">            token, target != <span class="keyword">null</span> ? target.mEmbeddedID : <span class="keyword">null</span>,</div><div class="line">            requestCode, <span class="number">0</span>, <span class="keyword">null</span>, options);</div><div class="line">checkStartActivityResult(result, intent);</div></pre></td></tr></table></figure>
+<ul>
+<li>通过AMS启动activity</li>
+<li>检查结果</li>
+</ul>
+<p>ActivityManagerNative.getDefault()如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">public</span> IActivityManager <span class="title">getDefault</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> gDefault.get();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>其中，gDefault是一个Singleton类，他返回的是IActivityManager类型，我们这里要注意，asInterface方法中，返回了AMS的bp客户端，也就是ActivityManagerProxy。而其对应的bn端就是ActivityManagerNative，他的具体实现是ActivityManagerService,也就是我们常说的ams。</p>
+<h3 id="4-ActivityManagerService-startActivity"><a href="#4-ActivityManagerService-startActivity" class="headerlink" title="4.ActivityManagerService#startActivity"></a>4.ActivityManagerService#startActivity</h3><p>而在这里通过startActivityAsUser, 将调用传递给ActivityStackSupervisor。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">startActivityAsUser</span><span class="params">(IApplicationThread caller, String callingPackage,</span></span></div><div class="line">        Intent intent, String resolvedType, IBinder resultTo, String resultWho, <span class="keyword">int</span> requestCode,</div><div class="line">        <span class="keyword">int</span> startFlags, ProfilerInfo profilerInfo, Bundle options, <span class="keyword">int</span> userId) &#123;</div><div class="line">    enforceNotIsolatedCaller(<span class="string">"startActivity"</span>);</div><div class="line">    userId = handleIncomingUser(Binder.getCallingPid(), Binder.getCallingUid(), userId,</div><div class="line">            <span class="keyword">false</span>, ALLOW_FULL_ONLY, <span class="string">"startActivity"</span>, <span class="keyword">null</span>);</div><div class="line">    <span class="comment">// <span class="doctag">TODO:</span> Switch to user app stacks here.</span></div><div class="line">    <span class="keyword">return</span> mStackSupervisor.startActivityMayWait(caller, -<span class="number">1</span>, callingPackage, intent,</div><div class="line">            resolvedType, <span class="keyword">null</span>, <span class="keyword">null</span>, resultTo, resultWho, requestCode, startFlags,</div><div class="line">            profilerInfo, <span class="keyword">null</span>, <span class="keyword">null</span>, options, <span class="keyword">false</span>, userId, <span class="keyword">null</span>, <span class="keyword">null</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里的mStackSupervisor就是ActivityStackSupervisor对象，从名字上来看，似乎是activiy栈的管理，事实上确实如此。</p>
+<h3 id="5-ActivityStackSupervisor-startActivityMayWait"><a href="#5-ActivityStackSupervisor-startActivityMayWait" class="headerlink" title="5.ActivityStackSupervisor#startActivityMayWait"></a>5.ActivityStackSupervisor#startActivityMayWait</h3><p>这个方法的代码比较长，但是大部分代码都是校验安全性方面的，我们不需要太多的关心，其核心代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> res = startActivityLocked(caller, intent, resolvedType, aInfo,</div><div class="line">        voiceSession, voiceInteractor, resultTo, resultWho,</div><div class="line">        requestCode, callingPid, callingUid, callingPackage,</div><div class="line">        realCallingPid, realCallingUid, startFlags, options, ignoreTargetSecurity,</div><div class="line">        componentSpecified, <span class="keyword">null</span>, container, inTask);</div></pre></td></tr></table></figure>
+<p>而startActivityLocked也很长，我们不去关心其具体逻辑，其大部分代码都是错误检查、权限检查等操作，启动actviy的代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">err = startActivityUncheckedLocked(r, sourceRecord, voiceSession, voiceInteractor,</div><div class="line">        startFlags, <span class="keyword">true</span>, options, inTask);</div></pre></td></tr></table></figure>
+<p>startActivityUncheckedLocked中涉及到启动模式和activiy栈，代码很复杂，不过我们今天的目的是了解启动流程，因此，直接看重点。在这个方法的最下面，我们能看到如下代码:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">targetStack.mLastPausedActivity = <span class="keyword">null</span>;</div><div class="line">targetStack.startActivityLocked(r, newTask, doResume, keepCurTransition, options);</div></pre></td></tr></table></figure>
+<ul>
+<li>其中，targetStack是ActivityStack,这样，启动流程就从ass转移到了as</li>
+</ul>
+<h3 id="6-ActivityStack-startActivityLocked"><a href="#6-ActivityStack-startActivityLocked" class="headerlink" title="6.ActivityStack#startActivityLocked"></a>6.ActivityStack#startActivityLocked</h3><p>而这个方法的最下面有如下代码。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (doResume) &#123;</div><div class="line">    mStackSupervisor.resumeTopActivitiesLocked(<span class="keyword">this</span>, r, options);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这样，就又从as转移到了ass，但是，这里没有过多的代码，而是又将操作给了as</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">result = targetStack.resumeTopActivityLocked(target, targetOptions);</div></pre></td></tr></table></figure>
+<p>绕半圈，回来了。我们接着跟，在as中，通过resumeTopActivityLocked-&gt;resumeTopActivityInnerLocked，在resumeTopActivityInnerLocked中，又调用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mStackSupervisor.startSpecificActivityLocked(next, <span class="keyword">true</span>, <span class="keyword">false</span>);</div></pre></td></tr></table></figure>
+<p>回到as，好吧，好绕。</p>
+<p>而在ass的startSpecificActivityLocked方法中，通过如下代码去启动。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">realStartActivityLocked(r, app, andResume, checkConfig);</div></pre></td></tr></table></figure>
+<p>在这个方法中做了什么呢？</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">app.thread.scheduleLaunchActivity(<span class="keyword">new</span> Intent(r.intent), r.appToken,</div><div class="line">        System.identityHashCode(r), r.info, <span class="keyword">new</span> Configuration(mService.mConfiguration),</div><div class="line">        <span class="keyword">new</span> Configuration(stack.mOverrideConfig), r.compat, r.launchedFromPackage,</div><div class="line">        task.voiceInteractor, app.repProcState, r.icicle, r.persistentState, results,</div><div class="line">        newIntents, !andResume, mService.isNextTransitionForward(), profilerInfo);</div></pre></td></tr></table></figure>
+<p>通过ApplicationThread的scheduleLaunchActivity，去启动一个actvity。</p>
+<h3 id="7-ApplicationThread-scheduleLaunchActivity"><a href="#7-ApplicationThread-scheduleLaunchActivity" class="headerlink" title="7.ApplicationThread#scheduleLaunchActivity"></a>7.ApplicationThread#scheduleLaunchActivity</h3><p>在这个方法中，发送一个消息，然后ActivityThread的H类去处理。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sendMessage(H.LAUNCH_ACTIVITY, r);</div></pre></td></tr></table></figure>
+<p>接收到这个消息之后，调用handleLaunchActivity方法去处理。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Activity a = performLaunchActivity(r, customIntent);</div></pre></td></tr></table></figure>
+<p>在performLaunchActivity方法中，先是通过Instrumentation.newActivity去生成actvity，然后调用callActivityOnCreate。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">activity = mInstrumentation.newActivity(</div><div class="line">        cl, component.getClassName(), r.intent);</div><div class="line">        ...</div><div class="line">        mInstrumentation.callActivityOnCreate(activity, r.state, r.persistentState);</div></pre></td></tr></table></figure>
+<h3 id="8-Instrumentation"><a href="#8-Instrumentation" class="headerlink" title="8.Instrumentation"></a>8.Instrumentation</h3><p>在这里，先是通过类加载器去构造类对象，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">(Activity)cl.loadClass(className).newInstance()</div></pre></td></tr></table></figure>
+<p>然后通过callActivityOnCreate方法，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">callActivityOnCreate</span><span class="params">(Activity activity, Bundle icicle)</span> </span>&#123;</div><div class="line">    prePerformCreate(activity);</div><div class="line">    activity.performCreate(icicle);</div><div class="line">    postPerformCreate(activity);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>调用activity.performCreate，在这个方法中，便会调用onCreate方法，这样，activity就启动起来了。</p>
+<h3 id="9-给张图吧。"><a href="#9-给张图吧。" class="headerlink" title="9.给张图吧。"></a>9.给张图吧。</h3><p>流程图不一定画的对。😢</p>
+<p><img src="/images/framework/activity/Activity启动流程图.png" alt=""></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/framework/" rel="tag"># framework</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/24/Android消息机制－native层/" rel="next" title="Android消息机制－native层">
+                <i class="fa fa-chevron-left"></i> Android消息机制－native层
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/12/26/Service启动流程/" rel="prev" title="Service启动流程">
+                Service启动流程 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/12/25/Activity启动流程/"
+           data-title="Activity启动流程" data-url="http://guolei1130.github.io/2016/12/25/Activity启动流程/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/img/head.png"
+               alt="_StriveG" />
+          <p class="site-author-name" itemprop="name">_StriveG</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://guolei1130.github.io/" target="_blank" title="博客首页">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  博客首页
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Guolei1130/" target="_blank" title="作品展示">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  作品展示
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/qq_21430549" target="_blank" title="csdn博客">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  csdn博客
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://monsterlin.com/" target="_blank" title="友情链接">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  友情链接
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="../../../郭蕾－android开发工程师.pdf" target="_blank" title="个人简历">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  个人简历
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-前言"><span class="nav-number">1.</span> <span class="nav-text">1.前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-从startActivity说起"><span class="nav-number">2.</span> <span class="nav-text">2.从startActivity说起</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Instrumentation-execStartActivity"><span class="nav-number">3.</span> <span class="nav-text">3.Instrumentation#execStartActivity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-ActivityManagerService-startActivity"><span class="nav-number">4.</span> <span class="nav-text">4.ActivityManagerService#startActivity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-ActivityStackSupervisor-startActivityMayWait"><span class="nav-number">5.</span> <span class="nav-text">5.ActivityStackSupervisor#startActivityMayWait</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-ActivityStack-startActivityLocked"><span class="nav-number">6.</span> <span class="nav-text">6.ActivityStack#startActivityLocked</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-ApplicationThread-scheduleLaunchActivity"><span class="nav-number">7.</span> <span class="nav-text">7.ApplicationThread#scheduleLaunchActivity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-Instrumentation"><span class="nav-number">8.</span> <span class="nav-text">8.Instrumentation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-给张图吧。"><span class="nav-number">9.</span> <span class="nav-text">9.给张图吧。</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">_StriveG</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"guolei1130"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

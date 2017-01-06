@@ -1,0 +1,804 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="shell," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="1.什么是shell什么是shell呢？我们这里说的shell是指shell脚本，和window下的bat批命令处理类似，shell用于linux／unix系统，用来方便我们的操作，试想一下，原来需要一堆的命令，我们将其写成一个shell脚本，轻松搞定，是不是很带感。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="脚本打怪-shell篇">
+<meta property="og:url" content="http://guolei1130.github.io/2016/12/03/脚本打怪-shell篇/index.html">
+<meta property="og:site_name" content="_StriveG Blog">
+<meta property="og:description" content="1.什么是shell什么是shell呢？我们这里说的shell是指shell脚本，和window下的bat批命令处理类似，shell用于linux／unix系统，用来方便我们的操作，试想一下，原来需要一堆的命令，我们将其写成一个shell脚本，轻松搞定，是不是很带感。">
+<meta property="og:updated_time" content="2017-01-06T03:26:54.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="脚本打怪-shell篇">
+<meta name="twitter:description" content="1.什么是shell什么是shell呢？我们这里说的shell是指shell脚本，和window下的bat批命令处理类似，shell用于linux／unix系统，用来方便我们的操作，试想一下，原来需要一堆的命令，我们将其写成一个shell脚本，轻松搞定，是不是很带感。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"always"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'guolei1130',
+      author: '菜鸡郭'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://guolei1130.github.io/2016/12/03/脚本打怪-shell篇/"/>
+
+
+
+
+
+  <title> 脚本打怪-shell篇 | _StriveG Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">_StriveG Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle"></p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://guolei1130.github.io/2016/12/03/脚本打怪-shell篇/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="_StriveG">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/img/head.png">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="_StriveG Blog">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="_StriveG Blog" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                脚本打怪-shell篇
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-03T01:05:38+08:00">
+                2016-12-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/12/03/脚本打怪-shell篇/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/12/03/脚本打怪-shell篇/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><excerpt in="" index="" |="" 首页摘要=""></excerpt></p>
+<h3 id="1-什么是shell"><a href="#1-什么是shell" class="headerlink" title="1.什么是shell"></a>1.什么是shell</h3><p>什么是shell呢？我们这里说的shell是指shell脚本，和window下的bat批命令处理类似，shell用于linux／unix系统，用来方便我们的操作，试想一下，原来需要一堆的命令，我们将其写成一个shell脚本，轻松搞定，是不是很带感。</p>
+<ul>
+<li><a id="more"></a>
+<the rest="" of="" contents="" |="" 余下全文="">
+
+
+
+</the></li>
+</ul>
+<h3 id="2-shell能干什么"><a href="#2-shell能干什么" class="headerlink" title="2.shell能干什么"></a>2.shell能干什么</h3><p>shell能干什么？shell能干的就是简化我们的操作，将我们从繁琐、单一的操作中解放出来。</p>
+<h3 id="3-shell基础语法"><a href="#3-shell基础语法" class="headerlink" title="3.shell基础语法"></a>3.shell基础语法</h3><h4 id="3-1-变量"><a href="#3-1-变量" class="headerlink" title="3.1 变量"></a>3.1 变量</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">#变量名＝变量值</div><div class="line">myname=&quot;guolei&quot;</div><div class="line">echo $&#123;myname&#125;</div></pre></td></tr></table></figure>
+<p>shell的变量很有意识，和我们其他语言不通的一点，等号两边不能有空格，奇怪吧。如果我们想要使用这个变量，我们可以在变量名前＋$，大括号是用来区分界限的。</p>
+<p>如果我们想要定义一个数组怎么办？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">arr=(1 2 3 4)</div><div class="line">echo $arr[0]</div></pre></td></tr></table></figure>
+<p>注意，元素之间没有逗号。</p>
+<h4 id="3-2-传递参数"><a href="#3-2-传递参数" class="headerlink" title="3.2 传递参数"></a>3.2 传递参数</h4><p>作为一个脚本，当然需要接受接受我们终端输入参数，我们通过 $i的形式去获取参数，i＝0… ，需要注意的是，i为1时才是我们输入的第一个参数，因为$0代表的是我们当前的执行脚本文件</p>
+<h4 id="3-3-输出"><a href="#3-3-输出" class="headerlink" title="3.3 输出"></a>3.3 输出</h4><p>shell中有两种输出方式，</p>
+<ul>
+<li>echo </li>
+<li>printf</li>
+</ul>
+<p>echo是一种普通的输出，而printf是一种格式化的输出，这里就不在多说了，这里和其他的语言并没有太大的区别。</p>
+<h3 id="4-shell运算符"><a href="#4-shell运算符" class="headerlink" title="4.shell运算符"></a>4.shell运算符</h3><p>这里和我们平常见到的语言是不一样的，原声的bash（一种shell解释器）是不支持简单的数学运算的。我们通常通过awk 和 expr，expr等来实现，我们将表达式放在 <code> </code>之内，如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">`expr 2 + 2`</div></pre></td></tr></table></figure>
+<p>要注意，*，我们需要用\来进行转移，因为他和某个东西冲突，我们后面会提到。</p>
+<p>而关系运算符这就大不相同了，因为和命令或者是其他什么冲突的原因，shell脚本中采用下面这种方式来实现关系运算</p>
+<ul>
+<li>-eq 是否相等,</li>
+<li>-ne 是否不等</li>
+<li>-gt 左边是否大于右边</li>
+<li>-ge 左边是否大于等于右边</li>
+<li>-lt 左边是否小于右边</li>
+<li>-le 左边是否小于等于右边</li>
+</ul>
+<p>老司机们一定发现规律么，没错，就是-+英文缩写,这里就不多叨叨了。</p>
+<p>布尔运算也是同理。</p>
+<ul>
+<li>! 非</li>
+<li>-o 或</li>
+<li>-a 与</li>
+</ul>
+<p>shell中还有字符串运算符,文件测试运算符什么的，这里就不多说了。</p>
+<h3 id="5-shell流程控制"><a href="#5-shell流程控制" class="headerlink" title="5.shell流程控制"></a>5.shell流程控制</h3><p>shell脚本的流程控制和其他如python、php还是有一点区别滴，最明显的区别就是 要有结束标志，对，结束表示，这是啥类，看语法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">if</div><div class="line">then</div><div class="line">	commend...</div><div class="line">else</div><div class="line">	commend...</div><div class="line">elif</div><div class="line">	commend...</div><div class="line">fi</div><div class="line"></div><div class="line">for var in 1 2 3 4</div><div class="line">do</div><div class="line">	commend...</div><div class="line">done</div><div class="line"></div><div class="line">while xxx</div><div class="line">do</div><div class="line">	commend...</div><div class="line">done</div><div class="line"></div><div class="line">//until循环，</div><div class="line">until xxx</div><div class="line">do</div><div class="line">	commend</div><div class="line">done</div><div class="line"></div><div class="line">//case 比较恶心，我很不喜欢，需要用我再去学，嘿</div><div class="line"></div><div class="line">break，continue 什么也是有的</div></pre></td></tr></table></figure>
+<h3 id="6-函数"><a href="#6-函数" class="headerlink" title="6.函数"></a>6.函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">say()&#123;</div><div class="line">	echo $i</div><div class="line">&#125;</div><div class="line"></div><div class="line">say 1</div></pre></td></tr></table></figure>
+<p>没错，上面就是函数的简单用法。</p>
+<ul>
+<li>我们不需要手动指定参数</li>
+<li>同样用$i 去获取参数</li>
+<li>像命令一样say 1 2 3，传递参数</li>
+</ul>
+<p>但是，从${10}开始，我们需要用大括号，扩起来。。</p>
+<h3 id="7-输入输出重定向"><a href="#7-输入输出重定向" class="headerlink" title="7. 输入输出重定向"></a>7. 输入输出重定向</h3><p>略过略过，&gt; &lt; 将输入输出定向到其他位置（文件）</p>
+<h3 id="8-总结"><a href="#8-总结" class="headerlink" title="8. 总结"></a>8. 总结</h3><p>shell脚本学起来 编写起来都挺简单的。</p>
+<ul>
+<li>* @，这些都表示全部，比如 $* $@,</li>
+<li># 哈，可以表示长度，如字符串长度，数组容量</li>
+<li>变量赋值 key=value 注意 中间不能有空格</li>
+<li>大小比较 -ge那些</li>
+<li>函数，通过$? 能获取到返回值，而不能通过赋值来获取</li>
+<li>如果参数大于10个，要用$(n)去获取</li>
+</ul>
+<p>不过，shell最好的一点是批命令处理。</p>
+<h3 id="9-举个小例子？"><a href="#9-举个小例子？" class="headerlink" title="9. 举个小例子？"></a>9. 举个小例子？</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">git pull</div><div class="line"></div><div class="line">git add ./</div><div class="line"></div><div class="line">git commit -m &quot;xxx&quot;</div><div class="line"></div><div class="line">git push</div></pre></td></tr></table></figure>
+<p>很常见吧，加入我们把上面的写成shell脚本，是不是会简单很多？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">cms=&quot;update&quot;</div><div class="line"></div><div class="line">hexo g</div><div class="line"></div><div class="line">git add ./</div><div class="line"></div><div class="line">if [ $# -ge 1 ]</div><div class="line">then</div><div class="line">	cms=$1</div><div class="line">fi</div><div class="line"></div><div class="line">git commit -m $cms</div><div class="line"></div><div class="line">git push</div></pre></td></tr></table></figure>
+<p>这不，我们通过shell 脚本，每次./update.sh ,多方便啊。</p>
+<h3 id="10-想法"><a href="#10-想法" class="headerlink" title="10. 想法"></a>10. 想法</h3><p>想什么呢？还不赶紧去get shell脚本这个技巧。</p>
+<p>不写脚本释放双手的程序员，不是好程序员。</p>
+<h3 id="11-入门链接"><a href="#11-入门链接" class="headerlink" title="11. 入门链接"></a>11. 入门链接</h3><p><a href="http://www.runoob.com/linux/linux-shell.html" target="_blank" rel="external">入门教程，看了还不会就可以转行了</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/shell/" rel="tag"># shell</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/30/AndroidJNI学习笔记（四）－数据类型映射以及native调用java/" rel="next" title="AndroidJNI学习笔记（四）－数据类型映射以及native调用java">
+                <i class="fa fa-chevron-left"></i> AndroidJNI学习笔记（四）－数据类型映射以及native调用java
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/12/05/了解gradle（一）/" rel="prev" title="了解gradle（一）">
+                了解gradle（一） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/12/03/脚本打怪-shell篇/"
+           data-title="脚本打怪-shell篇" data-url="http://guolei1130.github.io/2016/12/03/脚本打怪-shell篇/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/img/head.png"
+               alt="_StriveG" />
+          <p class="site-author-name" itemprop="name">_StriveG</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://guolei1130.github.io/" target="_blank" title="博客首页">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  博客首页
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Guolei1130/" target="_blank" title="作品展示">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  作品展示
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/qq_21430549" target="_blank" title="csdn博客">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  csdn博客
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://monsterlin.com/" target="_blank" title="友情链接">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  友情链接
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="../../../郭蕾－android开发工程师.pdf" target="_blank" title="个人简历">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  个人简历
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-什么是shell"><span class="nav-number">1.</span> <span class="nav-text">1.什么是shell</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-shell能干什么"><span class="nav-number">2.</span> <span class="nav-text">2.shell能干什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-shell基础语法"><span class="nav-number">3.</span> <span class="nav-text">3.shell基础语法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-变量"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-传递参数"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 传递参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-输出"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 输出</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-shell运算符"><span class="nav-number">4.</span> <span class="nav-text">4.shell运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-shell流程控制"><span class="nav-number">5.</span> <span class="nav-text">5.shell流程控制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-函数"><span class="nav-number">6.</span> <span class="nav-text">6.函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-输入输出重定向"><span class="nav-number">7.</span> <span class="nav-text">7. 输入输出重定向</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-总结"><span class="nav-number">8.</span> <span class="nav-text">8. 总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-举个小例子？"><span class="nav-number">9.</span> <span class="nav-text">9. 举个小例子？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-想法"><span class="nav-number">10.</span> <span class="nav-text">10. 想法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11-入门链接"><span class="nav-number">11.</span> <span class="nav-text">11. 入门链接</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">_StriveG</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"guolei1130"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

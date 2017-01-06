@@ -1,0 +1,835 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="framework," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="1.前言在SystemServer初始化过程当中，会调用PackageManagerService.main方法进行pms的初始化，那么我们就看看pms的初始化过程经历了什么。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PMS初始化做了什么">
+<meta property="og:url" content="http://guolei1130.github.io/2017/01/05/PMS初始化做了什么/index.html">
+<meta property="og:site_name" content="_StriveG Blog">
+<meta property="og:description" content="1.前言在SystemServer初始化过程当中，会调用PackageManagerService.main方法进行pms的初始化，那么我们就看看pms的初始化过程经历了什么。">
+<meta property="og:updated_time" content="2017-01-06T03:41:59.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PMS初始化做了什么">
+<meta name="twitter:description" content="1.前言在SystemServer初始化过程当中，会调用PackageManagerService.main方法进行pms的初始化，那么我们就看看pms的初始化过程经历了什么。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"always"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'guolei1130',
+      author: '菜鸡郭'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://guolei1130.github.io/2017/01/05/PMS初始化做了什么/"/>
+
+
+
+
+
+  <title> PMS初始化做了什么 | _StriveG Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">_StriveG Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle"></p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://guolei1130.github.io/2017/01/05/PMS初始化做了什么/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="_StriveG">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/img/head.png">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="_StriveG Blog">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="_StriveG Blog" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                PMS初始化做了什么
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-05T17:21:21+08:00">
+                2017-01-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/01/05/PMS初始化做了什么/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/01/05/PMS初始化做了什么/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><excerpt in="" index="" |="" 首页摘要=""></excerpt></p>
+<h3 id="1-前言"><a href="#1-前言" class="headerlink" title="1.前言"></a>1.前言</h3><p>在SystemServer初始化过程当中，会调用PackageManagerService.main方法进行pms的初始化，那么我们就看看pms的初始化过程经历了什么。</p>
+<ul>
+<li><a id="more"></a>
+<the rest="" of="" contents="" |="" 余下全文="">
+
+
+</the></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> PackageManagerService <span class="title">main</span><span class="params">(Context context, Installer installer,</span></span></div><div class="line">        <span class="keyword">boolean</span> factoryTest, <span class="keyword">boolean</span> onlyCore) &#123;</div><div class="line">    PackageManagerService m = <span class="keyword">new</span> PackageManagerService(context, installer,</div><div class="line">            factoryTest, onlyCore);</div><div class="line">    ServiceManager.addService(<span class="string">"package"</span>, m);</div><div class="line">    <span class="keyword">return</span> m;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="2-从pms构造函数说起"><a href="#2-从pms构造函数说起" class="headerlink" title="2.从pms构造函数说起"></a>2.从pms构造函数说起</h3><p>pms的构造函数相当长，根据<a href="http://gityuan.com/2016/11/06/packagemanager/" target="_blank" rel="external">gityuan大神</a>的提示，按照log的打印进行分布查看却是清晰了很多。</p>
+<h4 id="2-1-BOOT-PROGRESS-PMS-START"><a href="#2-1-BOOT-PROGRESS-PMS-START" class="headerlink" title="2.1 BOOT_PROGRESS_PMS_START"></a>2.1 BOOT_PROGRESS_PMS_START</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div></pre></td><td class="code"><pre><div class="line">mContext = context;</div><div class="line">mFactoryTest = factoryTest;</div><div class="line">mOnlyCore = onlyCore;</div><div class="line">mLazyDexOpt = <span class="string">"eng"</span>.equals(SystemProperties.get(<span class="string">"ro.build.type"</span>));</div><div class="line">mMetrics = <span class="keyword">new</span> DisplayMetrics();</div><div class="line">mSettings = <span class="keyword">new</span> Settings(mPackages);</div><div class="line">mSettings.addSharedUserLPw(<span class="string">"android.uid.system"</span>, Process.SYSTEM_UID,</div><div class="line">        ApplicationInfo.FLAG_SYSTEM, ApplicationInfo.PRIVATE_FLAG_PRIVILEGED);</div><div class="line">mSettings.addSharedUserLPw(<span class="string">"android.uid.phone"</span>, RADIO_UID,</div><div class="line">        ApplicationInfo.FLAG_SYSTEM, ApplicationInfo.PRIVATE_FLAG_PRIVILEGED);</div><div class="line">mSettings.addSharedUserLPw(<span class="string">"android.uid.log"</span>, LOG_UID,</div><div class="line">        ApplicationInfo.FLAG_SYSTEM, ApplicationInfo.PRIVATE_FLAG_PRIVILEGED);</div><div class="line">mSettings.addSharedUserLPw(<span class="string">"android.uid.nfc"</span>, NFC_UID,</div><div class="line">        ApplicationInfo.FLAG_SYSTEM, ApplicationInfo.PRIVATE_FLAG_PRIVILEGED);</div><div class="line">mSettings.addSharedUserLPw(<span class="string">"android.uid.bluetooth"</span>, BLUETOOTH_UID,</div><div class="line">        ApplicationInfo.FLAG_SYSTEM, ApplicationInfo.PRIVATE_FLAG_PRIVILEGED);</div><div class="line">mSettings.addSharedUserLPw(<span class="string">"android.uid.shell"</span>, SHELL_UID,</div><div class="line">        ApplicationInfo.FLAG_SYSTEM, ApplicationInfo.PRIVATE_FLAG_PRIVILEGED);</div><div class="line"></div><div class="line"><span class="comment">// <span class="doctag">TODO:</span> add a property to control this?</span></div><div class="line"><span class="keyword">long</span> dexOptLRUThresholdInMinutes;</div><div class="line"><span class="keyword">if</span> (mLazyDexOpt) &#123;</div><div class="line">    dexOptLRUThresholdInMinutes = <span class="number">30</span>; <span class="comment">// only last 30 minutes of apps for eng builds.</span></div><div class="line">&#125; <span class="keyword">else</span> &#123;</div><div class="line">    dexOptLRUThresholdInMinutes = <span class="number">7</span> * <span class="number">24</span> * <span class="number">60</span>; <span class="comment">// apps used in the 7 days for users.</span></div><div class="line">&#125;</div><div class="line">mDexOptLRUThresholdInMills = dexOptLRUThresholdInMinutes * <span class="number">60</span> * <span class="number">1000</span>;</div><div class="line"></div><div class="line">String separateProcesses = SystemProperties.get(<span class="string">"debug.separate_processes"</span>);</div><div class="line"><span class="keyword">if</span> (separateProcesses != <span class="keyword">null</span> &amp;&amp; separateProcesses.length() &gt; <span class="number">0</span>) &#123;</div><div class="line">    <span class="keyword">if</span> (<span class="string">"*"</span>.equals(separateProcesses)) &#123;</div><div class="line">        mDefParseFlags = PackageParser.PARSE_IGNORE_PROCESSES;</div><div class="line">        mSeparateProcesses = <span class="keyword">null</span>;</div><div class="line">        Slog.w(TAG, <span class="string">"Running with debug.separate_processes: * (ALL)"</span>);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        mDefParseFlags = <span class="number">0</span>;</div><div class="line">        mSeparateProcesses = separateProcesses.split(<span class="string">","</span>);</div><div class="line">        Slog.w(TAG, <span class="string">"Running with debug.separate_processes: "</span></div><div class="line">                + separateProcesses);</div><div class="line">    &#125;</div><div class="line">&#125; <span class="keyword">else</span> &#123;</div><div class="line">    mDefParseFlags = <span class="number">0</span>;</div><div class="line">    mSeparateProcesses = <span class="keyword">null</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line">mInstaller = installer;</div><div class="line">mPackageDexOptimizer = <span class="keyword">new</span> PackageDexOptimizer(<span class="keyword">this</span>);</div><div class="line">mMoveCallbacks = <span class="keyword">new</span> MoveCallbacks(FgThread.get().getLooper());</div><div class="line"></div><div class="line">mOnPermissionChangeListeners = <span class="keyword">new</span> OnPermissionChangeListeners(</div><div class="line">        FgThread.get().getLooper());</div><div class="line"></div><div class="line">getDefaultDisplayMetrics(context, mMetrics);</div><div class="line"></div><div class="line">SystemConfig systemConfig = SystemConfig.getInstance();</div><div class="line">mGlobalGids = systemConfig.getGlobalGids();</div><div class="line">mSystemPermissions = systemConfig.getSystemPermissions();</div><div class="line">mAvailableFeatures = systemConfig.getAvailableFeatures();</div><div class="line"></div><div class="line"><span class="keyword">synchronized</span> (mInstallLock) &#123;</div><div class="line"><span class="comment">// writer</span></div><div class="line"><span class="keyword">synchronized</span> (mPackages) &#123;</div><div class="line">    mHandlerThread = <span class="keyword">new</span> ServiceThread(TAG,</div><div class="line">            Process.THREAD_PRIORITY_BACKGROUND, <span class="keyword">true</span> <span class="comment">/*allowIo*/</span>);</div><div class="line">    mHandlerThread.start();</div><div class="line">    mHandler = <span class="keyword">new</span> PackageHandler(mHandlerThread.getLooper());</div><div class="line">    Watchdog.getInstance().addThread(mHandler, WATCHDOG_TIMEOUT);</div><div class="line"></div><div class="line">    File dataDir = Environment.getDataDirectory();</div><div class="line">    mAppDataDir = <span class="keyword">new</span> File(dataDir, <span class="string">"data"</span>);</div><div class="line">    mAppInstallDir = <span class="keyword">new</span> File(dataDir, <span class="string">"app"</span>);</div><div class="line">    mAppLib32InstallDir = <span class="keyword">new</span> File(dataDir, <span class="string">"app-lib"</span>);</div><div class="line">    mAsecInternalPath = <span class="keyword">new</span> File(dataDir, <span class="string">"app-asec"</span>).getPath();</div><div class="line">    mUserAppDataDir = <span class="keyword">new</span> File(dataDir, <span class="string">"user"</span>);</div><div class="line">    mDrmAppPrivateInstallDir = <span class="keyword">new</span> File(dataDir, <span class="string">"app-private"</span>);</div><div class="line"></div><div class="line">    sUserManager = <span class="keyword">new</span> UserManagerService(context, <span class="keyword">this</span>,</div><div class="line">            mInstallLock, mPackages);</div><div class="line"></div><div class="line">    <span class="comment">// Propagate permission configuration in to package manager.</span></div><div class="line">    ArrayMap&lt;String, SystemConfig.PermissionEntry&gt; permConfig</div><div class="line">            = systemConfig.getPermissions();</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;permConfig.size(); i++) &#123;</div><div class="line">        SystemConfig.PermissionEntry perm = permConfig.valueAt(i);</div><div class="line">        BasePermission bp = mSettings.mPermissions.get(perm.name);</div><div class="line">        <span class="keyword">if</span> (bp == <span class="keyword">null</span>) &#123;</div><div class="line">            bp = <span class="keyword">new</span> BasePermission(perm.name, <span class="string">"android"</span>, BasePermission.TYPE_BUILTIN);</div><div class="line">            mSettings.mPermissions.put(perm.name, bp);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (perm.gids != <span class="keyword">null</span>) &#123;</div><div class="line">            bp.setGids(perm.gids, perm.perUser);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    ArrayMap&lt;String, String&gt; libConfig = systemConfig.getSharedLibraries();</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;libConfig.size(); i++) &#123;</div><div class="line">        mSharedLibraries.put(libConfig.keyAt(i),</div><div class="line">                <span class="keyword">new</span> SharedLibraryEntry(libConfig.valueAt(i), <span class="keyword">null</span>));</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    mFoundPolicyFile = SELinuxMMAC.readInstallPolicy();</div><div class="line"></div><div class="line">    mRestoredSettings = mSettings.readLPw(<span class="keyword">this</span>, sUserManager.getUsers(<span class="keyword">false</span>),</div><div class="line">            mSdkVersion, mOnlyCore);</div><div class="line"></div><div class="line">    String customResolverActivity = Resources.getSystem().getString(</div><div class="line">            R.string.config_customResolverActivity);</div><div class="line">    <span class="keyword">if</span> (TextUtils.isEmpty(customResolverActivity)) &#123;</div><div class="line">        customResolverActivity = <span class="keyword">null</span>;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        mCustomResolverComponentName = ComponentName.unflattenFromString(</div><div class="line">                customResolverActivity);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">long</span> startTime = SystemClock.uptimeMillis();</div></pre></td></tr></table></figure>
+<ul>
+<li>构造Settings对象，添加shareUserId</li>
+<li>构造SystemConfig，获取mSystemPermissions灯属性</li>
+<li>创建data/data,data/app/,data/app-lib,data-asec,data/user,data/app-privat等file对象</li>
+<li>从systemConfig中获取到所有的共享库，添加到mSharedLibraries中，</li>
+</ul>
+<h4 id="2-2-PMS-SYSTEM-SCAN-START"><a href="#2-2-PMS-SYSTEM-SCAN-START" class="headerlink" title="2.2 PMS_SYSTEM_SCAN_START"></a>2.2 PMS_SYSTEM_SCAN_START</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div><div class="line">187</div><div class="line">188</div><div class="line">189</div><div class="line">190</div><div class="line">191</div><div class="line">192</div><div class="line">193</div><div class="line">194</div><div class="line">195</div><div class="line">196</div><div class="line">197</div><div class="line">198</div><div class="line">199</div><div class="line">200</div><div class="line">201</div><div class="line">202</div><div class="line">203</div><div class="line">204</div><div class="line">205</div><div class="line">206</div><div class="line">207</div><div class="line">208</div><div class="line">209</div><div class="line">210</div><div class="line">211</div><div class="line">212</div><div class="line">213</div><div class="line">214</div><div class="line">215</div><div class="line">216</div><div class="line">217</div><div class="line">218</div><div class="line">219</div><div class="line">220</div><div class="line">221</div><div class="line">222</div><div class="line">223</div><div class="line">224</div><div class="line">225</div><div class="line">226</div><div class="line">227</div><div class="line">228</div><div class="line">229</div><div class="line">230</div><div class="line">231</div><div class="line">232</div><div class="line">233</div><div class="line">234</div><div class="line">235</div><div class="line">236</div><div class="line">237</div><div class="line">238</div><div class="line">239</div><div class="line">240</div><div class="line">241</div><div class="line">242</div><div class="line">243</div><div class="line">244</div><div class="line">245</div><div class="line">246</div><div class="line">247</div><div class="line">248</div><div class="line">249</div><div class="line">250</div><div class="line">251</div><div class="line">252</div><div class="line">253</div><div class="line">254</div><div class="line">255</div><div class="line">256</div><div class="line">257</div><div class="line">258</div><div class="line">259</div><div class="line">260</div><div class="line">261</div><div class="line">262</div><div class="line">263</div><div class="line">264</div><div class="line">265</div><div class="line">266</div><div class="line">267</div><div class="line">268</div><div class="line">269</div><div class="line">270</div><div class="line">271</div><div class="line">272</div><div class="line">273</div><div class="line">274</div><div class="line">275</div><div class="line">276</div><div class="line">277</div><div class="line">278</div><div class="line">279</div><div class="line">280</div><div class="line">281</div><div class="line">282</div><div class="line">283</div><div class="line">284</div><div class="line">285</div><div class="line">286</div><div class="line">287</div><div class="line">288</div><div class="line">289</div><div class="line">290</div><div class="line">291</div><div class="line">292</div><div class="line">293</div><div class="line">294</div><div class="line">295</div><div class="line">296</div><div class="line">297</div><div class="line">298</div><div class="line">299</div><div class="line">300</div><div class="line">301</div><div class="line">302</div><div class="line">303</div><div class="line">304</div><div class="line">305</div><div class="line">306</div><div class="line">307</div><div class="line">308</div><div class="line">309</div><div class="line">310</div><div class="line">311</div><div class="line">312</div><div class="line">313</div><div class="line">314</div><div class="line">315</div><div class="line">316</div><div class="line">317</div><div class="line">318</div><div class="line">319</div><div class="line">320</div><div class="line">321</div><div class="line">322</div><div class="line">323</div><div class="line">324</div><div class="line">325</div><div class="line">326</div><div class="line">327</div><div class="line">328</div><div class="line">329</div><div class="line">330</div><div class="line">331</div><div class="line">332</div><div class="line">333</div><div class="line">334</div><div class="line">335</div><div class="line">336</div><div class="line">337</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">final</span> <span class="keyword">int</span> scanFlags = SCAN_NO_PATHS | SCAN_DEFER_DEX | SCAN_BOOTING | SCAN_INITIAL;</div><div class="line"></div><div class="line"><span class="keyword">final</span> ArraySet&lt;String&gt; alreadyDexOpted = <span class="keyword">new</span> ArraySet&lt;String&gt;();</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * Add everything in the in the boot class path to the</div><div class="line"> * list of process files because dexopt will have been run</div><div class="line"> * if necessary during zygote startup.</div><div class="line"> */</div><div class="line"><span class="keyword">final</span> String bootClassPath = System.getenv(<span class="string">"BOOTCLASSPATH"</span>);</div><div class="line"><span class="keyword">final</span> String systemServerClassPath = System.getenv(<span class="string">"SYSTEMSERVERCLASSPATH"</span>);</div><div class="line"></div><div class="line"><span class="keyword">if</span> (bootClassPath != <span class="keyword">null</span>) &#123;</div><div class="line">    String[] bootClassPathElements = splitString(bootClassPath, <span class="string">':'</span>);</div><div class="line">    <span class="keyword">for</span> (String element : bootClassPathElements) &#123;</div><div class="line">        alreadyDexOpted.add(element);</div><div class="line">    &#125;</div><div class="line">&#125; <span class="keyword">else</span> &#123;</div><div class="line">    Slog.w(TAG, <span class="string">"No BOOTCLASSPATH found!"</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">if</span> (systemServerClassPath != <span class="keyword">null</span>) &#123;</div><div class="line">    String[] systemServerClassPathElements = splitString(systemServerClassPath, <span class="string">':'</span>);</div><div class="line">    <span class="keyword">for</span> (String element : systemServerClassPathElements) &#123;</div><div class="line">        alreadyDexOpted.add(element);</div><div class="line">    &#125;</div><div class="line">&#125; <span class="keyword">else</span> &#123;</div><div class="line">    Slog.w(TAG, <span class="string">"No SYSTEMSERVERCLASSPATH found!"</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">final</span> List&lt;String&gt; allInstructionSets = InstructionSets.getAllInstructionSets();</div><div class="line"><span class="keyword">final</span> String[] dexCodeInstructionSets =</div><div class="line">        getDexCodeInstructionSets(</div><div class="line">                allInstructionSets.toArray(<span class="keyword">new</span> String[allInstructionSets.size()]));</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * Ensure all external libraries have had dexopt run on them.</div><div class="line"> */</div><div class="line"><span class="keyword">if</span> (mSharedLibraries.size() &gt; <span class="number">0</span>) &#123;</div><div class="line">    <span class="comment">// <span class="doctag">NOTE:</span> For now, we're compiling these system "shared libraries"</span></div><div class="line">    <span class="comment">// (and framework jars) into all available architectures. It's possible</span></div><div class="line">    <span class="comment">// to compile them only when we come across an app that uses them (there's</span></div><div class="line">    <span class="comment">// already logic for that in scanPackageLI) but that adds some complexity.</span></div><div class="line">    <span class="keyword">for</span> (String dexCodeInstructionSet : dexCodeInstructionSets) &#123;</div><div class="line">        <span class="keyword">for</span> (SharedLibraryEntry libEntry : mSharedLibraries.values()) &#123;</div><div class="line">            <span class="keyword">final</span> String lib = libEntry.path;</div><div class="line">            <span class="keyword">if</span> (lib == <span class="keyword">null</span>) &#123;</div><div class="line">                <span class="keyword">continue</span>;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                <span class="keyword">int</span> dexoptNeeded = DexFile.getDexOptNeeded(lib, <span class="keyword">null</span>, dexCodeInstructionSet, <span class="keyword">false</span>);</div><div class="line">                <span class="keyword">if</span> (dexoptNeeded != DexFile.NO_DEXOPT_NEEDED) &#123;</div><div class="line">                    alreadyDexOpted.add(lib);</div><div class="line">                    mInstaller.dexopt(lib, Process.SYSTEM_UID, <span class="keyword">true</span>, dexCodeInstructionSet, dexoptNeeded);</div><div class="line">                &#125;</div><div class="line">            &#125; <span class="keyword">catch</span> (FileNotFoundException e) &#123;</div><div class="line">                Slog.w(TAG, <span class="string">"Library not found: "</span> + lib);</div><div class="line">            &#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">                Slog.w(TAG, <span class="string">"Cannot dexopt "</span> + lib + <span class="string">"; is it an APK or JAR? "</span></div><div class="line">                        + e.getMessage());</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">File frameworkDir = <span class="keyword">new</span> File(Environment.getRootDirectory(), <span class="string">"framework"</span>);</div><div class="line"></div><div class="line"><span class="comment">// Gross hack for now: we know this file doesn't contain any</span></div><div class="line"><span class="comment">// code, so don't dexopt it to avoid the resulting log spew.</span></div><div class="line">alreadyDexOpted.add(frameworkDir.getPath() + <span class="string">"/framework-res.apk"</span>);</div><div class="line"></div><div class="line"><span class="comment">// Gross hack for now: we know this file is only part of</span></div><div class="line"><span class="comment">// the boot class path for art, so don't dexopt it to</span></div><div class="line"><span class="comment">// avoid the resulting log spew.</span></div><div class="line">alreadyDexOpted.add(frameworkDir.getPath() + <span class="string">"/core-libart.jar"</span>);</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * There are a number of commands implemented in Java, which</div><div class="line"> * we currently need to do the dexopt on so that they can be</div><div class="line"> * run from a non-root shell.</div><div class="line"> */</div><div class="line">String[] frameworkFiles = frameworkDir.list();</div><div class="line"><span class="keyword">if</span> (frameworkFiles != <span class="keyword">null</span>) &#123;</div><div class="line">    <span class="comment">// <span class="doctag">TODO:</span> We could compile these only for the most preferred ABI. We should</span></div><div class="line">    <span class="comment">// first double check that the dex files for these commands are not referenced</span></div><div class="line">    <span class="comment">// by other system apps.</span></div><div class="line">    <span class="keyword">for</span> (String dexCodeInstructionSet : dexCodeInstructionSets) &#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;frameworkFiles.length; i++) &#123;</div><div class="line">            File libPath = <span class="keyword">new</span> File(frameworkDir, frameworkFiles[i]);</div><div class="line">            String path = libPath.getPath();</div><div class="line">            <span class="comment">// Skip the file if we already did it.</span></div><div class="line">            <span class="keyword">if</span> (alreadyDexOpted.contains(path)) &#123;</div><div class="line">                <span class="keyword">continue</span>;</div><div class="line">            &#125;</div><div class="line">            <span class="comment">// Skip the file if it is not a type we want to dexopt.</span></div><div class="line">            <span class="keyword">if</span> (!path.endsWith(<span class="string">".apk"</span>) &amp;&amp; !path.endsWith(<span class="string">".jar"</span>)) &#123;</div><div class="line">                <span class="keyword">continue</span>;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                <span class="keyword">int</span> dexoptNeeded = DexFile.getDexOptNeeded(path, <span class="keyword">null</span>, dexCodeInstructionSet, <span class="keyword">false</span>);</div><div class="line">                <span class="keyword">if</span> (dexoptNeeded != DexFile.NO_DEXOPT_NEEDED) &#123;</div><div class="line">                    mInstaller.dexopt(path, Process.SYSTEM_UID, <span class="keyword">true</span>, dexCodeInstructionSet, dexoptNeeded);</div><div class="line">                &#125;</div><div class="line">            &#125; <span class="keyword">catch</span> (FileNotFoundException e) &#123;</div><div class="line">                Slog.w(TAG, <span class="string">"Jar not found: "</span> + path);</div><div class="line">            &#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">                Slog.w(TAG, <span class="string">"Exception reading jar: "</span> + path, e);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">final</span> VersionInfo ver = mSettings.getInternalVersion();</div><div class="line">mIsUpgrade = !Build.FINGERPRINT.equals(ver.fingerprint);</div><div class="line"><span class="comment">// when upgrading from pre-M, promote system app permissions from install to runtime</span></div><div class="line">mPromoteSystemApps =</div><div class="line">        mIsUpgrade &amp;&amp; ver.sdkVersion &lt;= Build.VERSION_CODES.LOLLIPOP_MR1;</div><div class="line"></div><div class="line"><span class="comment">// save off the names of pre-existing system packages prior to scanning; we don't</span></div><div class="line"><span class="comment">// want to automatically grant runtime permissions for new system apps</span></div><div class="line"><span class="keyword">if</span> (mPromoteSystemApps) &#123;</div><div class="line">    Iterator&lt;PackageSetting&gt; pkgSettingIter = mSettings.mPackages.values().iterator();</div><div class="line">    <span class="keyword">while</span> (pkgSettingIter.hasNext()) &#123;</div><div class="line">        PackageSetting ps = pkgSettingIter.next();</div><div class="line">        <span class="keyword">if</span> (isSystemApp(ps)) &#123;</div><div class="line">            mExistingSystemPackages.add(ps.name);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// Collect vendor overlay packages.</span></div><div class="line"><span class="comment">// (Do this before scanning any apps.)</span></div><div class="line"><span class="comment">// For security and version matching reason, only consider</span></div><div class="line"><span class="comment">// overlay packages if they reside in VENDOR_OVERLAY_DIR.</span></div><div class="line">File vendorOverlayDir = <span class="keyword">new</span> File(VENDOR_OVERLAY_DIR);</div><div class="line">scanDirLI(vendorOverlayDir, PackageParser.PARSE_IS_SYSTEM</div><div class="line">        | PackageParser.PARSE_IS_SYSTEM_DIR, scanFlags | SCAN_TRUSTED_OVERLAY, <span class="number">0</span>);</div><div class="line"></div><div class="line"><span class="comment">// Find base frameworks (resource packages without code).</span></div><div class="line">scanDirLI(frameworkDir, PackageParser.PARSE_IS_SYSTEM</div><div class="line">        | PackageParser.PARSE_IS_SYSTEM_DIR</div><div class="line">        | PackageParser.PARSE_IS_PRIVILEGED,</div><div class="line">        scanFlags | SCAN_NO_DEX, <span class="number">0</span>);</div><div class="line"></div><div class="line"><span class="comment">// Collected privileged system packages.</span></div><div class="line"><span class="keyword">final</span> File privilegedAppDir = <span class="keyword">new</span> File(Environment.getRootDirectory(), <span class="string">"priv-app"</span>);</div><div class="line">scanDirLI(privilegedAppDir, PackageParser.PARSE_IS_SYSTEM</div><div class="line">        | PackageParser.PARSE_IS_SYSTEM_DIR</div><div class="line">        | PackageParser.PARSE_IS_PRIVILEGED, scanFlags, <span class="number">0</span>);</div><div class="line"></div><div class="line"><span class="comment">// Collect ordinary system packages.</span></div><div class="line"><span class="keyword">final</span> File systemAppDir = <span class="keyword">new</span> File(Environment.getRootDirectory(), <span class="string">"app"</span>);</div><div class="line">scanDirLI(systemAppDir, PackageParser.PARSE_IS_SYSTEM</div><div class="line">        | PackageParser.PARSE_IS_SYSTEM_DIR, scanFlags, <span class="number">0</span>);</div><div class="line"></div><div class="line"><span class="comment">// Collect all vendor packages.</span></div><div class="line">File vendorAppDir = <span class="keyword">new</span> File(<span class="string">"/vendor/app"</span>);</div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    vendorAppDir = vendorAppDir.getCanonicalFile();</div><div class="line">&#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">    <span class="comment">// failed to look up canonical path, continue with original one</span></div><div class="line">&#125;</div><div class="line">scanDirLI(vendorAppDir, PackageParser.PARSE_IS_SYSTEM</div><div class="line">        | PackageParser.PARSE_IS_SYSTEM_DIR, scanFlags, <span class="number">0</span>);</div><div class="line"></div><div class="line"><span class="comment">// Collect all OEM packages.</span></div><div class="line"><span class="keyword">final</span> File oemAppDir = <span class="keyword">new</span> File(Environment.getOemDirectory(), <span class="string">"app"</span>);</div><div class="line">scanDirLI(oemAppDir, PackageParser.PARSE_IS_SYSTEM</div><div class="line">        | PackageParser.PARSE_IS_SYSTEM_DIR, scanFlags, <span class="number">0</span>);</div><div class="line"></div><div class="line"><span class="keyword">if</span> (DEBUG_UPGRADE) Log.v(TAG, <span class="string">"Running installd update commands"</span>);</div><div class="line">mInstaller.moveFiles();</div><div class="line"></div><div class="line"><span class="comment">// Prune any system packages that no longer exist.</span></div><div class="line"><span class="keyword">final</span> List&lt;String&gt; possiblyDeletedUpdatedSystemApps = <span class="keyword">new</span> ArrayList&lt;String&gt;();</div><div class="line"><span class="keyword">if</span> (!mOnlyCore) &#123;</div><div class="line">    Iterator&lt;PackageSetting&gt; psit = mSettings.mPackages.values().iterator();</div><div class="line">    <span class="keyword">while</span> (psit.hasNext()) &#123;</div><div class="line">        PackageSetting ps = psit.next();</div><div class="line"></div><div class="line">        <span class="comment">/*</span></div><div class="line">         * If this is not a system app, it can't be a</div><div class="line">         * disable system app.</div><div class="line">         */</div><div class="line">        <span class="keyword">if</span> ((ps.pkgFlags &amp; ApplicationInfo.FLAG_SYSTEM) == <span class="number">0</span>) &#123;</div><div class="line">            <span class="keyword">continue</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">/*</span></div><div class="line">         * If the package is scanned, it's not erased.</div><div class="line">         */</div><div class="line">        <span class="keyword">final</span> PackageParser.Package scannedPkg = mPackages.get(ps.name);</div><div class="line">        <span class="keyword">if</span> (scannedPkg != <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="comment">/*</span></div><div class="line">             * If the system app is both scanned and in the</div><div class="line">             * disabled packages list, then it must have been</div><div class="line">             * added via OTA. Remove it from the currently</div><div class="line">             * scanned package so the previously user-installed</div><div class="line">             * application can be scanned.</div><div class="line">             */</div><div class="line">            <span class="keyword">if</span> (mSettings.isDisabledSystemPackageLPr(ps.name)) &#123;</div><div class="line">                logCriticalInfo(Log.WARN, <span class="string">"Expecting better updated system app for "</span></div><div class="line">                        + ps.name + <span class="string">"; removing system app.  Last known codePath="</span></div><div class="line">                        + ps.codePathString + <span class="string">", installStatus="</span> + ps.installStatus</div><div class="line">                        + <span class="string">", versionCode="</span> + ps.versionCode + <span class="string">"; scanned versionCode="</span></div><div class="line">                        + scannedPkg.mVersionCode);</div><div class="line">                removePackageLI(ps, <span class="keyword">true</span>);</div><div class="line">                mExpectingBetter.put(ps.name, ps.codePath);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="keyword">continue</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (!mSettings.isDisabledSystemPackageLPr(ps.name)) &#123;</div><div class="line">            psit.remove();</div><div class="line">            logCriticalInfo(Log.WARN, <span class="string">"System package "</span> + ps.name</div><div class="line">                    + <span class="string">" no longer exists; wiping its data"</span>);</div><div class="line">            removeDataDirsLI(<span class="keyword">null</span>, ps.name);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="keyword">final</span> PackageSetting disabledPs = mSettings.getDisabledSystemPkgLPr(ps.name);</div><div class="line">            <span class="keyword">if</span> (disabledPs.codePath == <span class="keyword">null</span> || !disabledPs.codePath.exists()) &#123;</div><div class="line">                possiblyDeletedUpdatedSystemApps.add(ps.name);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//look for any incomplete package installations</span></div><div class="line">ArrayList&lt;PackageSetting&gt; deletePkgsList = mSettings.getListOfIncompleteInstallPackagesLPr();</div><div class="line"><span class="comment">//clean up list</span></div><div class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; deletePkgsList.size(); i++) &#123;</div><div class="line">    <span class="comment">//clean up here</span></div><div class="line">    cleanupInstallFailedPackage(deletePkgsList.get(i));</div><div class="line">&#125;</div><div class="line"><span class="comment">//delete tmp files</span></div><div class="line">deleteTempPackageFiles();</div><div class="line"></div><div class="line"><span class="comment">// Remove any shared userIDs that have no associated packages</span></div><div class="line">mSettings.pruneSharedUsersLPw();</div><div class="line"></div><div class="line"><span class="keyword">if</span> (!mOnlyCore) &#123;</div><div class="line">    EventLog.writeEvent(EventLogTags.BOOT_PROGRESS_PMS_DATA_SCAN_START,</div><div class="line">            SystemClock.uptimeMillis());</div><div class="line">    scanDirLI(mAppInstallDir, <span class="number">0</span>, scanFlags | SCAN_REQUIRE_KNOWN, <span class="number">0</span>);</div><div class="line"></div><div class="line">    scanDirLI(mDrmAppPrivateInstallDir, PackageParser.PARSE_FORWARD_LOCK,</div><div class="line">            scanFlags | SCAN_REQUIRE_KNOWN, <span class="number">0</span>);</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Remove disable package settings for any updated system</div><div class="line">     * apps that were removed via an OTA. If they're not a</div><div class="line">     * previously-updated app, remove them completely.</div><div class="line">     * Otherwise, just revoke their system-level permissions.</div><div class="line">     */</div><div class="line">    <span class="keyword">for</span> (String deletedAppName : possiblyDeletedUpdatedSystemApps) &#123;</div><div class="line">        PackageParser.Package deletedPkg = mPackages.get(deletedAppName);</div><div class="line">        mSettings.removeDisabledSystemPackageLPw(deletedAppName);</div><div class="line"></div><div class="line">        String msg;</div><div class="line">        <span class="keyword">if</span> (deletedPkg == <span class="keyword">null</span>) &#123;</div><div class="line">            msg = <span class="string">"Updated system package "</span> + deletedAppName</div><div class="line">                    + <span class="string">" no longer exists; wiping its data"</span>;</div><div class="line">            removeDataDirsLI(<span class="keyword">null</span>, deletedAppName);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            msg = <span class="string">"Updated system app + "</span> + deletedAppName</div><div class="line">                    + <span class="string">" no longer present; removing system privileges for "</span></div><div class="line">                    + deletedAppName;</div><div class="line"></div><div class="line">            deletedPkg.applicationInfo.flags &amp;= ~ApplicationInfo.FLAG_SYSTEM;</div><div class="line"></div><div class="line">            PackageSetting deletedPs = mSettings.mPackages.get(deletedAppName);</div><div class="line">            deletedPs.pkgFlags &amp;= ~ApplicationInfo.FLAG_SYSTEM;</div><div class="line">        &#125;</div><div class="line">        logCriticalInfo(Log.WARN, msg);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Make sure all system apps that we expected to appear on</div><div class="line">     * the userdata partition actually showed up. If they never</div><div class="line">     * appeared, crawl back and revive the system version.</div><div class="line">     */</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; mExpectingBetter.size(); i++) &#123;</div><div class="line">        <span class="keyword">final</span> String packageName = mExpectingBetter.keyAt(i);</div><div class="line">        <span class="keyword">if</span> (!mPackages.containsKey(packageName)) &#123;</div><div class="line">            <span class="keyword">final</span> File scanFile = mExpectingBetter.valueAt(i);</div><div class="line"></div><div class="line">            logCriticalInfo(Log.WARN, <span class="string">"Expected better "</span> + packageName</div><div class="line">                    + <span class="string">" but never showed up; reverting to system"</span>);</div><div class="line"></div><div class="line">            <span class="keyword">final</span> <span class="keyword">int</span> reparseFlags;</div><div class="line">            <span class="keyword">if</span> (FileUtils.contains(privilegedAppDir, scanFile)) &#123;</div><div class="line">                reparseFlags = PackageParser.PARSE_IS_SYSTEM</div><div class="line">                        | PackageParser.PARSE_IS_SYSTEM_DIR</div><div class="line">                        | PackageParser.PARSE_IS_PRIVILEGED;</div><div class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (FileUtils.contains(systemAppDir, scanFile)) &#123;</div><div class="line">                reparseFlags = PackageParser.PARSE_IS_SYSTEM</div><div class="line">                        | PackageParser.PARSE_IS_SYSTEM_DIR;</div><div class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (FileUtils.contains(vendorAppDir, scanFile)) &#123;</div><div class="line">                reparseFlags = PackageParser.PARSE_IS_SYSTEM</div><div class="line">                        | PackageParser.PARSE_IS_SYSTEM_DIR;</div><div class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (FileUtils.contains(oemAppDir, scanFile)) &#123;</div><div class="line">                reparseFlags = PackageParser.PARSE_IS_SYSTEM</div><div class="line">                        | PackageParser.PARSE_IS_SYSTEM_DIR;</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                Slog.e(TAG, <span class="string">"Ignoring unexpected fallback path "</span> + scanFile);</div><div class="line">                <span class="keyword">continue</span>;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            mSettings.enableSystemPackageLPw(packageName);</div><div class="line"></div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                scanPackageLI(scanFile, reparseFlags, scanFlags, <span class="number">0</span>, <span class="keyword">null</span>);</div><div class="line">            &#125; <span class="keyword">catch</span> (PackageManagerException e) &#123;</div><div class="line">                Slog.e(TAG, <span class="string">"Failed to parse original system package: "</span></div><div class="line">                        + e.getMessage());</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">mExpectingBetter.clear();</div><div class="line"></div><div class="line"><span class="comment">// Now that we know all of the shared libraries, update all clients to have</span></div><div class="line"><span class="comment">// the correct library paths.</span></div><div class="line">updateAllSharedLibrariesLPw();</div><div class="line"></div><div class="line"><span class="keyword">for</span> (SharedUserSetting setting : mSettings.getAllSharedUsersLPw()) &#123;</div><div class="line">    <span class="comment">// <span class="doctag">NOTE:</span> We ignore potential failures here during a system scan (like</span></div><div class="line">    <span class="comment">// the rest of the commands above) because there's precious little we</span></div><div class="line">    <span class="comment">// can do about it. A settings error is reported, though.</span></div><div class="line">    adjustCpuAbisForSharedUserLPw(setting.packages, <span class="keyword">null</span> <span class="comment">/* scanned package */</span>,</div><div class="line">            <span class="keyword">false</span> <span class="comment">/* force dexopt */</span>, <span class="keyword">false</span> <span class="comment">/* defer dexopt */</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// Now that we know all the packages we are keeping,</span></div><div class="line"><span class="comment">// read and update their last usage times.</span></div><div class="line">mPackageUsage.readLP();</div></pre></td></tr></table></figure>
+<p>扫描阶段，这个阶段主要是对 包进行解析，得到组件信息等内容，并且根据需要进行dex优化。</p>
+<ul>
+<li><p>首先将BOOTCLASSPATH，SYSTEMSERVERCLASSPATH这两个环境变量下的路径加入到不需要dex优化列表，在我的小米note手机上，BOOTCLASSPATH内容为下,</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/system/bin/sh: /system/framework/core-libart.jar:/system/framework/conscrypt.jar:/system/framework/okhttp.jar:/system/framework/core-junit.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/telephony-common.jar:/system/framework/voip-common.jar:/system/framework/ims-common.jar:/system/framework/apache-xml.jar:/system/framework/org.apache.http.legacy.boot.jar:/system/framework/tcmiface.jar:/system/framework/qcmediaplayer.jar:/system/framework/WfdCommon.jar:/system/framework/qcom.fmradio.jar:/system/framework/oem-services.jar:/system/framework/com.qti.dpmframework.jar:/system/framework/dpmapi.jar:/system/framework/com.qti.location.sdk.jar:/system/app/miui/miui.apk:/system/app/miuisystem/miuisystem.apk: not found</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>SYSTEMSERVERCLASSPATH内容为下</p>
+<pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/system/bin/sh: /system/framework/services.jar:/system/framework/wifi-service.jar:/system/framework/ethernet-service.jar: not found</div></pre></td></tr></table></figure>
+</code></pre><ul>
+<li>获取构建时指定的cpu指令</li>
+<li>根据cpu指令得到SharedLibrarie，判断是否需要dex优化，进行dex优化，并加入到alreadyDexOpted列表中</li>
+<li>将framework/framework-res.apk，framework/core-libart.jar，等加入到已优化列表</li>
+<li>将framework目录下，其他的apk或者jar，进行dex优化并加入已优化列表</li>
+<li>收集解析/vendor/overlay，/system/framework，/system/priv-app，/system/app，/vendor/priv-app，/vendor/app，/oem/app目录下app的信息</li>
+<li>删除系统不存在的包removePackageLI</li>
+<li>清理安装失败的包 cleanupInstallFailedPackage</li>
+<li>删除临时文件</li>
+<li>移除不想干的包中的shared userIDs</li>
+</ul>
+<h4 id="2-3-BOOT-PROGRESS-PMS-DATA-SCAN-START"><a href="#2-3-BOOT-PROGRESS-PMS-DATA-SCAN-START" class="headerlink" title="2.3 BOOT_PROGRESS_PMS_DATA_SCAN_START"></a>2.3 BOOT_PROGRESS_PMS_DATA_SCAN_START</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (!mOnlyCore) &#123;</div><div class="line">      EventLog.writeEvent(EventLogTags.BOOT_PROGRESS_PMS_DATA_SCAN_START,</div><div class="line">              SystemClock.uptimeMillis());</div><div class="line">      scanDirLI(mAppInstallDir, <span class="number">0</span>, scanFlags | SCAN_REQUIRE_KNOWN, <span class="number">0</span>);</div><div class="line"></div><div class="line">      scanDirLI(mDrmAppPrivateInstallDir, PackageParser.PARSE_FORWARD_LOCK,</div><div class="line">              scanFlags | SCAN_REQUIRE_KNOWN, <span class="number">0</span>);</div><div class="line"></div><div class="line">      <span class="comment">/**</span></div><div class="line">       * Remove disable package settings for any updated system</div><div class="line">       * apps that were removed via an OTA. If they're not a</div><div class="line">       * previously-updated app, remove them completely.</div><div class="line">       * Otherwise, just revoke their system-level permissions.</div><div class="line">       */</div><div class="line">      <span class="keyword">for</span> (String deletedAppName : possiblyDeletedUpdatedSystemApps) &#123;</div><div class="line">          PackageParser.Package deletedPkg = mPackages.get(deletedAppName);</div><div class="line">          mSettings.removeDisabledSystemPackageLPw(deletedAppName);</div><div class="line"></div><div class="line">          String msg;</div><div class="line">          <span class="keyword">if</span> (deletedPkg == <span class="keyword">null</span>) &#123;</div><div class="line">              msg = <span class="string">"Updated system package "</span> + deletedAppName</div><div class="line">                      + <span class="string">" no longer exists; wiping its data"</span>;</div><div class="line">              removeDataDirsLI(<span class="keyword">null</span>, deletedAppName);</div><div class="line">          &#125; <span class="keyword">else</span> &#123;</div><div class="line">              msg = <span class="string">"Updated system app + "</span> + deletedAppName</div><div class="line">                      + <span class="string">" no longer present; removing system privileges for "</span></div><div class="line">                      + deletedAppName;</div><div class="line"></div><div class="line">              deletedPkg.applicationInfo.flags &amp;= ~ApplicationInfo.FLAG_SYSTEM;</div><div class="line"></div><div class="line">              PackageSetting deletedPs = mSettings.mPackages.get(deletedAppName);</div><div class="line">              deletedPs.pkgFlags &amp;= ~ApplicationInfo.FLAG_SYSTEM;</div><div class="line">          &#125;</div><div class="line">          logCriticalInfo(Log.WARN, msg);</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="comment">/**</span></div><div class="line">       * Make sure all system apps that we expected to appear on</div><div class="line">       * the userdata partition actually showed up. If they never</div><div class="line">       * appeared, crawl back and revive the system version.</div><div class="line">       */</div><div class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; mExpectingBetter.size(); i++) &#123;</div><div class="line">          <span class="keyword">final</span> String packageName = mExpectingBetter.keyAt(i);</div><div class="line">          <span class="keyword">if</span> (!mPackages.containsKey(packageName)) &#123;</div><div class="line">              <span class="keyword">final</span> File scanFile = mExpectingBetter.valueAt(i);</div><div class="line"></div><div class="line">              logCriticalInfo(Log.WARN, <span class="string">"Expected better "</span> + packageName</div><div class="line">                      + <span class="string">" but never showed up; reverting to system"</span>);</div><div class="line"></div><div class="line">              <span class="keyword">final</span> <span class="keyword">int</span> reparseFlags;</div><div class="line">              <span class="keyword">if</span> (FileUtils.contains(privilegedAppDir, scanFile)) &#123;</div><div class="line">                  reparseFlags = PackageParser.PARSE_IS_SYSTEM</div><div class="line">                          | PackageParser.PARSE_IS_SYSTEM_DIR</div><div class="line">                          | PackageParser.PARSE_IS_PRIVILEGED;</div><div class="line">              &#125; <span class="keyword">else</span> <span class="keyword">if</span> (FileUtils.contains(systemAppDir, scanFile)) &#123;</div><div class="line">                  reparseFlags = PackageParser.PARSE_IS_SYSTEM</div><div class="line">                          | PackageParser.PARSE_IS_SYSTEM_DIR;</div><div class="line">              &#125; <span class="keyword">else</span> <span class="keyword">if</span> (FileUtils.contains(vendorAppDir, scanFile)) &#123;</div><div class="line">                  reparseFlags = PackageParser.PARSE_IS_SYSTEM</div><div class="line">                          | PackageParser.PARSE_IS_SYSTEM_DIR;</div><div class="line">              &#125; <span class="keyword">else</span> <span class="keyword">if</span> (FileUtils.contains(oemAppDir, scanFile)) &#123;</div><div class="line">                  reparseFlags = PackageParser.PARSE_IS_SYSTEM</div><div class="line">                          | PackageParser.PARSE_IS_SYSTEM_DIR;</div><div class="line">              &#125; <span class="keyword">else</span> &#123;</div><div class="line">                  Slog.e(TAG, <span class="string">"Ignoring unexpected fallback path "</span> + scanFile);</div><div class="line">                  <span class="keyword">continue</span>;</div><div class="line">              &#125;</div><div class="line"></div><div class="line">              mSettings.enableSystemPackageLPw(packageName);</div><div class="line"></div><div class="line">              <span class="keyword">try</span> &#123;</div><div class="line">                  scanPackageLI(scanFile, reparseFlags, scanFlags, <span class="number">0</span>, <span class="keyword">null</span>);</div><div class="line">              &#125; <span class="keyword">catch</span> (PackageManagerException e) &#123;</div><div class="line">                  Slog.e(TAG, <span class="string">"Failed to parse original system package: "</span></div><div class="line">                          + e.getMessage());</div><div class="line">              &#125;</div><div class="line">          &#125;</div><div class="line">      &#125;</div><div class="line">  &#125;</div><div class="line">  mExpectingBetter.clear();</div><div class="line"></div><div class="line">  <span class="comment">// Now that we know all of the shared libraries, update all clients to have</span></div><div class="line">  <span class="comment">// the correct library paths.</span></div><div class="line">  updateAllSharedLibrariesLPw();</div><div class="line"></div><div class="line">  <span class="keyword">for</span> (SharedUserSetting setting : mSettings.getAllSharedUsersLPw()) &#123;</div><div class="line">      <span class="comment">// <span class="doctag">NOTE:</span> We ignore potential failures here during a system scan (like</span></div><div class="line">      <span class="comment">// the rest of the commands above) because there's precious little we</span></div><div class="line">      <span class="comment">// can do about it. A settings error is reported, though.</span></div><div class="line">      adjustCpuAbisForSharedUserLPw(setting.packages, <span class="keyword">null</span> <span class="comment">/* scanned package */</span>,</div><div class="line">              <span class="keyword">false</span> <span class="comment">/* force dexopt */</span>, <span class="keyword">false</span> <span class="comment">/* defer dexopt */</span>);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">// Now that we know all the packages we are keeping,</span></div><div class="line">  <span class="comment">// read and update their last usage times.</span></div><div class="line">  mPackageUsage.readLP();</div></pre></td></tr></table></figure>
+<ul>
+<li>mOnlyCore为false的情况下，会扫描/data/app，/data/app-private目录，</li>
+</ul>
+<h4 id="2-4-PMS-SCAN-END"><a href="#2-4-PMS-SCAN-END" class="headerlink" title="2.4 PMS_SCAN_END"></a>2.4 PMS_SCAN_END</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> updateFlags = UPDATE_PERMISSIONS_ALL;</div><div class="line">  <span class="keyword">if</span> (ver.sdkVersion != mSdkVersion) &#123;</div><div class="line">      Slog.i(TAG, <span class="string">"Platform changed from "</span> + ver.sdkVersion + <span class="string">" to "</span></div><div class="line">              + mSdkVersion + <span class="string">"; regranting permissions for internal storage"</span>);</div><div class="line">      updateFlags |= UPDATE_PERMISSIONS_REPLACE_PKG | UPDATE_PERMISSIONS_REPLACE_ALL;</div><div class="line">  &#125;</div><div class="line">  updatePermissionsLPw(<span class="keyword">null</span>, <span class="keyword">null</span>, updateFlags);</div><div class="line">  ver.sdkVersion = mSdkVersion;</div><div class="line"></div><div class="line">  <span class="comment">// If this is the first boot or an update from pre-M, and it is a normal</span></div><div class="line">  <span class="comment">// boot, then we need to initialize the default preferred apps across</span></div><div class="line">  <span class="comment">// all defined users.</span></div><div class="line">  <span class="keyword">if</span> (!onlyCore &amp;&amp; (mPromoteSystemApps || !mRestoredSettings)) &#123;</div><div class="line">      <span class="keyword">for</span> (UserInfo user : sUserManager.getUsers(<span class="keyword">true</span>)) &#123;</div><div class="line">          mSettings.applyDefaultPreferredAppsLPw(<span class="keyword">this</span>, user.id);</div><div class="line">          applyFactoryDefaultBrowserLPw(user.id);</div><div class="line">          primeDomainVerificationsLPw(user.id);</div><div class="line">      &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">// If this is first boot after an OTA, and a normal boot, then</span></div><div class="line">  <span class="comment">// we need to clear code cache directories.</span></div><div class="line">  <span class="keyword">if</span> (mIsUpgrade &amp;&amp; !onlyCore) &#123;</div><div class="line">      Slog.i(TAG, <span class="string">"Build fingerprint changed; clearing code caches"</span>);</div><div class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; mSettings.mPackages.size(); i++) &#123;</div><div class="line">          <span class="keyword">final</span> PackageSetting ps = mSettings.mPackages.valueAt(i);</div><div class="line">          <span class="keyword">if</span> (Objects.equals(StorageManager.UUID_PRIVATE_INTERNAL, ps.volumeUuid)) &#123;</div><div class="line">              deleteCodeCacheDirsLI(ps.volumeUuid, ps.name);</div><div class="line">          &#125;</div><div class="line">      &#125;</div><div class="line">      ver.fingerprint = Build.FINGERPRINT;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  checkDefaultBrowser();</div><div class="line"></div><div class="line">  <span class="comment">// clear only after permissions and other defaults have been updated</span></div><div class="line">  mExistingSystemPackages.clear();</div><div class="line">  mPromoteSystemApps = <span class="keyword">false</span>;</div><div class="line"></div><div class="line">  <span class="comment">// All the changes are done during package scanning.</span></div><div class="line">  ver.databaseVersion = Settings.CURRENT_DATABASE_VERSION;</div><div class="line"></div><div class="line">  <span class="comment">// can downgrade to reader</span></div><div class="line">  mSettings.writeLPr();</div></pre></td></tr></table></figure>
+<ul>
+<li>当sdk版本不一致时，需要更新权限</li>
+<li>当这是ota后的首次启动，正常启动则需要清除目录的缓存代码</li>
+<li>当权限和其他默认项都完成更新，则清理相关信息</li>
+<li>信息写回packages.xml文件</li>
+</ul>
+<p>这部分不是很懂。</p>
+<h4 id="2-5-BOOT-PROGRESS-PMS-READY"><a href="#2-5-BOOT-PROGRESS-PMS-READY" class="headerlink" title="2.5 BOOT_PROGRESS_PMS_READY"></a>2.5 BOOT_PROGRESS_PMS_READY</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">  mRequiredVerifierPackage = getRequiredVerifierLPr();</div><div class="line">    mRequiredInstallerPackage = getRequiredInstallerLPr();</div><div class="line"></div><div class="line">    mInstallerService = <span class="keyword">new</span> PackageInstallerService(context, <span class="keyword">this</span>);</div><div class="line"></div><div class="line">    mIntentFilterVerifierComponent = getIntentFilterVerifierComponentNameLPr();</div><div class="line">    mIntentFilterVerifier = <span class="keyword">new</span> IntentVerifierProxy(mContext,</div><div class="line">            mIntentFilterVerifierComponent);</div><div class="line"></div><div class="line">&#125; <span class="comment">// synchronized (mPackages)</span></div><div class="line">&#125; <span class="comment">// synchronized (mInstallLock)</span></div><div class="line"></div><div class="line"><span class="comment">// Now after opening every single application zip, make sure they</span></div><div class="line"><span class="comment">// are all flushed.  Not really needed, but keeps things nice and</span></div><div class="line"><span class="comment">// tidy.</span></div><div class="line">Runtime.getRuntime().gc();</div><div class="line"></div><div class="line"><span class="comment">// Expose private service for system components to use.</span></div><div class="line">LocalServices.addService(PackageManagerInternal.class, <span class="keyword">new</span> PackageManagerInternalImpl());</div></pre></td></tr></table></figure>
+<ul>
+<li>初始化PackageInstallerService</li>
+<li>gc，回收下内存</li>
+</ul>
+<h3 id="3-Settings"><a href="#3-Settings" class="headerlink" title="3.Settings"></a>3.Settings</h3><p>这个类负责读取data/system下的几个xml文件。收集其中的一些信息。</p>
+<ul>
+<li>packages.xml    记录所有安装app的信息</li>
+<li>packages-backup.xml    备份文件</li>
+<li>packages-stopped.xml    记录系统被强制停止的文件</li>
+<li>packages-stopped-backup.xml    备份文件</li>
+<li>packages.list    记录应用的数据信息</li>
+</ul>
+<h3 id="4-scanDirLI"><a href="#4-scanDirLI" class="headerlink" title="4.scanDirLI"></a>4.scanDirLI</h3><p>这个方法会调用scanPackageLI对apk进行扫描解析，在这里，会构造PackageParser.Package对象，并进行解析。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">final</span> PackageParser.Package pkg;</div><div class="line"> <span class="keyword">try</span> &#123;</div><div class="line">     pkg = pp.parsePackage(scanFile, parseFlags);</div><div class="line"> &#125; <span class="keyword">catch</span> (PackageParserException e) &#123;</div><div class="line">     <span class="keyword">throw</span> PackageManagerException.from(e);</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<p>重点看解析部分的代码。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> Package <span class="title">parsePackage</span><span class="params">(File packageFile, <span class="keyword">int</span> flags)</span> <span class="keyword">throws</span> PackageParserException </span>&#123;</div><div class="line">     <span class="keyword">if</span> (packageFile.isDirectory()) &#123;</div><div class="line">         <span class="keyword">return</span> parseClusterPackage(packageFile, flags);</div><div class="line">     &#125; <span class="keyword">else</span> &#123;</div><div class="line">         <span class="keyword">return</span> parseMonolithicPackage(packageFile, flags);</div><div class="line">     &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<p>三名两个的区别就是 单个apk文件和apks。不管是单个  还是文件夹，都会调用parseBaseApk去解析，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">res = <span class="keyword">new</span> Resources(assets, mMetrics, <span class="keyword">null</span>);</div><div class="line">assets.setConfiguration(<span class="number">0</span>, <span class="number">0</span>, <span class="keyword">null</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>,</div><div class="line">        Build.VERSION.RESOURCES_SDK_INT);</div><div class="line">parser = assets.openXmlResourceParser(cookie, ANDROID_MANIFEST_FILENAME);</div><div class="line"></div><div class="line"><span class="keyword">final</span> String[] outError = <span class="keyword">new</span> String[<span class="number">1</span>];</div><div class="line"><span class="keyword">final</span> Package pkg = parseBaseApk(res, parser, flags, outError);</div></pre></td></tr></table></figure>
+<p>在这里，会拿到配置文件，调用4个参数的这个方法去解析。这个方法里面都是类似这样的代码。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (tagName.equals(<span class="string">"application"</span>)) &#123;</div><div class="line">                <span class="keyword">if</span> (foundApp) &#123;</div><div class="line">                    <span class="keyword">if</span> (RIGID_PARSER) &#123;</div><div class="line">                        outError[<span class="number">0</span>] = <span class="string">"&lt;manifest&gt; has more than one &lt;application&gt;"</span>;</div><div class="line">                        mParseError = PackageManager.INSTALL_PARSE_FAILED_MANIFEST_MALFORMED;</div><div class="line">                        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">                    &#125; <span class="keyword">else</span> &#123;</div><div class="line">                        Slog.w(TAG, <span class="string">"&lt;manifest&gt; has more than one &lt;application&gt;"</span>);</div><div class="line">                        XmlUtils.skipCurrentTag(parser);</div><div class="line">                        <span class="keyword">continue</span>;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line"></div><div class="line">                foundApp = <span class="keyword">true</span>;</div><div class="line">                <span class="keyword">if</span> (!parseBaseApplication(pkg, res, parser, attrs, flags, outError)) &#123;</div><div class="line">                    <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">                &#125;</div><div class="line">            &#125;</div></pre></td></tr></table></figure>
+<p>用xml解析 去解析配置文件中的各个标签，并且在parseBaseApplication中，会解析初我们的四大组件并存储起来。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (tagName.equals(<span class="string">"activity"</span>)) &#123;</div><div class="line">                Activity a = parseActivity(owner, res, parser, attrs, flags, outError, <span class="keyword">false</span>,</div><div class="line">                        owner.baseHardwareAccelerated);</div><div class="line">                <span class="keyword">if</span> (a == <span class="keyword">null</span>) &#123;</div><div class="line">                    mParseError = PackageManager.INSTALL_PARSE_FAILED_MANIFEST_MALFORMED;</div><div class="line">                    <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">                &#125;</div><div class="line"></div><div class="line">                owner.activities.add(a);</div><div class="line"></div><div class="line">            &#125;</div></pre></td></tr></table></figure>
+<p>这里就不多说了。</p>
+<h3 id="4-dex优化"><a href="#4-dex优化" class="headerlink" title="4. dex优化"></a>4. dex优化</h3><p>在Installer中，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">dexopt</span><span class="params">(String apkPath, <span class="keyword">int</span> uid, <span class="keyword">boolean</span> isPublic, String pkgName,</span></span></div><div class="line">        String instructionSet, <span class="keyword">int</span> dexoptNeeded, <span class="keyword">boolean</span> vmSafeMode,</div><div class="line">        <span class="keyword">boolean</span> debuggable, String outputPath) &#123;</div><div class="line">    StringBuilder builder = <span class="keyword">new</span> StringBuilder(<span class="string">"dexopt"</span>);</div><div class="line">    builder.append(<span class="string">' '</span>);</div><div class="line">    builder.append(apkPath);</div><div class="line">    builder.append(<span class="string">' '</span>);</div><div class="line">    builder.append(uid);</div><div class="line">    builder.append(isPublic ? <span class="string">" 1"</span> : <span class="string">" 0"</span>);</div><div class="line">    builder.append(<span class="string">' '</span>);</div><div class="line">    builder.append(pkgName);</div><div class="line">    builder.append(<span class="string">' '</span>);</div><div class="line">    builder.append(instructionSet);</div><div class="line">    builder.append(<span class="string">' '</span>);</div><div class="line">    builder.append(dexoptNeeded);</div><div class="line">    builder.append(vmSafeMode ? <span class="string">" 1"</span> : <span class="string">" 0"</span>);</div><div class="line">    builder.append(debuggable ? <span class="string">" 1"</span> : <span class="string">" 0"</span>);</div><div class="line">    builder.append(<span class="string">' '</span>);</div><div class="line">    builder.append(outputPath != <span class="keyword">null</span> ? outputPath : <span class="string">"!"</span>);</div><div class="line">    <span class="keyword">return</span> execute(builder.toString());</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>进行参数封装，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">execute</span><span class="params">(String cmd)</span> </span>&#123;</div><div class="line">    String res = transact(cmd);</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="keyword">return</span> Integer.parseInt(res);</div><div class="line">    &#125; <span class="keyword">catch</span> (NumberFormatException ex) &#123;</div><div class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在transact中，通过connect，socket连接installd守护进程，并通过writeCommand写入dex优化命令，用installd来完成dex优化。</p>
+<p>参考资料</p>
+<ul>
+<li><a href="http://gityuan.com/2016/11/06/packagemanager/" target="_blank" rel="external">gityuan</a></li>
+<li>Android 5.0 源代码</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/framework/" rel="tag"># framework</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/05/AMS中的进程管理部分－上/" rel="next" title="AMS中的进程管理部分－上">
+                <i class="fa fa-chevron-left"></i> AMS中的进程管理部分－上
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/01/05/PMS初始化做了什么/"
+           data-title="PMS初始化做了什么" data-url="http://guolei1130.github.io/2017/01/05/PMS初始化做了什么/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/img/head.png"
+               alt="_StriveG" />
+          <p class="site-author-name" itemprop="name">_StriveG</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://guolei1130.github.io/" target="_blank" title="博客首页">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  博客首页
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Guolei1130/" target="_blank" title="作品展示">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  作品展示
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/qq_21430549" target="_blank" title="csdn博客">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  csdn博客
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://monsterlin.com/" target="_blank" title="友情链接">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  友情链接
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="../../../郭蕾－android开发工程师.pdf" target="_blank" title="个人简历">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  个人简历
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-前言"><span class="nav-number">1.</span> <span class="nav-text">1.前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-从pms构造函数说起"><span class="nav-number">2.</span> <span class="nav-text">2.从pms构造函数说起</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-BOOT-PROGRESS-PMS-START"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 BOOT_PROGRESS_PMS_START</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-PMS-SYSTEM-SCAN-START"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 PMS_SYSTEM_SCAN_START</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-BOOT-PROGRESS-PMS-DATA-SCAN-START"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 BOOT_PROGRESS_PMS_DATA_SCAN_START</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-PMS-SCAN-END"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 PMS_SCAN_END</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5-BOOT-PROGRESS-PMS-READY"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 BOOT_PROGRESS_PMS_READY</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Settings"><span class="nav-number">3.</span> <span class="nav-text">3.Settings</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-scanDirLI"><span class="nav-number">4.</span> <span class="nav-text">4.scanDirLI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-dex优化"><span class="nav-number">5.</span> <span class="nav-text">4. dex优化</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">_StriveG</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"guolei1130"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

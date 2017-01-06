@@ -1,0 +1,799 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="jni," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="1. 前言前几篇学习了jni开发的基本流程、动态注册native函数以及相关编译文件的编写，咱们也算是知道了jni开发，但是还不够，今天咱们来学习下，java和jni的数据类型映射（说白了就是对应关系），以及如何在jni层调用java层的一些东西。偷偷告诉你们，这些全在jni.h文件里。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AndroidJNI学习笔记（四）－数据类型映射以及native调用java">
+<meta property="og:url" content="http://guolei1130.github.io/2016/11/30/AndroidJNI学习笔记（四）－数据类型映射以及native调用java/index.html">
+<meta property="og:site_name" content="_StriveG Blog">
+<meta property="og:description" content="1. 前言前几篇学习了jni开发的基本流程、动态注册native函数以及相关编译文件的编写，咱们也算是知道了jni开发，但是还不够，今天咱们来学习下，java和jni的数据类型映射（说白了就是对应关系），以及如何在jni层调用java层的一些东西。偷偷告诉你们，这些全在jni.h文件里。">
+<meta property="og:image" content="http://img.blog.csdn.net/20161129225511135">
+<meta property="og:image" content="http://img.blog.csdn.net/20161129225901230">
+<meta property="og:updated_time" content="2017-01-06T03:26:54.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AndroidJNI学习笔记（四）－数据类型映射以及native调用java">
+<meta name="twitter:description" content="1. 前言前几篇学习了jni开发的基本流程、动态注册native函数以及相关编译文件的编写，咱们也算是知道了jni开发，但是还不够，今天咱们来学习下，java和jni的数据类型映射（说白了就是对应关系），以及如何在jni层调用java层的一些东西。偷偷告诉你们，这些全在jni.h文件里。">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20161129225511135">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"always"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'guolei1130',
+      author: '菜鸡郭'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://guolei1130.github.io/2016/11/30/AndroidJNI学习笔记（四）－数据类型映射以及native调用java/"/>
+
+
+
+
+
+  <title> AndroidJNI学习笔记（四）－数据类型映射以及native调用java | _StriveG Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">_StriveG Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle"></p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://guolei1130.github.io/2016/11/30/AndroidJNI学习笔记（四）－数据类型映射以及native调用java/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="_StriveG">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/img/head.png">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="_StriveG Blog">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="_StriveG Blog" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                AndroidJNI学习笔记（四）－数据类型映射以及native调用java
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-30T00:05:36+08:00">
+                2016-11-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/11/30/AndroidJNI学习笔记（四）－数据类型映射以及native调用java/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/30/AndroidJNI学习笔记（四）－数据类型映射以及native调用java/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><excerpt in="" index="" |="" 首页摘要=""></excerpt></p>
+<h3 id="1-前言"><a href="#1-前言" class="headerlink" title="1. 前言"></a>1. 前言</h3><p>前几篇学习了jni开发的基本流程、动态注册native函数以及相关编译文件的编写，咱们也算是知道了jni开发，但是还不够，今天咱们来学习下，java和jni的数据类型映射（说白了就是对应关系），以及如何在jni层调用java层的一些东西。偷偷告诉你们，这些全在jni.h文件里。</p>
+<ul>
+<li><a id="more"></a>
+<the rest="" of="" contents="" |="" 余下全文="">
+
+
+</the></li>
+</ul>
+<h3 id="2-数据类型映射"><a href="#2-数据类型映射" class="headerlink" title="2. 数据类型映射"></a>2. 数据类型映射</h3><p>首先是我们的基本数据类型，其关系如下表描述这样。</p>
+<p><img src="http://img.blog.csdn.net/20161129225511135" alt="这里写图片描述"></p>
+<p>上面关系的相关代码在jni.h的44－51行，如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">typedef unsigned char   jboolean;       /* unsigned 8 bits */</div><div class="line">typedef signed char     jbyte;          /* signed 8 bits */</div><div class="line">typedef unsigned short  jchar;          /* unsigned 16 bits */</div><div class="line">typedef short           jshort;         /* signed 16 bits */</div><div class="line">typedef int             jint;           /* signed 32 bits */</div><div class="line">typedef long long       jlong;          /* signed 64 bits */</div><div class="line">typedef float           jfloat;         /* 32-bit IEEE 754 */</div><div class="line">typedef double          jdouble;        /* 64-bit IEEE 754 */</div></pre></td></tr></table></figure>
+<p>而jni层的引用类型则是下面这个样子。</p>
+<p><img src="http://img.blog.csdn.net/20161129225901230" alt="这里写图片描述"></p>
+<p>对于这些引用类型，c++和c的实现是不一样的。如果是c++的话，所有引用类型派生自 jobject，如果使用 C 语言编写的话，所有引用类型使用 jobject，其它引用类型使用 typedef 重新定义。同样代码也在jni.h中。这里只给出c++继承结构的部分。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">class _jobject &#123;&#125;;</div><div class="line">class _jclass : public _jobject &#123;&#125;;</div><div class="line">class _jstring : public _jobject &#123;&#125;;</div><div class="line">class _jarray : public _jobject &#123;&#125;;</div><div class="line">class _jobjectArray : public _jarray &#123;&#125;;</div><div class="line">class _jbooleanArray : public _jarray &#123;&#125;;</div><div class="line">class _jbyteArray : public _jarray &#123;&#125;;</div><div class="line">class _jcharArray : public _jarray &#123;&#125;;</div><div class="line">class _jshortArray : public _jarray &#123;&#125;;</div><div class="line">class _jintArray : public _jarray &#123;&#125;;</div><div class="line">class _jlongArray : public _jarray &#123;&#125;;</div><div class="line">class _jfloatArray : public _jarray &#123;&#125;;</div><div class="line">class _jdoubleArray : public _jarray &#123;&#125;;</div><div class="line">class _jthrowable : public _jobject &#123;&#125;;</div></pre></td></tr></table></figure>
+<h3 id="3-native-如何调用c"><a href="#3-native-如何调用c" class="headerlink" title="3. native 如何调用c"></a>3. native 如何调用c</h3><p>我们这里的调用包括许多方面，如：</p>
+<ul>
+<li>调用静态方法</li>
+<li>调用实例方法</li>
+<li>获取字段值</li>
+<li>修改字段值</li>
+<li>构造对象</li>
+<li>等等</li>
+</ul>
+<p>而要实现上面的一些功能，同样要依靠jni.h的JNINativeInterface这个结构体，这里有很多很多的方法，供我们使用来实现native 调用java层的功能。而调用的流程是这样的：</p>
+<ul>
+<li>根据全限定名在jvm中找到想要的类</li>
+<li>从jclass中获取到method、或者field</li>
+<li>执行获取值、修改值、调用方法或者其他的操作</li>
+<li>释放局部引用</li>
+</ul>
+<p>举个调用静态方法的例子看看。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">void callJavaStatic(JNIEnv *env,jobject jobj)&#123;</div><div class="line">  char* str = &quot;call from c++&quot;;</div><div class="line"></div><div class="line">  jclass clazz = env-&gt;FindClass(&quot;com/example/cmake_demo/MainActivity&quot;);</div><div class="line">  if (clazz == NULL) &#123;</div><div class="line">    LOGE(&quot;class is null&quot;);</div><div class="line">    return;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  jmethodID method = env-&gt;GetStaticMethodID(clazz,&quot;javaStaticMethod&quot;,&quot;(Ljava/lang/String;)V&quot;);</div><div class="line">  if (method == NULL) &#123;</div><div class="line">    LOGE(&quot;not find method&quot;);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  jstring  jstr = env-&gt;NewStringUTF(str);</div><div class="line">  env-&gt;CallStaticVoidMethod(clazz,method,jstr);</div><div class="line">  env-&gt;DeleteLocalRef(clazz);</div><div class="line">  env-&gt;DeleteLocalRef(jstr);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="3-1-如何找到类"><a href="#3-1-如何找到类" class="headerlink" title="3.1 如何找到类"></a>3.1 如何找到类</h4><p>很简单，我们可以通过FindClass方法去查找类。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">jclass clazz = env-&gt;FindClass(&quot;com/example/cmake_demo/MainActivity&quot;);</div></pre></td></tr></table></figure>
+<h4 id="3-2-如何获取方法、或者字段"><a href="#3-2-如何获取方法、或者字段" class="headerlink" title="3.2  如何获取方法、或者字段"></a>3.2  如何获取方法、或者字段</h4><p>大致为以下四种方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">env-&gt;GetxxxField()</div><div class="line">env-&gt;GetStaticxxxField()</div><div class="line">env-&gt;GetMethodID()</div><div class="line">env-&gt;GetxxxMethodID()</div></pre></td></tr></table></figure>
+<p>上面没有列出参数，但是仍然很明白，这里就不多说了。</p>
+<h4 id="3-3-如何调用方法"><a href="#3-3-如何调用方法" class="headerlink" title="3.3 如何调用方法"></a>3.3 如何调用方法</h4><p>这里呢。大致分为以下四种：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">env-&gt;CallXXXMethod();</div><div class="line">env-&gt;CallxxxMethodA();</div><div class="line">env-&gt;CallxxxMethodV();</div><div class="line">env-&gt;CallNonvirtualBooleanMethod()</div></pre></td></tr></table></figure>
+<p>同样，我这里没给出方法的参数，同学们自己看jni.h吧</p>
+<ul>
+<li>调用方法（这里的方法可能使静态的、也可能是非静态的）</li>
+<li>和上面的区别就在于对应的java层参数，在这里以数组的形式传进入</li>
+<li>和1的区别就是，以v(矢量？)的形式传进去，这里我也不是很理解，希望知道的同学指点下。</li>
+<li>调用构造函数初始化一个对象，这个，马上说道。</li>
+</ul>
+<h4 id="3-4-如何修改字段的值"><a href="#3-4-如何修改字段的值" class="headerlink" title="3.4 如何修改字段的值"></a>3.4 如何修改字段的值</h4><p>相信到这里，大家猜都能猜出来，set 么，这里我就不叨叨了。</p>
+<h4 id="3-5-如何构造一个对象出来"><a href="#3-5-如何构造一个对象出来" class="headerlink" title="3.5 如何构造一个对象出来"></a>3.5 如何构造一个对象出来</h4><p>有些情况下我们是需要构造出java层的对象的，那么如何构造呢，我们有两种办法。</p>
+<ul>
+<li>NewObject方法 </li>
+<li>CallNonvirtualxxMethod</li>
+</ul>
+<p>先说第一种，NewObject方法，除了要求jclass参数之外，还要求jmethodid，以及java称构造方法对应的参数。其他两个还好，关键是这个jmethodID，这个在获取的时候，方法名固定是&lt; init &gt;（md语法的原因，注意尖括号之间没有空格），别问为什么。</p>
+<p>在来说说第二种，第二中使用时这样的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">jobject  jo = env-&gt;AllocObject(clazz);</div><div class="line">env-&gt;CallNonvirtualVoidMethod(jo,clazz,jmethodId,arg )</div></pre></td></tr></table></figure>
+<ul>
+<li>第一行代码 创建未初始化的对象，并分配内存</li>
+<li>第二行代码，调用init那个方法（构造方法）进行初始化,注意，只能初始化一次。</li>
+</ul>
+<h3 id="4-总结"><a href="#4-总结" class="headerlink" title="4. 总结"></a>4. 总结</h3><p>现在我们明白了jni 和 java的数据类型映射关系，以及在jni层调用java层的方法。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/jni/" rel="tag"># jni</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/29/JNI学习笔记（三）－编译文件makefile以及cmake/" rel="next" title="JNI学习笔记（三）－编译文件makefile以及cmake">
+                <i class="fa fa-chevron-left"></i> JNI学习笔记（三）－编译文件makefile以及cmake
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/12/03/脚本打怪-shell篇/" rel="prev" title="脚本打怪-shell篇">
+                脚本打怪-shell篇 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/11/30/AndroidJNI学习笔记（四）－数据类型映射以及native调用java/"
+           data-title="AndroidJNI学习笔记（四）－数据类型映射以及native调用java" data-url="http://guolei1130.github.io/2016/11/30/AndroidJNI学习笔记（四）－数据类型映射以及native调用java/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/img/head.png"
+               alt="_StriveG" />
+          <p class="site-author-name" itemprop="name">_StriveG</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://guolei1130.github.io/" target="_blank" title="博客首页">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  博客首页
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Guolei1130/" target="_blank" title="作品展示">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  作品展示
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/qq_21430549" target="_blank" title="csdn博客">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  csdn博客
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://monsterlin.com/" target="_blank" title="友情链接">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  友情链接
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="../../../郭蕾－android开发工程师.pdf" target="_blank" title="个人简历">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  个人简历
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-前言"><span class="nav-number">1.</span> <span class="nav-text">1. 前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-数据类型映射"><span class="nav-number">2.</span> <span class="nav-text">2. 数据类型映射</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-native-如何调用c"><span class="nav-number">3.</span> <span class="nav-text">3. native 如何调用c</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-如何找到类"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 如何找到类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-如何获取方法、或者字段"><span class="nav-number">3.2.</span> <span class="nav-text">3.2  如何获取方法、或者字段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-如何调用方法"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 如何调用方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-如何修改字段的值"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 如何修改字段的值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-5-如何构造一个对象出来"><span class="nav-number">3.5.</span> <span class="nav-text">3.5 如何构造一个对象出来</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-总结"><span class="nav-number">4.</span> <span class="nav-text">4. 总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">_StriveG</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"guolei1130"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

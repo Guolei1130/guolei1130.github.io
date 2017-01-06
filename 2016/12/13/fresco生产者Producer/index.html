@@ -1,0 +1,786 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="fresco," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="1. 从ImagePipeline#submitFetchRequest说起上篇说到，这里干了三件事，第三件事，就是我们异步获取数据的过程，这里的异步获取数据包括三个方面：
+
+从未解码的memory cache中获取
+从disk cache中获取
+从net中获取
+
+1234return CloseableProducerToDataSourceAdapter.create(    produce">
+<meta property="og:type" content="article">
+<meta property="og:title" content="fresco生产者Producer">
+<meta property="og:url" content="http://guolei1130.github.io/2016/12/13/fresco生产者Producer/index.html">
+<meta property="og:site_name" content="_StriveG Blog">
+<meta property="og:description" content="1. 从ImagePipeline#submitFetchRequest说起上篇说到，这里干了三件事，第三件事，就是我们异步获取数据的过程，这里的异步获取数据包括三个方面：
+
+从未解码的memory cache中获取
+从disk cache中获取
+从net中获取
+
+1234return CloseableProducerToDataSourceAdapter.create(    produce">
+<meta property="og:image" content="http://guolei1130.github.io/images/fresco/fresco_2.png">
+<meta property="og:updated_time" content="2017-01-06T03:26:54.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="fresco生产者Producer">
+<meta name="twitter:description" content="1. 从ImagePipeline#submitFetchRequest说起上篇说到，这里干了三件事，第三件事，就是我们异步获取数据的过程，这里的异步获取数据包括三个方面：
+
+从未解码的memory cache中获取
+从disk cache中获取
+从net中获取
+
+1234return CloseableProducerToDataSourceAdapter.create(    produce">
+<meta name="twitter:image" content="http://guolei1130.github.io/images/fresco/fresco_2.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"always"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'guolei1130',
+      author: '菜鸡郭'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://guolei1130.github.io/2016/12/13/fresco生产者Producer/"/>
+
+
+
+
+
+  <title> fresco生产者Producer | _StriveG Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">_StriveG Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle"></p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://guolei1130.github.io/2016/12/13/fresco生产者Producer/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="_StriveG">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/img/head.png">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="_StriveG Blog">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="_StriveG Blog" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                fresco生产者Producer
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-13T11:26:58+08:00">
+                2016-12-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/12/13/fresco生产者Producer/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/12/13/fresco生产者Producer/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><excerpt in="" index="" |="" 首页摘要=""></excerpt></p>
+<h3 id="1-从ImagePipeline-submitFetchRequest说起"><a href="#1-从ImagePipeline-submitFetchRequest说起" class="headerlink" title="1. 从ImagePipeline#submitFetchRequest说起"></a>1. 从ImagePipeline#submitFetchRequest说起</h3><p>上篇说到，这里干了三件事，第三件事，就是我们异步获取数据的过程，这里的异步获取数据包括三个方面：</p>
+<ul>
+<li>从未解码的memory cache中获取</li>
+<li>从disk cache中获取</li>
+<li>从net中获取</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">return CloseableProducerToDataSourceAdapter.create(</div><div class="line">    producerSequence,</div><div class="line">    settableProducerContext,</div><div class="line">    requestListener);</div></pre></td></tr></table></figure>
+<ul>
+<li><a id="more"></a>
+<the rest="" of="" contents="" |="" 余下全文="">
+
+
+</the></li>
+</ul>
+<p>在AbstractProducerToDataSourceAdapter中，创建了CloseableProducerToDataSourceAdapter，而这个继承了AbstractProducerToDataSourceAdapter，这个类的构造方法中，通过producer.produceResults(createConsumer(), settableProducerContext);来异步获取数据，并会将结果回调。</p>
+<h3 id="2-Producer-生产者"><a href="#2-Producer-生产者" class="headerlink" title="2. Producer 生产者"></a>2. Producer 生产者</h3><p>先看下相关的结构。</p>
+<p><img src="/images/fresco/fresco_2.png" alt=""></p>
+<p>可以看到有许多不同类型的Producer，这些都是用来从不同的区域获取数据。</p>
+<h3 id="3-从已解码的内存中获取－BitmapMemoryCacheProducer"><a href="#3-从已解码的内存中获取－BitmapMemoryCacheProducer" class="headerlink" title="3. 从已解码的内存中获取－BitmapMemoryCacheProducer"></a>3. 从已解码的内存中获取－BitmapMemoryCacheProducer</h3><p>这里的比较简单，他的produceResults方法中，通过mMemoryCache.get(cacheKey)来获取已解码的数据。</p>
+<h3 id="4-从未解码的内存中获取－EncodedMemoryCacheProducer"><a href="#4-从未解码的内存中获取－EncodedMemoryCacheProducer" class="headerlink" title="4. 从未解码的内存中获取－EncodedMemoryCacheProducer"></a>4. 从未解码的内存中获取－EncodedMemoryCacheProducer</h3><p>在这里要说明下</p>
+<ul>
+<li>EncodedImage 未解码的载体</li>
+<li>PooledByteBuffer 存储的字节码</li>
+<li>CloseableBitmap 已解码的载体</li>
+</ul>
+<p>先mMemoryCache.get(cacheKey) 获取未解码的数据，然后构造出未解码的载体EncodedImage，传给其他的生产者进行解码。</p>
+<h3 id="5-从本地文件获取－DiskCacheProducer"><a href="#5-从本地文件获取－DiskCacheProducer" class="headerlink" title="5. 从本地文件获取－DiskCacheProducer"></a>5. 从本地文件获取－DiskCacheProducer</h3><p>文件缓存对应的是BufferedDiskCache，大致步骤和上面的区别不大。这里就不再说了。</p>
+<h3 id="6-从网络中获取－NetworkFetchProducer"><a href="#6-从网络中获取－NetworkFetchProducer" class="headerlink" title="6. 从网络中获取－NetworkFetchProducer"></a>6. 从网络中获取－NetworkFetchProducer</h3><p>略，思路一致。</p>
+<hr>
+<ul>
+<li><a href="https://github.com/desmond1121/Fresco-Source-Analysis/blob/master/Fresco%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90(5" target="_blank" rel="external">参考资料</a>%20-%20Producer%E6%B5%81%E6%B0%B4%E7%BA%BF.md)</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/fresco/" rel="tag"># fresco</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/12/fresco加载数据/" rel="next" title="fresco加载数据">
+                <i class="fa fa-chevron-left"></i> fresco加载数据
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/12/13/fresco图片decode的大体流程/" rel="prev" title="fresco图片decode的大体流程">
+                fresco图片decode的大体流程 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/12/13/fresco生产者Producer/"
+           data-title="fresco生产者Producer" data-url="http://guolei1130.github.io/2016/12/13/fresco生产者Producer/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/img/head.png"
+               alt="_StriveG" />
+          <p class="site-author-name" itemprop="name">_StriveG</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://guolei1130.github.io/" target="_blank" title="博客首页">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  博客首页
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Guolei1130/" target="_blank" title="作品展示">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  作品展示
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/qq_21430549" target="_blank" title="csdn博客">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  csdn博客
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://monsterlin.com/" target="_blank" title="友情链接">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  友情链接
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="../../../郭蕾－android开发工程师.pdf" target="_blank" title="个人简历">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  个人简历
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-从ImagePipeline-submitFetchRequest说起"><span class="nav-number">1.</span> <span class="nav-text">1. 从ImagePipeline#submitFetchRequest说起</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Producer-生产者"><span class="nav-number">2.</span> <span class="nav-text">2. Producer 生产者</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-从已解码的内存中获取－BitmapMemoryCacheProducer"><span class="nav-number">3.</span> <span class="nav-text">3. 从已解码的内存中获取－BitmapMemoryCacheProducer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-从未解码的内存中获取－EncodedMemoryCacheProducer"><span class="nav-number">4.</span> <span class="nav-text">4. 从未解码的内存中获取－EncodedMemoryCacheProducer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-从本地文件获取－DiskCacheProducer"><span class="nav-number">5.</span> <span class="nav-text">5. 从本地文件获取－DiskCacheProducer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-从网络中获取－NetworkFetchProducer"><span class="nav-number">6.</span> <span class="nav-text">6. 从网络中获取－NetworkFetchProducer</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">_StriveG</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"guolei1130"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
