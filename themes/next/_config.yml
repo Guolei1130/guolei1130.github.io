@@ -40,7 +40,7 @@ menu:
   categories: /categories
   archives: /archives
   tags: /tags
-  about: /about
+  about: /me
   #sitemap: /sitemap.xml
   #commonweal: /404.html
 
@@ -137,7 +137,7 @@ social:
   GitHub: https://github.com/Guolei1130/
   csdn博客: http://blog.csdn.net/qq_21430549
   友情链接: http://monsterlin.com/
-  个人简历: ../../../郭蕾－android开发工程师.pdf
+  #个人简历: ../../../郭蕾－android开发工程师.pdf
 
 
 # Social Links Icons
