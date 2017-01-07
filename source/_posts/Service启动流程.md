@@ -10,7 +10,7 @@ tags: framework
 
 上一篇看了activity的启动流程，过程非常复杂，代码的细节都没多看，我们初学者，知道大体的流程就可以了。以后在慢慢看吗。今天来看下，service的流程，因为activiy涉及到activiy栈，所以比较难，但是我们的service不涉及，所以流程相对简单点。
 
-+ <!-- more -->
+<!-- more -->
 <The rest of contents | 余下全文>
 
 

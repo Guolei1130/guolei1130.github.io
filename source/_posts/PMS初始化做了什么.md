@@ -11,7 +11,7 @@ tags:
 
 在SystemServer初始化过程当中，会调用PackageManagerService.main方法进行pms的初始化，那么我们就看看pms的初始化过程经历了什么。
 
-+ <!-- more -->
+<!-- more -->
 <The rest of contents | 余下全文>
 
 

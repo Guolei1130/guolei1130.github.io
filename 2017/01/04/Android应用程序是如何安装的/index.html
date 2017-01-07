@@ -90,7 +90,7 @@
 <meta property="og:url" content="http://guolei1130.github.io/2017/01/04/Android应用程序是如何安装的/index.html">
 <meta property="og:site_name" content="_StriveG Blog">
 <meta property="og:description" content="1.前言当我们安装应用程序的时候，会弹出安装界面，那么，在我们点击安装之后，发生了什么呢？今天就来了解下，应用程序是如何安装的。首先，我们今天介绍的是通过安装器安装应用，当然，在pms的构造函数中，也会将我们原先安装好的应用装载到内存中。">
-<meta property="og:updated_time" content="2017-01-06T05:30:11.000Z">
+<meta property="og:updated_time" content="2017-01-07T06:57:37.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android应用程序是如何安装的">
 <meta name="twitter:description" content="1.前言当我们安装应用程序的时候，会弹出安装界面，那么，在我们点击安装之后，发生了什么呢？今天就来了解下，应用程序是如何安装的。首先，我们今天介绍的是通过安装器安装应用，当然，在pms的构造函数中，也会将我们原先安装好的应用装载到内存中。">
@@ -374,14 +374,11 @@
       
         <p><excerpt in="" index="" |="" 首页摘要=""></excerpt></p>
 <h3 id="1-前言"><a href="#1-前言" class="headerlink" title="1.前言"></a>1.前言</h3><p>当我们安装应用程序的时候，会弹出安装界面，那么，在我们点击安装之后，发生了什么呢？今天就来了解下，应用程序是如何安装的。首先，我们今天介绍的是通过安装器安装应用，当然，在pms的构造函数中，也会将我们原先安装好的应用装载到内存中。</p>
-<ul>
-<li><a id="more"></a>
+<a id="more"></a>
 <the rest="" of="" contents="" |="" 余下全文="">
 
 
 
-</the></li>
-</ul>
 <p>以6.0源码为例。安装器在源码目录packages/apps/PackageInstaller中，</p>
 <h3 id="2-安装器"><a href="#2-安装器" class="headerlink" title="2.安装器"></a>2.安装器</h3><p>显示安装 取消按钮的那个界面对应着PackageInstallerActivity，而安装按钮对应的是mOk，对应部分代码。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">if (v == mOk) &#123;</div><div class="line">    if (mOkCanInstall || mScrollView == null) &#123;</div><div class="line">        mInstallFlowAnalytics.setInstallButtonClicked();</div><div class="line">        if (mSessionId != -1) &#123;</div><div class="line">            mInstaller.setPermissionsResult(mSessionId, true);</div><div class="line"></div><div class="line">            // We&apos;re only confirming permissions, so we don&apos;t really know how the</div><div class="line">            // story ends; assume success.</div><div class="line">            mInstallFlowAnalytics.setFlowFinishedWithPackageManagerResult(</div><div class="line">                    PackageManager.INSTALL_SUCCEEDED);</div><div class="line">            finish();</div><div class="line">        &#125; else &#123;</div><div class="line">            startInstall();</div><div class="line">        &#125;</div><div class="line">    &#125; else &#123;</div><div class="line">        mScrollView.pageScroll(View.FOCUS_DOWN);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
@@ -462,7 +459,7 @@
 
 
 
-
+</the>
       
     </div>
 

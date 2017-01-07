@@ -371,8 +371,6 @@
         
           <p><Excerpt in index | 首页摘要></p>
 <h3 id="1-前言"><a href="#1-前言" class="headerlink" title="1. 前言"></a>1. 前言</h3><p>前面的文章介绍了java层的消息机制，这篇来简要学习下native层的消息机制。</p>
-<ul>
-<li>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/12/24/Android消息机制－native层/#more" rel="contents">
@@ -540,8 +538,6 @@
 <blockquote>
 <p>一个Looper对应一个MessageQueue，并不断从MessageQueue中取出消息，提交给Handel处理。</p>
 </blockquote>
-<ul>
-<li>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/12/21/Android消息机制浅析/#more" rel="contents">
@@ -698,8 +694,6 @@
         
           <p><Excerpt in index | 首页摘要></p>
 <h3 id="1-前言"><a href="#1-前言" class="headerlink" title="1. 前言"></a>1. 前言</h3><p>我们日常开发中，经常会需要使用adb工具做一些操作，比如，push文件、pull文件、安装apk、dump一些信息等等，命令太长记不住怎么办？没关系，我们可以把这些东西写成shell脚本。这里我就简单举几个例子。</p>
-<ul>
-<li>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/12/20/记不住adb命令？试试shell吧/#more" rel="contents">
@@ -868,8 +862,6 @@
 </li>
 </ul>
 <p>而这两部分都设计到native。 对应java层的代码在imagepipeine/memory 和nativecode中。</p>
-<ul>
-<li>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/12/14/fresco内存管理/#more" rel="contents">
@@ -1026,8 +1018,6 @@
         
           <p><Excerpt in index | 首页摘要></p>
 <h3 id="1-从DecodeProducer说fresco的解码过程"><a href="#1-从DecodeProducer说fresco的解码过程" class="headerlink" title="1. 从DecodeProducer说fresco的解码过程"></a>1. 从DecodeProducer说fresco的解码过程</h3><p>DecodeProducer负责用未解码的数据生产出解码的数据。先看produceResults方法。</p>
-<ul>
-<li>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/12/13/fresco图片decode的大体流程/#more" rel="contents">
@@ -1190,8 +1180,6 @@
 <li>从net中获取</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">return CloseableProducerToDataSourceAdapter.create(</div><div class="line">    producerSequence,</div><div class="line">    settableProducerContext,</div><div class="line">    requestListener);</div></pre></td></tr></table></figure>
-<ul>
-<li>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/12/13/fresco生产者Producer/#more" rel="contents">
@@ -1349,8 +1337,6 @@
           <Excerpt in index | 首页摘要>
 
 <h3 id="1-前言"><a href="#1-前言" class="headerlink" title="1. 前言"></a>1. 前言</h3><p>一般我们通过SimpleDraweeView#setImageURI 去使用，我们现在就来看看它的实现。先来看看继承结构。</p>
-<ul>
-<li>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/12/12/fresco加载数据/#more" rel="contents">
@@ -1513,8 +1499,6 @@
 <li>SimpleDraweeView</li>
 </ul>
 <p>在ImagePipelineFactory初始化ImagePipelineConfig，用来配置一个参数。ImagePipelineConfig通过建造者模式 可以让使用者配置许多参数。包括以下：</p>
-<ul>
-<li>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/12/12/fresco初始化过程/#more" rel="contents">
@@ -1671,8 +1655,6 @@
         
           <p><Excerpt in index | 首页摘要></p>
 <h3 id="0-前言"><a href="#0-前言" class="headerlink" title="0.前言"></a>0.前言</h3><p>在很久之前，还是学生的时候，使用过fresco，自从来了公司，还没好好学习呢，于是，开始fresco学习之路。</p>
-<ul>
-<li>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/12/12/fresco用法/#more" rel="contents">
@@ -1834,8 +1816,6 @@
 <p>即可定义一个task，我们可以在task中通过@注解实现一个方法。如：</p>
 <figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">GettingTask</span> <span class="keyword">extends</span> <span class="title">DefaultTask</span>&#123;</span></div><div class="line">    <span class="meta">@TaskAction</span></div><div class="line">    <span class="keyword">def</span> greet()&#123;</div><div class="line">        println <span class="string">"hello world"</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>那么，我们该如何调用呢？</p>
-<ul>
-<li>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/12/06/了解gradle（二）-扩展gradle/#more" rel="contents">

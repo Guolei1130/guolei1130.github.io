@@ -11,7 +11,7 @@ tags: framework
 我们每天都在使用startActivity去启动一个新的activty，可有想过这中间的流程是什么？可有想过这涉及到哪些东西？今天，就走一下流程，了解下，activity是如何启动的。
 
 
-+ <!-- more -->
+<!-- more -->
 <The rest of contents | 余下全文>
 
 ### 2.从startActivity说起

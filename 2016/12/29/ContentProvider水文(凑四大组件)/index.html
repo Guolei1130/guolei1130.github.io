@@ -100,7 +100,7 @@ ActivityThread的main方法说起。">
 ContentProvid是何时、何流程，调用的onCreate方法呢？
 
 ActivityThread的main方法说起。">
-<meta property="og:updated_time" content="2017-01-06T05:30:39.000Z">
+<meta property="og:updated_time" content="2017-01-07T06:57:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ContentProvider凑数文">
 <meta name="twitter:description" content="这一篇，没营养，凑数用的。
@@ -393,14 +393,11 @@ ActivityThread的main方法说起。">
 <li>ContentProvid是何时、何流程，调用的onCreate方法呢？</li>
 </ul>
 <p>ActivityThread的main方法说起。</p>
-<ul>
-<li><a id="more"></a>
+<a id="more"></a>
 <the rest="" of="" contents="" |="" 余下全文="">
 
 
 
-</the></li>
-</ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ActivityThread thread = new ActivityThread();</div><div class="line">thread.attach(false);</div></pre></td></tr></table></figure>
 <p>在main方法中，我们能发现如上代码，attach什么？我们跟进去看。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">RuntimeInit.setApplicationObject(mAppThread.asBinder());</div><div class="line">final IActivityManager mgr = ActivityManagerNative.getDefault();</div><div class="line">try &#123;</div><div class="line">    mgr.attachApplication(mAppThread);</div><div class="line">&#125; catch (RemoteException ex) &#123;</div><div class="line">    // Ignore</div><div class="line">&#125;</div></pre></td></tr></table></figure>
@@ -432,7 +429,7 @@ ActivityThread的main方法说起。">
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">localProvider = (ContentProvider)cl.</div><div class="line">    loadClass(info.name).newInstance();</div><div class="line">provider = localProvider.getIContentProvider();</div></pre></td></tr></table></figure>
 <p>cp的getIContentProvider返回mTransport，是一个Transport的实例，在它的query方法中，调用了cp的query。</p>
 <hr>
-<h3 id="最近访客"><a href="#最近访客" class="headerlink" title="最近访客"></a>最近访客</h3><ul class="ds-recent-visitors" data-num-items="46" data-avatar-size="40"></ul>
+<h3 id="最近访客"><a href="#最近访客" class="headerlink" title="最近访客"></a>最近访客</h3><ul class="ds-recent-visitors" data-num-items="46" data-avatar-size="40"></ul></the>
       
     </div>
 

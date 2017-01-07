@@ -15,7 +15,7 @@ tags: framework
 
 >一个Looper对应一个MessageQueue，并不断从MessageQueue中取出消息，提交给Handel处理。
 
-+ <!-- more -->
+<!-- more -->
 <The rest of contents | 余下全文>
 
 

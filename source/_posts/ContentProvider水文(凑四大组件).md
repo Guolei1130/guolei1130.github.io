@@ -15,7 +15,7 @@ tags: framework
 
 ActivityThread的main方法说起。
 
-+ <!-- more -->
+<!-- more -->
 <The rest of contents | 余下全文>
 
 

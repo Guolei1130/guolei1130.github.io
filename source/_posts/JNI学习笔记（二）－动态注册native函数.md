@@ -10,7 +10,7 @@ tags: jni
 ### 1.前言
 
 在很久之前的一篇[Android 开发艺术探索的笔记](http://blog.csdn.net/qq_21430549/article/details/49535483)当中,学习了简单的jni开发流程，但是那会的步骤极其繁琐复杂，而且生成的头文件函数太长，那么，有没有方法能解决呢，让开发过程变得简单易懂。当然是有的，那就是今天的主角。JNI_OnLoad函数。顺便说一下，现在as对 jni开发的支持是越来越好了。
-+ <!-- more -->
+<!-- more -->
 <The rest of contents | 余下全文>
 
 ### 2. 首先声明native函数

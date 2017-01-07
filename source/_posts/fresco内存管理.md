@@ -18,7 +18,7 @@ fresco中的内存分为两个部分，
 	
 而这两部分都设计到native。 对应java层的代码在imagepipeine/memory 和nativecode中。
 
-+ <!-- more -->
+<!-- more -->
 <The rest of contents | 余下全文>
 
 

@@ -21,7 +21,7 @@ dependencies {
 }
 ```
 
-+ <!-- more -->
+<!-- more -->
 <The rest of contents | 余下全文>
 
 

@@ -90,7 +90,7 @@
 <meta property="og:url" content="http://guolei1130.github.io/2016/12/24/Android消息机制－native层/index.html">
 <meta property="og:site_name" content="_StriveG Blog">
 <meta property="og:description" content="1. 前言前面的文章介绍了java层的消息机制，这篇来简要学习下native层的消息机制。">
-<meta property="og:updated_time" content="2017-01-06T05:29:51.000Z">
+<meta property="og:updated_time" content="2017-01-07T06:57:08.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android消息机制－native层">
 <meta name="twitter:description" content="1. 前言前面的文章介绍了java层的消息机制，这篇来简要学习下native层的消息机制。">
@@ -374,15 +374,12 @@
       
         <p><excerpt in="" index="" |="" 首页摘要=""></excerpt></p>
 <h3 id="1-前言"><a href="#1-前言" class="headerlink" title="1. 前言"></a>1. 前言</h3><p>前面的文章介绍了java层的消息机制，这篇来简要学习下native层的消息机制。</p>
-<ul>
-<li><a id="more"></a>
+<a id="more"></a>
 <the rest="" of="" contents="" |="" 余下全文="">
 
 
 
 
-</the></li>
-</ul>
 <h3 id="2-初始化"><a href="#2-初始化" class="headerlink" title="2.初始化"></a>2.初始化</h3><p>在MessageQueue的构造函数中，调用nativeInit方法来初始化native层的messagequeue。而java层 MessageQueue中的几个native函数，如nativePollOnce，nativeWake等，其实现都在android_os_MessageQueue.cpp中。</p>
 <p>首先，我们先看下方法表：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">static JNINativeMethod gMessageQueueMethods[] = &#123;</div><div class="line">    /* name, signature, funcPtr */</div><div class="line">    &#123; &quot;nativeInit&quot;, &quot;()J&quot;, (void*)android_os_MessageQueue_nativeInit &#125;,</div><div class="line">    &#123; &quot;nativeDestroy&quot;, &quot;(J)V&quot;, (void*)android_os_MessageQueue_nativeDestroy &#125;,</div><div class="line">    &#123; &quot;nativePollOnce&quot;, &quot;(JI)V&quot;, (void*)android_os_MessageQueue_nativePollOnce &#125;,</div><div class="line">    &#123; &quot;nativeWake&quot;, &quot;(J)V&quot;, (void*)android_os_MessageQueue_nativeWake &#125;,</div><div class="line">    &#123; &quot;nativeIsPolling&quot;, &quot;(J)Z&quot;, (void*)android_os_MessageQueue_nativeIsPolling &#125;,</div><div class="line">    &#123; &quot;nativeSetFileDescriptorEvents&quot;, &quot;(JII)V&quot;,</div><div class="line">            (void*)android_os_MessageQueue_nativeSetFileDescriptorEvents &#125;,</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
@@ -490,7 +487,7 @@
 
 
 
-
+</the>
       
     </div>
 

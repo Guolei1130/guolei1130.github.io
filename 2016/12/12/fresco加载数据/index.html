@@ -91,7 +91,7 @@
 <meta property="og:site_name" content="_StriveG Blog">
 <meta property="og:description" content="1. 前言一般我们通过SimpleDraweeView#setImageURI 去使用，我们现在就来看看它的实现。先来看看继承结构。">
 <meta property="og:image" content="http://guolei1130.github.io/images/fresco/fresco_1.png">
-<meta property="og:updated_time" content="2017-01-06T05:30:51.000Z">
+<meta property="og:updated_time" content="2017-01-07T06:58:06.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="fresco加载数据">
 <meta name="twitter:description" content="1. 前言一般我们通过SimpleDraweeView#setImageURI 去使用，我们现在就来看看它的实现。先来看看继承结构。">
@@ -377,14 +377,11 @@
         <excerpt in="" index="" |="" 首页摘要="">
 
 <h3 id="1-前言"><a href="#1-前言" class="headerlink" title="1. 前言"></a>1. 前言</h3><p>一般我们通过SimpleDraweeView#setImageURI 去使用，我们现在就来看看它的实现。先来看看继承结构。</p>
-<ul>
-<li><a id="more"></a>
+<a id="more"></a>
 <the rest="" of="" contents="" |="" 余下全文="">
 
 
 
-</the></li>
-</ul>
 <p><img src="/images/fresco/fresco_1.png" alt=""></p>
 <h3 id="2-SimpleDraweeView-setImageURI"><a href="#2-SimpleDraweeView-setImageURI" class="headerlink" title="2.SimpleDraweeView#setImageURI"></a>2.SimpleDraweeView#setImageURI</h3><p>在这个方法当中，最终都会调用setController方法。这个方法的实现在DraweeView中，在此之前，我们需要看下GenericDraweeView的初始化，在这个的初始化的时候，会调用其inflateHierarchy方法去设置Hierarchy。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">protected void inflateHierarchy(Context context, @Nullable AttributeSet attrs) &#123;</div><div class="line">  GenericDraweeHierarchyBuilder builder =</div><div class="line">      GenericDraweeHierarchyInflater.inflateBuilder(context, attrs);</div><div class="line">  setAspectRatio(builder.getDesiredAspectRatio());</div><div class="line">  setHierarchy(builder.build());</div><div class="line">&#125;</div></pre></td></tr></table></figure>
@@ -457,7 +454,7 @@
 
 
 
-</excerpt>
+</the></excerpt>
       
     </div>
 

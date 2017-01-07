@@ -103,7 +103,7 @@
 
 1234return CloseableProducerToDataSourceAdapter.create(    produce">
 <meta property="og:image" content="http://guolei1130.github.io/images/fresco/fresco_2.png">
-<meta property="og:updated_time" content="2017-01-06T05:31:28.000Z">
+<meta property="og:updated_time" content="2017-01-07T06:58:19.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="fresco生产者Producer">
 <meta name="twitter:description" content="1. 从ImagePipeline#submitFetchRequest说起上篇说到，这里干了三件事，第三件事，就是我们异步获取数据的过程，这里的异步获取数据包括三个方面：
@@ -400,13 +400,10 @@
 <li>从net中获取</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">return CloseableProducerToDataSourceAdapter.create(</div><div class="line">    producerSequence,</div><div class="line">    settableProducerContext,</div><div class="line">    requestListener);</div></pre></td></tr></table></figure>
-<ul>
-<li><a id="more"></a>
+<a id="more"></a>
 <the rest="" of="" contents="" |="" 余下全文="">
 
 
-</the></li>
-</ul>
 <p>在AbstractProducerToDataSourceAdapter中，创建了CloseableProducerToDataSourceAdapter，而这个继承了AbstractProducerToDataSourceAdapter，这个类的构造方法中，通过producer.produceResults(createConsumer(), settableProducerContext);来异步获取数据，并会将结果回调。</p>
 <h3 id="2-Producer-生产者"><a href="#2-Producer-生产者" class="headerlink" title="2. Producer 生产者"></a>2. Producer 生产者</h3><p>先看下相关的结构。</p>
 <p><img src="/images/fresco/fresco_2.png" alt=""></p>
@@ -428,7 +425,7 @@
 <hr>
 <h3 id="最近访客"><a href="#最近访客" class="headerlink" title="最近访客"></a>最近访客</h3><ul class="ds-recent-visitors" data-num-items="46" data-avatar-size="40"></ul>
 
-
+</the>
       
     </div>
 

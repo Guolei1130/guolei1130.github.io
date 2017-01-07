@@ -10,7 +10,7 @@ tags: hexo
 
 1. 下载nodejs并安装
 2. 安装hexo npm install -g hexo-cli
-+ <!-- more -->
+<!-- more -->
 <The rest of contents | 余下全文>
 3. 初始化gitpage，注意即使用户名大些 也弄小写，然后在电脑中 git clone xxx
 4. 进入本地仓库，初始化hexo站点，hexo init

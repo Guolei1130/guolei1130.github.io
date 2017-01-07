@@ -10,7 +10,7 @@ tags: framework
 
 前面的文章介绍了java层的消息机制，这篇来简要学习下native层的消息机制。
 
-+ <!-- more -->
+<!-- more -->
 <The rest of contents | 余下全文>
 
 

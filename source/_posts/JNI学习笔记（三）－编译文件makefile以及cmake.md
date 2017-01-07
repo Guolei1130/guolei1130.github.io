@@ -10,7 +10,7 @@ tags: jni
 ### 1. 前言
 
 在android2.2中，加入了cmake编译，而以前都是用Android.mk、Application.mk的，今天就来记录下，他们的配置选项。
-+ <!-- more -->
+<!-- more -->
 <The rest of contents | 余下全文>
 
 ### 2. Android.mk

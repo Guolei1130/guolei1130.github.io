@@ -12,7 +12,7 @@ tags: framework
 
 前两篇粗略的看了下四大组件里面的Activity、Service的启动流程，今天，我们来简单的看下BroadcastReceiver的流程。包括
 
-+ <!-- more -->
+<!-- more -->
 <The rest of contents | 余下全文>
 
 

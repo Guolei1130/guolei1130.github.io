@@ -11,7 +11,7 @@ tags: fresco
 
 一般我们通过SimpleDraweeView#setImageURI 去使用，我们现在就来看看它的实现。先来看看继承结构。
 
-+ <!-- more -->
+<!-- more -->
 <The rest of contents | 余下全文>
 
 

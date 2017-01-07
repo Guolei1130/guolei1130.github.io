@@ -31,7 +31,7 @@ class GettingTask extends DefaultTask{
 
 那么，我们该如何调用呢？
 
-+ <!-- more -->
+<!-- more -->
 <The rest of contents | 余下全文>
 
 

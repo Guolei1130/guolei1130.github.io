@@ -11,7 +11,7 @@ tags: framework
 
 ActivityManagerService作为一个核心系统服务，除了负责管理四大组件之外，还负责管理进程，对进程的管理有以下方面:
 
-+ <!-- more -->
+<!-- more -->
 <The rest of contents | 余下全文>
 
 

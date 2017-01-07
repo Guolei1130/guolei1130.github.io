@@ -10,7 +10,7 @@ tags: shell
 
 我们日常开发中，经常会需要使用adb工具做一些操作，比如，push文件、pull文件、安装apk、dump一些信息等等，命令太长记不住怎么办？没关系，我们可以把这些东西写成shell脚本。这里我就简单举几个例子。
 
-+ <!-- more -->
+<!-- more -->
 <The rest of contents | 余下全文>
 
 ### 2. push and pull file

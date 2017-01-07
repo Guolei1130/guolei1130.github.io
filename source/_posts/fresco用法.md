@@ -10,7 +10,7 @@ tags: fresco
 
 在很久之前，还是学生的时候，使用过fresco，自从来了公司，还没好好学习呢，于是，开始fresco学习之路。
 
-+ <!-- more -->
+<!-- more -->
 <The rest of contents | 余下全文>
 
 

@@ -116,7 +116,7 @@
 而这两部分都设计到native。 对应java层的代码在imagepipeine/memory 和nativecode中。">
 <meta property="og:image" content="http://guolei1130.github.io/images/fresco/fresco_4.png">
 <meta property="og:image" content="http://guolei1130.github.io/images/fresco/fresco_5.png">
-<meta property="og:updated_time" content="2017-01-06T05:31:19.000Z">
+<meta property="og:updated_time" content="2017-01-07T06:58:13.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="fresco内存管理">
 <meta name="twitter:description" content="1. Fresco中的内存管理模块fresco中的内存分为两个部分，
@@ -425,15 +425,12 @@
 </li>
 </ul>
 <p>而这两部分都设计到native。 对应java层的代码在imagepipeine/memory 和nativecode中。</p>
-<ul>
-<li><a id="more"></a>
+<a id="more"></a>
 <the rest="" of="" contents="" |="" 余下全文="">
 
 
 
 
-</the></li>
-</ul>
 <h3 id="2-匿名共享内存部分"><a href="#2-匿名共享内存部分" class="headerlink" title="2. 匿名共享内存部分"></a>2. 匿名共享内存部分</h3><p>这部分内存类似于Native内存区，但是它是受Android系统底层管理的，当Android系统内存不足时，会回收Ashmem区域中状态是 unpin 的对象内存块，如果不希望对象被回收，可以通过 pin 来保护一个对象。在bitmap存在Ashmem，也很简单，只要我们将BitmapFactory.Options的inPurgeable属性设置为true即可，考虑到我们这里的图片可能会复用，我们会开启inMutable属性，关于这个属性，建议大家如看文档，看看inMutable和inBitmap。</p>
 <p>光这样是不够的，我们需要在需要的时候pin住，不需要的时候unpine，这些我们利用 bitmap.h 中的两个相关的函数。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">AndroidBitmap_lockPixels</div><div class="line">AndroidBitmap_unlockPixels</div></pre></td></tr></table></figure>
@@ -516,7 +513,7 @@
 <h3 id="最近访客"><a href="#最近访客" class="headerlink" title="最近访客"></a>最近访客</h3><ul class="ds-recent-visitors" data-num-items="46" data-avatar-size="40"></ul>
 
 
-
+</the>
       
     </div>
 

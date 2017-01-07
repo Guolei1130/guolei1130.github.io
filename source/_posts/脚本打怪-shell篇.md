@@ -10,7 +10,7 @@ tags: shell
 
 什么是shell呢？我们这里说的shell是指shell脚本，和window下的bat批命令处理类似，shell用于linux／unix系统，用来方便我们的操作，试想一下，原来需要一堆的命令，我们将其写成一个shell脚本，轻松搞定，是不是很带感。
 
-+ <!-- more -->
+<!-- more -->
 <The rest of contents | 余下全文>
 
 

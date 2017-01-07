@@ -90,7 +90,7 @@
 <meta property="og:url" content="http://guolei1130.github.io/2017/01/01/消息机制在多进程的应用/index.html">
 <meta property="og:site_name" content="_StriveG Blog">
 <meta property="og:description" content="1. 前言一般情况下，我们利用handler，是在单进程情况下，但是，在多进程的模型下，也有消息机制的身影。那就是Messenger。">
-<meta property="og:updated_time" content="2017-01-06T05:29:18.000Z">
+<meta property="og:updated_time" content="2017-01-07T06:56:48.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="消息机制在多进程的应用">
 <meta name="twitter:description" content="1. 前言一般情况下，我们利用handler，是在单进程情况下，但是，在多进程的模型下，也有消息机制的身影。那就是Messenger。">
@@ -374,14 +374,11 @@
       
         <p><excerpt in="" index="" |="" 首页摘要=""></excerpt></p>
 <h3 id="1-前言"><a href="#1-前言" class="headerlink" title="1. 前言"></a>1. 前言</h3><p>一般情况下，我们利用handler，是在单进程情况下，但是，在多进程的模型下，也有消息机制的身影。那就是Messenger。</p>
-<ul>
-<li><a id="more"></a>
+<a id="more"></a>
 <the rest="" of="" contents="" |="" 余下全文="">
 
 
 
-</the></li>
-</ul>
 <h3 id="2-如何使用Messenger"><a href="#2-如何使用Messenger" class="headerlink" title="2. 如何使用Messenger"></a>2. 如何使用Messenger</h3><h4 id="2-1-Messenger-服务端"><a href="#2-1-Messenger-服务端" class="headerlink" title="2.1 Messenger 服务端"></a>2.1 Messenger 服务端</h4><p>首先我们需要一个messenger，并传入一个handler。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> Messenger messenger = <span class="keyword">new</span> Messenger(<span class="keyword">new</span> MessengerHandler());</div></pre></td></tr></table></figure>
 <p>其次，我们在onBind中，用Messenger的getBinder方法返回binder对象。</p>
@@ -400,7 +397,7 @@
 <h3 id="4-总结"><a href="#4-总结" class="headerlink" title="4. 总结"></a>4. 总结</h3><p>其实，Messenger就是对binder的上层封装，让我们更加简单的使用。这里就不介绍AsyncChannel了，这个类是internal包下的内容，并没有对我们开放。</p>
 <hr>
 <h3 id="最近访客"><a href="#最近访客" class="headerlink" title="最近访客"></a>最近访客</h3><ul class="ds-recent-visitors" data-num-items="46" data-avatar-size="40"></ul>
-
+</the>
       
     </div>
 

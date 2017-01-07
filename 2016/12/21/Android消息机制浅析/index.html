@@ -110,7 +110,7 @@ MessageQueue 消息队列
 
 
 一个Looper对应一个MessageQueue，并不断从MessageQueue中取出消息，提交给Handel处理。">
-<meta property="og:updated_time" content="2017-01-06T05:30:02.000Z">
+<meta property="og:updated_time" content="2017-01-07T06:57:30.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android消息机制浅析">
 <meta name="twitter:description" content="1.Looper、Handler、MessageQueue的关系
@@ -415,14 +415,11 @@ MessageQueue 消息队列
 <blockquote>
 <p>一个Looper对应一个MessageQueue，并不断从MessageQueue中取出消息，提交给Handel处理。</p>
 </blockquote>
-<ul>
-<li><a id="more"></a>
+<a id="more"></a>
 <the rest="" of="" contents="" |="" 余下全文="">
 
 
 
-</the></li>
-</ul>
 <h3 id="2-Looper"><a href="#2-Looper" class="headerlink" title="2.Looper"></a>2.Looper</h3><p>以主线程为例。Looper的初始化过程是这样的。<br>代码地址：<br>/frameworks/base/core/java/android/app/ActivityThread.java#main(String[] args)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Looper.prepareMainLooper();</div><div class="line">xxxx</div><div class="line">Looper.loop();</div></pre></td></tr></table></figure></p>
 <p>而非UI线程的初始化过程<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Looper.prepare()</div><div class="line">xxx</div><div class="line">Looper.loop();</div></pre></td></tr></table></figure></p>
 <p>不管是主线程还是其他线程，都会调用prepare(boolean quitAllowed)方法，参数为是否允许退出循环，主线程是不允许的，而其他线程是允许的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">private static void prepare(boolean quitAllowed) &#123;</div><div class="line">       if (sThreadLocal.get() != null) &#123;</div><div class="line">           throw new RuntimeException(&quot;Only one Looper may be created per thread&quot;);</div><div class="line">       &#125;</div><div class="line">       sThreadLocal.set(new Looper(quitAllowed));</div><div class="line">   &#125;</div></pre></td></tr></table></figure></p>
@@ -485,7 +482,7 @@ MessageQueue 消息队列
 
 
 
-
+</the>
       
     </div>
 

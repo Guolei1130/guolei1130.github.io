@@ -15,7 +15,7 @@ tags: fresco
 
 在ImagePipelineFactory初始化ImagePipelineConfig，用来配置一个参数。ImagePipelineConfig通过建造者模式 可以让使用者配置许多参数。包括以下：
 
-+ <!-- more -->
+<!-- more -->
 <The rest of contents | 余下全文>
 
 
