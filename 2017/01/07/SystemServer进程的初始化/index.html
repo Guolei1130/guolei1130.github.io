@@ -1,0 +1,835 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="framework," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言从上一篇我们知道，在Zygote进程的启动过程中，通过startSystemServer方法，来启动Android中另外一个核心进程SystemServer进程。那么，就来看下SystemServer进程的一些东西。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SystemServer进程的初始化">
+<meta property="og:url" content="http://guolei1130.github.io/2017/01/07/SystemServer进程的初始化/index.html">
+<meta property="og:site_name" content="_StriveG Blog">
+<meta property="og:description" content="前言从上一篇我们知道，在Zygote进程的启动过程中，通过startSystemServer方法，来启动Android中另外一个核心进程SystemServer进程。那么，就来看下SystemServer进程的一些东西。">
+<meta property="og:updated_time" content="2017-01-07T14:47:00.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SystemServer进程的初始化">
+<meta name="twitter:description" content="前言从上一篇我们知道，在Zygote进程的启动过程中，通过startSystemServer方法，来启动Android中另外一个核心进程SystemServer进程。那么，就来看下SystemServer进程的一些东西。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"always"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'guolei1130',
+      author: '菜鸡郭'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://guolei1130.github.io/2017/01/07/SystemServer进程的初始化/"/>
+
+
+
+
+
+  <title> SystemServer进程的初始化 | _StriveG Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">_StriveG Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle"></p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/me" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://guolei1130.github.io/2017/01/07/SystemServer进程的初始化/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="_StriveG">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/img/head.png">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="_StriveG Blog">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="_StriveG Blog" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                SystemServer进程的初始化
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-07T22:45:40+08:00">
+                2017-01-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/01/07/SystemServer进程的初始化/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/01/07/SystemServer进程的初始化/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><excerpt in="" index="" |="" 首页摘要=""></excerpt></p>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>从上一篇我们知道，在Zygote进程的启动过程中，通过startSystemServer方法，来启动Android中另外一个核心进程SystemServer进程。那么，就来看下SystemServer进程的一些东西。</p>
+<a id="more"></a>
+<the rest="" of="" contents="" |="" 余下全文="">
+
+
+<h3 id="ZygoteInit-startSystemServer"><a href="#ZygoteInit-startSystemServer" class="headerlink" title="ZygoteInit#startSystemServer"></a>ZygoteInit#startSystemServer</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">// 省去一部分参数代码</div><div class="line">        ZygoteConnection.Arguments parsedArgs = null;</div><div class="line"></div><div class="line">        int pid;</div><div class="line"></div><div class="line">        try &#123;</div><div class="line">            parsedArgs = new ZygoteConnection.Arguments(args);</div><div class="line">            ZygoteConnection.applyDebuggerSystemProperty(parsedArgs);</div><div class="line">            ZygoteConnection.applyInvokeWithSystemProperty(parsedArgs);</div><div class="line"></div><div class="line">            /* Request to fork the system server process */</div><div class="line">            pid = Zygote.forkSystemServer(</div><div class="line">                    parsedArgs.uid, parsedArgs.gid,</div><div class="line">                    parsedArgs.gids,</div><div class="line">                    parsedArgs.debugFlags,</div><div class="line">                    null,</div><div class="line">                    parsedArgs.permittedCapabilities,</div><div class="line">                    parsedArgs.effectiveCapabilities);</div><div class="line">        &#125; catch (IllegalArgumentException ex) &#123;</div><div class="line">            throw new RuntimeException(ex);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        /* For child process */</div><div class="line">        if (pid == 0) &#123;</div><div class="line">            if (hasSecondZygote(abiList)) &#123;</div><div class="line">                waitForSecondaryZygote(socketName);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            handleSystemServerProcess(parsedArgs);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        return true;</div></pre></td></tr></table></figure>
+<ul>
+<li>fork进程(和以前进程启动类似)</li>
+<li>handleSystemServerProcess来处理SystemServer进程</li>
+</ul>
+<h3 id="ZygoteInit-handleSystemServerProcess"><a href="#ZygoteInit-handleSystemServerProcess" class="headerlink" title="ZygoteInit#handleSystemServerProcess"></a>ZygoteInit#handleSystemServerProcess</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line">private static void handleSystemServerProcess(</div><div class="line">        ZygoteConnection.Arguments parsedArgs)</div><div class="line">        throws ZygoteInit.MethodAndArgsCaller &#123;</div><div class="line"></div><div class="line">    closeServerSocket();</div><div class="line"></div><div class="line">    // set umask to 0077 so new files and directories will default to owner-only permissions.</div><div class="line">    Os.umask(S_IRWXG | S_IRWXO);</div><div class="line"></div><div class="line">    if (parsedArgs.niceName != null) &#123;</div><div class="line">        Process.setArgV0(parsedArgs.niceName);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    final String systemServerClasspath = Os.getenv(&quot;SYSTEMSERVERCLASSPATH&quot;);</div><div class="line">    if (systemServerClasspath != null) &#123;</div><div class="line">        performSystemServerDexOpt(systemServerClasspath);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    if (parsedArgs.invokeWith != null) &#123;</div><div class="line">        String[] args = parsedArgs.remainingArgs;</div><div class="line">        // If we have a non-null system server class path, we&apos;ll have to duplicate the</div><div class="line">        // existing arguments and append the classpath to it. ART will handle the classpath</div><div class="line">        // correctly when we exec a new process.</div><div class="line">        if (systemServerClasspath != null) &#123;</div><div class="line">            String[] amendedArgs = new String[args.length + 2];</div><div class="line">            amendedArgs[0] = &quot;-cp&quot;;</div><div class="line">            amendedArgs[1] = systemServerClasspath;</div><div class="line">            System.arraycopy(parsedArgs.remainingArgs, 0, amendedArgs, 2, parsedArgs.remainingArgs.length);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        WrapperInit.execApplication(parsedArgs.invokeWith,</div><div class="line">                parsedArgs.niceName, parsedArgs.targetSdkVersion,</div><div class="line">                VMRuntime.getCurrentInstructionSet(), null, args);</div><div class="line">    &#125; else &#123;</div><div class="line">        ClassLoader cl = null;</div><div class="line">        if (systemServerClasspath != null) &#123;</div><div class="line">            cl = new PathClassLoader(systemServerClasspath, ClassLoader.getSystemClassLoader());</div><div class="line">            Thread.currentThread().setContextClassLoader(cl);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        /*</div><div class="line">         * Pass the remaining arguments to SystemServer.</div><div class="line">         */</div><div class="line">        RuntimeInit.zygoteInit(parsedArgs.targetSdkVersion, parsedArgs.remainingArgs, cl);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    /* should never reach here */</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>通过umask设置创建文件的默认权限</li>
+<li>设置进程的nicename</li>
+<li>获取SYSTEMSERVERCLASSPATH环境变量值(一系列jar)，如果需要，进行dex优化</li>
+<li>在这里，invokeWith为null，所以会通过RuntimeInit.zygoteInit去启动</li>
+</ul>
+<p>RuntimeInit.zygoteInit中调用applicationInit，调用invokeStaticMain，然后就会调用SystemServer的main方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public static void main(String[] args) &#123;</div><div class="line">    new SystemServer().run();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在SystemServer的构造函数中，获取mFactoryTestMode值，我们的重点在run方法。</p>
+<h3 id="SystemServer-run"><a href="#SystemServer-run" class="headerlink" title="SystemServer#run"></a>SystemServer#run</h3><p>run方法的代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div></pre></td><td class="code"><pre><div class="line">private void run() &#123;</div><div class="line">    // If a device&apos;s clock is before 1970 (before 0), a lot of</div><div class="line">    // APIs crash dealing with negative numbers, notably</div><div class="line">    // java.io.File#setLastModified, so instead we fake it and</div><div class="line">    // hope that time from cell towers or NTP fixes it shortly.</div><div class="line">    if (System.currentTimeMillis() &lt; EARLIEST_SUPPORTED_TIME) &#123;</div><div class="line">        Slog.w(TAG, &quot;System clock is before 1970; setting to 1970.&quot;);</div><div class="line">        SystemClock.setCurrentTimeMillis(EARLIEST_SUPPORTED_TIME);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // If the system has &quot;persist.sys.language&quot; and friends set, replace them with</div><div class="line">    // &quot;persist.sys.locale&quot;. Note that the default locale at this point is calculated</div><div class="line">    // using the &quot;-Duser.locale&quot; command line flag. That flag is usually populated by</div><div class="line">    // AndroidRuntime using the same set of system properties, but only the system_server</div><div class="line">    // and system apps are allowed to set them.</div><div class="line">    //</div><div class="line">    // NOTE: Most changes made here will need an equivalent change to</div><div class="line">    // core/jni/AndroidRuntime.cpp</div><div class="line">    if (!SystemProperties.get(&quot;persist.sys.language&quot;).isEmpty()) &#123;</div><div class="line">        final String languageTag = Locale.getDefault().toLanguageTag();</div><div class="line"></div><div class="line">        SystemProperties.set(&quot;persist.sys.locale&quot;, languageTag);</div><div class="line">        SystemProperties.set(&quot;persist.sys.language&quot;, &quot;&quot;);</div><div class="line">        SystemProperties.set(&quot;persist.sys.country&quot;, &quot;&quot;);</div><div class="line">        SystemProperties.set(&quot;persist.sys.localevar&quot;, &quot;&quot;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // Here we go!</div><div class="line">    Slog.i(TAG, &quot;Entered the Android system server!&quot;);</div><div class="line">    EventLog.writeEvent(EventLogTags.BOOT_PROGRESS_SYSTEM_RUN, SystemClock.uptimeMillis());</div><div class="line"></div><div class="line">    // In case the runtime switched since last boot (such as when</div><div class="line">    // the old runtime was removed in an OTA), set the system</div><div class="line">    // property so that it is in sync. We can&apos;t do this in</div><div class="line">    // libnativehelper&apos;s JniInvocation::Init code where we already</div><div class="line">    // had to fallback to a different runtime because it is</div><div class="line">    // running as root and we need to be the system user to set</div><div class="line">    // the property. http://b/11463182</div><div class="line">    SystemProperties.set(&quot;persist.sys.dalvik.vm.lib.2&quot;, VMRuntime.getRuntime().vmLibrary());</div><div class="line"></div><div class="line">    // Enable the sampling profiler.</div><div class="line">    if (SamplingProfilerIntegration.isEnabled()) &#123;</div><div class="line">        SamplingProfilerIntegration.start();</div><div class="line">        mProfilerSnapshotTimer = new Timer();</div><div class="line">        mProfilerSnapshotTimer.schedule(new TimerTask() &#123;</div><div class="line">            @Override</div><div class="line">            public void run() &#123;</div><div class="line">                SamplingProfilerIntegration.writeSnapshot(&quot;system_server&quot;, null);</div><div class="line">            &#125;</div><div class="line">        &#125;, SNAPSHOT_INTERVAL, SNAPSHOT_INTERVAL);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // Mmmmmm... more memory!</div><div class="line">    VMRuntime.getRuntime().clearGrowthLimit();</div><div class="line"></div><div class="line">    // The system server has to run all of the time, so it needs to be</div><div class="line">    // as efficient as possible with its memory usage.</div><div class="line">    VMRuntime.getRuntime().setTargetHeapUtilization(0.8f);</div><div class="line"></div><div class="line">    // Some devices rely on runtime fingerprint generation, so make sure</div><div class="line">    // we&apos;ve defined it before booting further.</div><div class="line">    Build.ensureFingerprintProperty();</div><div class="line"></div><div class="line">    // Within the system server, it is an error to access Environment paths without</div><div class="line">    // explicitly specifying a user.</div><div class="line">    Environment.setUserRequired(true);</div><div class="line"></div><div class="line">    // Ensure binder calls into the system always run at foreground priority.</div><div class="line">    BinderInternal.disableBackgroundScheduling(true);</div><div class="line"></div><div class="line">    // Prepare the main looper thread (this thread).</div><div class="line">    android.os.Process.setThreadPriority(</div><div class="line">            android.os.Process.THREAD_PRIORITY_FOREGROUND);</div><div class="line">    android.os.Process.setCanSelfBackground(false);</div><div class="line">    Looper.prepareMainLooper();</div><div class="line"></div><div class="line">    // Initialize native services.</div><div class="line">    System.loadLibrary(&quot;android_servers&quot;);</div><div class="line"></div><div class="line">    // Check whether we failed to shut down last time we tried.</div><div class="line">    // This call may not return.</div><div class="line">    performPendingShutdown();</div><div class="line"></div><div class="line">    // Initialize the system context.</div><div class="line">    createSystemContext();</div><div class="line"></div><div class="line">    // Create the system service manager.</div><div class="line">    mSystemServiceManager = new SystemServiceManager(mSystemContext);</div><div class="line">    LocalServices.addService(SystemServiceManager.class, mSystemServiceManager);</div><div class="line"></div><div class="line">    // Start services.</div><div class="line">    try &#123;</div><div class="line">        startBootstrapServices();</div><div class="line">        startCoreServices();</div><div class="line">        startOtherServices();</div><div class="line">    &#125; catch (Throwable ex) &#123;</div><div class="line">        Slog.e(&quot;System&quot;, &quot;******************************************&quot;);</div><div class="line">        Slog.e(&quot;System&quot;, &quot;************ Failure starting system services&quot;, ex);</div><div class="line">        throw ex;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // For debug builds, log event loop stalls to dropbox for analysis.</div><div class="line">    if (StrictMode.conditionallyEnableDebugLogging()) &#123;</div><div class="line">        Slog.i(TAG, &quot;Enabled StrictMode for system server main thread.&quot;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // Loop forever.</div><div class="line">    Looper.loop();</div><div class="line">    throw new RuntimeException(&quot;Main thread loop unexpectedly exited&quot;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>主要干了这些事：</p>
+<ul>
+<li>校验时间是否合法(1970)</li>
+<li>设置语言</li>
+<li>设置虚拟机库文件</li>
+<li>如果允许抽样分析器，则开启SamplingProfilerIntegration(抽样分析器)</li>
+<li>clearGrowthLimit 清除内存增长上限</li>
+<li>设置内存使用率，setTargetHeapUtilization</li>
+<li>加载android_servers库</li>
+<li>创建上下文，创建SystemServiceManager，添加到LocalServices</li>
+<li>startBootstrapServices 启动引导服务</li>
+<li>startCoreServices 启动核心服务</li>
+<li>startOtherServices 启动其他服务</li>
+</ul>
+<p>最后的启动服务 是核心，我们分别来看下。</p>
+<h3 id="SystemServer-startBootstrapServices"><a href="#SystemServer-startBootstrapServices" class="headerlink" title="SystemServer#startBootstrapServices"></a>SystemServer#startBootstrapServices</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div></pre></td><td class="code"><pre><div class="line">private void startBootstrapServices() &#123;</div><div class="line">    // Wait for installd to finish starting up so that it has a chance to</div><div class="line">    // create critical directories such as /data/user with the appropriate</div><div class="line">    // permissions.  We need this to complete before we initialize other services.</div><div class="line">    Installer installer = mSystemServiceManager.startService(Installer.class);</div><div class="line"></div><div class="line">    // Activity manager runs the show.</div><div class="line">    mActivityManagerService = mSystemServiceManager.startService(</div><div class="line">            ActivityManagerService.Lifecycle.class).getService();</div><div class="line">    mActivityManagerService.setSystemServiceManager(mSystemServiceManager);</div><div class="line">    mActivityManagerService.setInstaller(installer);</div><div class="line"></div><div class="line">    // Power manager needs to be started early because other services need it.</div><div class="line">    // Native daemons may be watching for it to be registered so it must be ready</div><div class="line">    // to handle incoming binder calls immediately (including being able to verify</div><div class="line">    // the permissions for those calls).</div><div class="line">    mPowerManagerService = mSystemServiceManager.startService(PowerManagerService.class);</div><div class="line"></div><div class="line">    // Now that the power manager has been started, let the activity manager</div><div class="line">    // initialize power management features.</div><div class="line">    mActivityManagerService.initPowerManagement();</div><div class="line"></div><div class="line">    // Manages LEDs and display backlight so we need it to bring up the display.</div><div class="line">    mSystemServiceManager.startService(LightsService.class);</div><div class="line"></div><div class="line">    // Display manager is needed to provide display metrics before package manager</div><div class="line">    // starts up.</div><div class="line">    mDisplayManagerService = mSystemServiceManager.startService(DisplayManagerService.class);</div><div class="line"></div><div class="line">    // We need the default display before we can initialize the package manager.</div><div class="line">    mSystemServiceManager.startBootPhase(SystemService.PHASE_WAIT_FOR_DEFAULT_DISPLAY);</div><div class="line"></div><div class="line">    // Only run &quot;core&quot; apps if we&apos;re encrypting the device.</div><div class="line">    String cryptState = SystemProperties.get(&quot;vold.decrypt&quot;);</div><div class="line">    if (ENCRYPTING_STATE.equals(cryptState)) &#123;</div><div class="line">        Slog.w(TAG, &quot;Detected encryption in progress - only parsing core apps&quot;);</div><div class="line">        mOnlyCore = true;</div><div class="line">    &#125; else if (ENCRYPTED_STATE.equals(cryptState)) &#123;</div><div class="line">        Slog.w(TAG, &quot;Device encrypted - only parsing core apps&quot;);</div><div class="line">        mOnlyCore = true;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // Start the package manager.</div><div class="line">    Slog.i(TAG, &quot;Package Manager&quot;);</div><div class="line">    mPackageManagerService = PackageManagerService.main(mSystemContext, installer,</div><div class="line">            mFactoryTestMode != FactoryTest.FACTORY_TEST_OFF, mOnlyCore);</div><div class="line">    mFirstBoot = mPackageManagerService.isFirstBoot();</div><div class="line">    mPackageManager = mSystemContext.getPackageManager();</div><div class="line"></div><div class="line">    Slog.i(TAG, &quot;User Service&quot;);</div><div class="line">    ServiceManager.addService(Context.USER_SERVICE, UserManagerService.getInstance());</div><div class="line"></div><div class="line">    // Initialize attribute cache used to cache resources from packages.</div><div class="line">    AttributeCache.init(mSystemContext);</div><div class="line"></div><div class="line">    // Set up the Application instance for the system process and get started.</div><div class="line">    mActivityManagerService.setSystemProcess();</div><div class="line"></div><div class="line">    // The sensor service needs access to package manager service, app ops</div><div class="line">    // service, and permissions service, therefore we start it after them.</div><div class="line">    startSensorService();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>启动Installer,用于应用程序安装，卸载，dex优化等等</li>
+<li>启动ActivityManagerService</li>
+<li>启动PowerManagerService</li>
+<li>启动LightsService</li>
+<li>启动DisplayManagerService</li>
+<li>启动PackageManagerService</li>
+<li>启动UserManagerService</li>
+<li>启动传感器服务(native)</li>
+</ul>
+<h3 id="SystemServer-startCoreServices"><a href="#SystemServer-startCoreServices" class="headerlink" title="SystemServer#startCoreServices"></a>SystemServer#startCoreServices</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">private void startCoreServices() &#123;</div><div class="line">    // Tracks the battery level.  Requires LightService.</div><div class="line">    mSystemServiceManager.startService(BatteryService.class);</div><div class="line"></div><div class="line">    // Tracks application usage stats.</div><div class="line">    mSystemServiceManager.startService(UsageStatsService.class);</div><div class="line">    mActivityManagerService.setUsageStatsManager(</div><div class="line">            LocalServices.getService(UsageStatsManagerInternal.class));</div><div class="line">    // Update after UsageStatsService is available, needed before performBootDexOpt.</div><div class="line">    mPackageManagerService.getUsageStatsIfNoPackageUsageInfo();</div><div class="line"></div><div class="line">    // Tracks whether the updatable WebView is in a ready state and watches for update installs.</div><div class="line">    mSystemServiceManager.startService(WebViewUpdateService.class);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>同样是启动几个核心的系统服务。</p>
+<h3 id="SystemServer-startOtherServices"><a href="#SystemServer-startOtherServices" class="headerlink" title="SystemServer#startOtherServices"></a>SystemServer#startOtherServices</h3><p>在这个方法中，同样启动了很多服务，不过，这里不仅仅有startService，也有ServiceManager.addService,不过这个是通过binder，像native注册的服务。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">case IServiceManager.ADD_SERVICE_TRANSACTION: &#123;</div><div class="line">    data.enforceInterface(IServiceManager.descriptor);</div><div class="line">    String name = data.readString();</div><div class="line">    IBinder service = data.readStrongBinder();</div><div class="line">    boolean allowIsolated = data.readInt() != 0;</div><div class="line">    addService(name, service, allowIsolated);</div><div class="line">    return true;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>当启动注册完毕之后，会调用各个服务的systemReady方法。这里就不介绍了。</p>
+<h3 id="最近访客"><a href="#最近访客" class="headerlink" title="最近访客"></a>最近访客</h3><ul class="ds-recent-visitors" data-num-items="46" data-avatar-size="40"></ul></the>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/framework/" rel="tag"># framework</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/07/Zygote进程的初始化/" rel="next" title="Zygote进程的初始化">
+                <i class="fa fa-chevron-left"></i> Zygote进程的初始化
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+  <p>热评文章</p>
+  <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/01/07/SystemServer进程的初始化/"
+           data-title="SystemServer进程的初始化" data-url="http://guolei1130.github.io/2017/01/07/SystemServer进程的初始化/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/img/head.png"
+               alt="_StriveG" />
+          <p class="site-author-name" itemprop="name">_StriveG</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://guolei1130.github.io/" target="_blank" title="博客首页">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  博客首页
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Guolei1130/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/qq_21430549" target="_blank" title="csdn博客">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  csdn博客
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://monsterlin.com/" target="_blank" title="友情链接">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  友情链接
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ZygoteInit-startSystemServer"><span class="nav-number">2.</span> <span class="nav-text">ZygoteInit#startSystemServer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ZygoteInit-handleSystemServerProcess"><span class="nav-number">3.</span> <span class="nav-text">ZygoteInit#handleSystemServerProcess</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SystemServer-run"><span class="nav-number">4.</span> <span class="nav-text">SystemServer#run</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SystemServer-startBootstrapServices"><span class="nav-number">5.</span> <span class="nav-text">SystemServer#startBootstrapServices</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SystemServer-startCoreServices"><span class="nav-number">6.</span> <span class="nav-text">SystemServer#startCoreServices</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SystemServer-startOtherServices"><span class="nav-number">7.</span> <span class="nav-text">SystemServer#startOtherServices</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最近访客"><span class="nav-number">8.</span> <span class="nav-text">最近访客</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">_StriveG</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"guolei1130"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>
