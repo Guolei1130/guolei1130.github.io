@@ -1,0 +1,852 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="源码," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言ThreadLocal是用来实现本地线程存储的，就是每个线程都有自己的值。java和android sdk中的这个类实现有点小差别，这篇文章以android sdk中的ThreadLocal源码来解析，看看是如何实现的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ThreadLocal源码浅析">
+<meta property="og:url" content="http://guolei1130.github.io/2017/01/13/ThreadLocal源码浅析/index.html">
+<meta property="og:site_name" content="_StriveG Blog">
+<meta property="og:description" content="前言ThreadLocal是用来实现本地线程存储的，就是每个线程都有自己的值。java和android sdk中的这个类实现有点小差别，这篇文章以android sdk中的ThreadLocal源码来解析，看看是如何实现的。">
+<meta property="og:updated_time" content="2017-01-13T14:25:27.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ThreadLocal源码浅析">
+<meta name="twitter:description" content="前言ThreadLocal是用来实现本地线程存储的，就是每个线程都有自己的值。java和android sdk中的这个类实现有点小差别，这篇文章以android sdk中的ThreadLocal源码来解析，看看是如何实现的。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"always"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'guolei1130',
+      author: '菜鸡郭'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://guolei1130.github.io/2017/01/13/ThreadLocal源码浅析/"/>
+
+
+
+
+
+  <title> ThreadLocal源码浅析 | _StriveG Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">_StriveG Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle"></p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/me" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://guolei1130.github.io/2017/01/13/ThreadLocal源码浅析/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="_StriveG">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/img/head.png">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="_StriveG Blog">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="_StriveG Blog" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                ThreadLocal源码浅析
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-13T22:24:36+08:00">
+                2017-01-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/01/13/ThreadLocal源码浅析/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/01/13/ThreadLocal源码浅析/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><excerpt in="" index="" |="" 首页摘要=""></excerpt></p>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>ThreadLocal是用来实现本地线程存储的，就是每个线程都有自己的值。java和android sdk中的这个类实现有点小差别，这篇文章以android sdk中的ThreadLocal源码来解析，看看是如何实现的。</p>
+<a id="more"></a>
+<the rest="" of="" contents="" |="" 余下全文="">
+
+
+<h3 id="设置值-set方法"><a href="#设置值-set方法" class="headerlink" title="设置值-set方法"></a>设置值-set方法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">public void set(T value) &#123;</div><div class="line">    Thread currentThread = Thread.currentThread();</div><div class="line">    Values values = values(currentThread);</div><div class="line">    if (values == null) &#123;</div><div class="line">        values = initializeValues(currentThread);</div><div class="line">    &#125;</div><div class="line">    values.put(this, value);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>set值的方法很简单，首先是获取当前线程对象，然后，通过values方法获取当前线程的localValues对象，这是一个Values对象，在ThreadLocal中起着很很重要的作用。如果为null的话，用initializeValues为当前线程初始化一个Values对象。最后，将值put进去。</p>
+<h4 id="Values的初始化"><a href="#Values的初始化" class="headerlink" title="Values的初始化"></a>Values的初始化</h4><p>在initializeValues方法中，只是初始化一个Values对象</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Values initializeValues(Thread current) &#123;</div><div class="line">    return current.localValues = new Values();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我们看下Values的无参构造函数的实现。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Values() &#123;</div><div class="line">    initializeTable(INITIAL_SIZE);</div><div class="line">    this.size = 0;</div><div class="line">    this.tombstones = 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>initializeTable 初始化一个容量为INITIAL_SIZE(16)*2的Object数组</li>
+<li>设置存活对象数目size 为0</li>
+<li>设置死亡对象数目size 为0</li>
+</ul>
+<p>在看看initializeTable做了下啥</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">private void initializeTable(int capacity) &#123;</div><div class="line">    this.table = new Object[capacity * 2];</div><div class="line">    this.mask = table.length - 1;</div><div class="line">    this.clean = 0;</div><div class="line">    this.maximumLoad = capacity * 2 / 3; // 2/3</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>初始化一个容量为16*2的对象数组，为什么要这样呢？因为这里没有使用map的结构来保存key，value，要是用数组保存key，value，容量当然得为value的2倍。而这里是用数组的结构，我想是因为访问和修改的速度快的原因吧。</li>
+<li>mark 用于散列索引,15</li>
+<li>clean 指向下一个将要清除的位置，这里指向最后一个元素</li>
+<li>maximumLoad 存活和死亡对象的最大数(用于扩容)，设置为容量的2/3</li>
+</ul>
+<h4 id="存储到values中"><a href="#存储到values中" class="headerlink" title="存储到values中"></a>存储到values中</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">void put(ThreadLocal&lt;?&gt; key, Object value) &#123;</div><div class="line">    cleanUp();</div><div class="line"></div><div class="line">    // Keep track of first tombstone. That&apos;s where we want to go back</div><div class="line">    // and add an entry if necessary.</div><div class="line">    int firstTombstone = -1;</div><div class="line"></div><div class="line">    for (int index = key.hash &amp; mask;; index = next(index)) &#123;</div><div class="line">        Object k = table[index];</div><div class="line"></div><div class="line">        if (k == key.reference) &#123;</div><div class="line">            // Replace existing entry.</div><div class="line">            table[index + 1] = value;</div><div class="line">            return;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        if (k == null) &#123;</div><div class="line">            if (firstTombstone == -1) &#123;</div><div class="line">                // Fill in null slot.</div><div class="line">                table[index] = key.reference;</div><div class="line">                table[index + 1] = value;</div><div class="line">                size++;</div><div class="line">                return;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            // Go back and replace first tombstone.</div><div class="line">            table[firstTombstone] = key.reference;</div><div class="line">            table[firstTombstone + 1] = value;</div><div class="line">            tombstones--;</div><div class="line">            size++;</div><div class="line">            return;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        // Remember first tombstone.</div><div class="line">        if (firstTombstone == -1 &amp;&amp; k == TOMBSTONE) &#123;</div><div class="line">            firstTombstone = index;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>清理垃圾回收后的线程本地变量</li>
+<li>firstTombstones为－1，用于追踪第一个死亡对象。</li>
+<li>循环，index值为threadlocal的hash变量和mask变量的&amp;，hash值对应为0，mask，当我们初始化的时候设置为15，也就是1111，两个&amp;之后为0，而next操作，我们这里可以看出是index+2</li>
+<li>index处对应的就为key值，<ul>
+<li>如果key.reference和k等，则将value存放于index+1处，替换已经存放的</li>
+<li>如果k为null，说明没放过<ul>
+<li>如果firstTombstone为-1， 则index处放key.reference，index+1处放value</li>
+<li>如果不是，则将key和对应的value放在firstTombstone,firstTombstone+1处。</li>
+</ul>
+</li>
+<li>不等于    key.reference，也不等于null，(threadlocal被gc回收了。)<ul>
+<li>firstTombstone 设置为index</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>put的操作还是有点复杂的，要考虑到gc回收的问题。</p>
+<h3 id="获取值-get方法"><a href="#获取值-get方法" class="headerlink" title="获取值-get方法"></a>获取值-get方法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">public T get() &#123;</div><div class="line">    // Optimized for the fast path.</div><div class="line">    Thread currentThread = Thread.currentThread();</div><div class="line">    Values values = values(currentThread);</div><div class="line">    if (values != null) &#123;</div><div class="line">        Object[] table = values.table;</div><div class="line">        int index = hash &amp; values.mask;</div><div class="line">        if (this.reference == table[index]) &#123;</div><div class="line">            return (T) table[index + 1];</div><div class="line">        &#125;</div><div class="line">    &#125; else &#123;</div><div class="line">        values = initializeValues(currentThread);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    return (T) values.getAfterMiss(this);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在知道上面存在gc回收之后，这里就比较好理解了,gc回收之后，会吧index处的key，设置为TOMBSTONE对象。</p>
+<ul>
+<li>如果index处的值是this.reference,也就是没被gc回收，那么就是index+1处的值</li>
+<li>否则，getAfterMiss返回,这个函数后面会说到</li>
+</ul>
+<h3 id="gc带来的影响及处理"><a href="#gc带来的影响及处理" class="headerlink" title="gc带来的影响及处理"></a>gc带来的影响及处理</h3><p>因为key的reference变量是个WeakReference，因此，要考虑到gc的影响。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">private final Reference&lt;ThreadLocal&lt;T&gt;&gt; reference</div><div class="line">        = new WeakReference&lt;ThreadLocal&lt;T&gt;&gt;(this);</div></pre></td></tr></table></figure>
+<p>关于java中的四种引用类型及其gc，这里不说了。</p>
+<h4 id="清理过程"><a href="#清理过程" class="headerlink" title="清理过程"></a>清理过程</h4><p>清理过程有cleanUp来完成。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line">private void cleanUp() &#123;</div><div class="line">    if (rehash()) &#123;</div><div class="line">        // If we rehashed, we needn&apos;t clean up (clean up happens as</div><div class="line">        // a side effect).</div><div class="line">        return;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    if (size == 0) &#123;</div><div class="line">        // No live entries == nothing to clean.</div><div class="line">        return;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // Clean log(table.length) entries picking up where we left off</div><div class="line">    // last time.</div><div class="line">    int index = clean;</div><div class="line">    Object[] table = this.table;</div><div class="line">    for (int counter = table.length; counter &gt; 0; counter &gt;&gt;= 1,</div><div class="line">            index = next(index)) &#123;</div><div class="line">        Object k = table[index];</div><div class="line"></div><div class="line">        if (k == TOMBSTONE || k == null) &#123;</div><div class="line">            continue; // on to next entry</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        // The table can only contain null, tombstones and references.</div><div class="line">        @SuppressWarnings(&quot;unchecked&quot;)</div><div class="line">        Reference&lt;ThreadLocal&lt;?&gt;&gt; reference</div><div class="line">                = (Reference&lt;ThreadLocal&lt;?&gt;&gt;) k;</div><div class="line">        if (reference.get() == null) &#123;</div><div class="line">            // This thread local was reclaimed by the garbage collector.</div><div class="line">            table[index] = TOMBSTONE;</div><div class="line">            table[index + 1] = null;</div><div class="line">            tombstones++;</div><div class="line">            size--;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // Point cursor to next index.</div><div class="line">    clean = index;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>rehash返回true，或者live size为0，直接返回</li>
+<li>clean的初始值为0</li>
+<li>不断从数组中取出key值，并判断是否被回收，如果被回收，则将key，设置为TOMBSTONE，value置null</li>
+</ul>
+<p>这个过程就是将gc回收掉的key对应的value回收。</p>
+<h4 id="rehash过程-调整"><a href="#rehash过程-调整" class="headerlink" title="rehash过程-调整"></a>rehash过程-调整</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line">private boolean rehash() &#123;</div><div class="line">    if (tombstones + size &lt; maximumLoad) &#123;</div><div class="line">        return false;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    int capacity = table.length &gt;&gt; 1;</div><div class="line"></div><div class="line">    // Default to the same capacity. This will create a table of the</div><div class="line">    // same size and move over the live entries, analogous to a</div><div class="line">    // garbage collection. This should only happen if you churn a</div><div class="line">    // bunch of thread local garbage (removing and reinserting</div><div class="line">    // the same thread locals over and over will overwrite tombstones</div><div class="line">    // and not fill up the table).</div><div class="line">    int newCapacity = capacity;</div><div class="line"></div><div class="line">    if (size &gt; (capacity &gt;&gt; 1)) &#123;</div><div class="line">        // More than 1/2 filled w/ live entries.</div><div class="line">        // Double size.</div><div class="line">        newCapacity = capacity * 2;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    Object[] oldTable = this.table;</div><div class="line"></div><div class="line">    // Allocate new table.</div><div class="line">    initializeTable(newCapacity);</div><div class="line"></div><div class="line">    // We won&apos;t have any tombstones after this.</div><div class="line">    this.tombstones = 0;</div><div class="line"></div><div class="line">    // If we have no live entries, we can quit here.</div><div class="line">    if (size == 0) &#123;</div><div class="line">        return true;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // Move over entries.</div><div class="line">    for (int i = oldTable.length - 2; i &gt;= 0; i -= 2) &#123;</div><div class="line">        Object k = oldTable[i];</div><div class="line">        if (k == null || k == TOMBSTONE) &#123;</div><div class="line">            // Skip this entry.</div><div class="line">            continue;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        // The table can only contain null, tombstones and references.</div><div class="line">        @SuppressWarnings(&quot;unchecked&quot;)</div><div class="line">        Reference&lt;ThreadLocal&lt;?&gt;&gt; reference</div><div class="line">                = (Reference&lt;ThreadLocal&lt;?&gt;&gt;) k;</div><div class="line">        ThreadLocal&lt;?&gt; key = reference.get();</div><div class="line">        if (key != null) &#123;</div><div class="line">            // Entry is still live. Move it over.</div><div class="line">            add(key, oldTable[i + 1]);</div><div class="line">        &#125; else &#123;</div><div class="line">            // The key was reclaimed.</div><div class="line">            size--;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    return true;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>如果死亡对象+存活对象达不到maximumLoad(阀值),不需要进行调整</li>
+<li>计算出值的容量(length/2)</li>
+<li>新容量仍然和旧容量一样，这是一种乐观的做法，当存活对象大于value容量/2时，才需要进行扩展</li>
+<li>申请新的数组，将旧值中没被gc的活对象添加进去。</li>
+</ul>
+<h4 id="getAfterMiss过程"><a href="#getAfterMiss过程" class="headerlink" title="getAfterMiss过程"></a>getAfterMiss过程</h4><p>在第一个槽位(index)处没发现合适值的时候，会调用这个方法返回一个。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div></pre></td><td class="code"><pre><div class="line">Object getAfterMiss(ThreadLocal&lt;?&gt; key) &#123;</div><div class="line">    Object[] table = this.table;</div><div class="line">    int index = key.hash &amp; mask;</div><div class="line"></div><div class="line">    // If the first slot is empty, the search is over.</div><div class="line">    if (table[index] == null) &#123;</div><div class="line">        Object value = key.initialValue();</div><div class="line"></div><div class="line">        // If the table is still the same and the slot is still empty...</div><div class="line">        if (this.table == table &amp;&amp; table[index] == null) &#123;</div><div class="line">            table[index] = key.reference;</div><div class="line">            table[index + 1] = value;</div><div class="line">            size++;</div><div class="line"></div><div class="line">            cleanUp();</div><div class="line">            return value;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        // The table changed during initialValue().</div><div class="line">        put(key, value);</div><div class="line">        return value;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // Keep track of first tombstone. That&apos;s where we want to go back</div><div class="line">    // and add an entry if necessary.</div><div class="line">    int firstTombstone = -1;</div><div class="line"></div><div class="line">    // Continue search.</div><div class="line">    for (index = next(index);; index = next(index)) &#123;</div><div class="line">        Object reference = table[index];</div><div class="line">        if (reference == key.reference) &#123;</div><div class="line">            return table[index + 1];</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        // If no entry was found...</div><div class="line">        if (reference == null) &#123;</div><div class="line">            Object value = key.initialValue();</div><div class="line"></div><div class="line">            // If the table is still the same...</div><div class="line">            if (this.table == table) &#123;</div><div class="line">                // If we passed a tombstone and that slot still</div><div class="line">                // contains a tombstone...</div><div class="line">                if (firstTombstone &gt; -1</div><div class="line">                        &amp;&amp; table[firstTombstone] == TOMBSTONE) &#123;</div><div class="line">                    table[firstTombstone] = key.reference;</div><div class="line">                    table[firstTombstone + 1] = value;</div><div class="line">                    tombstones--;</div><div class="line">                    size++;</div><div class="line"></div><div class="line">                    // No need to clean up here. We aren&apos;t filling</div><div class="line">                    // in a null slot.</div><div class="line">                    return value;</div><div class="line">                &#125;</div><div class="line"></div><div class="line">                // If this slot is still empty...</div><div class="line">                if (table[index] == null) &#123;</div><div class="line">                    table[index] = key.reference;</div><div class="line">                    table[index + 1] = value;</div><div class="line">                    size++;</div><div class="line"></div><div class="line">                    cleanUp();</div><div class="line">                    return value;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            // The table changed during initialValue().</div><div class="line">            put(key, value);</div><div class="line">            return value;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        if (firstTombstone == -1 &amp;&amp; reference == TOMBSTONE) &#123;</div><div class="line">            // Keep track of this tombstone so we can overwrite it.</div><div class="line">            firstTombstone = index;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>方法较长，逻辑如下：</p>
+<ul>
+<li>第一个槽位index处key为null，生成一个value，<ul>
+<li>如果生成value的过程成数组没变，index处插入key，index+1处插入value，清理无用</li>
+<li>过程中，数组改变了.将value put进去 </li>
+</ul>
+</li>
+<li><p>循环处理</p>
+<ul>
+<li>数组中的key和传入的key.reference相等，返回数组index+1处的值</li>
+<li><p>数组中的key为null，初始化一个value </p>
+<ul>
+<li><p>数组无变化，firstTombstone&gt;-1,切firstTombstone为无效对象(TOMBSTONE)，修改firstTombstone为key，firstTombstone+1处为value，如果index处为null，加入到index处</p>
+</li>
+<li><p>省略</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>能看到，ThreadLocal的实现并不是想象中的那么简单。其中有一些问题我也没想明白，需要解析来思考下。</p>
+<h3 id="最近访客"><a href="#最近访客" class="headerlink" title="最近访客"></a>最近访客</h3><ul class="ds-recent-visitors" data-num-items="46" data-avatar-size="40"></ul></the>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/源码/" rel="tag"># 源码</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/13/LruCache源码浅析/" rel="next" title="LruCache源码浅析">
+                <i class="fa fa-chevron-left"></i> LruCache源码浅析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+  <p>热评文章</p>
+  <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/01/13/ThreadLocal源码浅析/"
+           data-title="ThreadLocal源码浅析" data-url="http://guolei1130.github.io/2017/01/13/ThreadLocal源码浅析/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/img/head.png"
+               alt="_StriveG" />
+          <p class="site-author-name" itemprop="name">_StriveG</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://guolei1130.github.io/" target="_blank" title="博客首页">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  博客首页
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Guolei1130/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/qq_21430549" target="_blank" title="csdn博客">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  csdn博客
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://monsterlin.com/" target="_blank" title="友情链接">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  友情链接
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置值-set方法"><span class="nav-number">2.</span> <span class="nav-text">设置值-set方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Values的初始化"><span class="nav-number">2.1.</span> <span class="nav-text">Values的初始化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#存储到values中"><span class="nav-number">2.2.</span> <span class="nav-text">存储到values中</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获取值-get方法"><span class="nav-number">3.</span> <span class="nav-text">获取值-get方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gc带来的影响及处理"><span class="nav-number">4.</span> <span class="nav-text">gc带来的影响及处理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#清理过程"><span class="nav-number">4.1.</span> <span class="nav-text">清理过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rehash过程-调整"><span class="nav-number">4.2.</span> <span class="nav-text">rehash过程-调整</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#getAfterMiss过程"><span class="nav-number">4.3.</span> <span class="nav-text">getAfterMiss过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最近访客"><span class="nav-number">6.</span> <span class="nav-text">最近访客</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">_StriveG</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"guolei1130"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>
