@@ -1,0 +1,858 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="源码," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言日常开发离不开动画，属性动画更为强大，我们不仅要知道如何使用，更要知道他的原理。这样，才能得心应手。那么，今天，就从最简单的来说，了解下属性动画的原理。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android属性动画源码浅析">
+<meta property="og:url" content="http://guolei1130.github.io/2017/01/19/Android属性动画源码浅析/index.html">
+<meta property="og:site_name" content="_StriveG Blog">
+<meta property="og:description" content="前言日常开发离不开动画，属性动画更为强大，我们不仅要知道如何使用，更要知道他的原理。这样，才能得心应手。那么，今天，就从最简单的来说，了解下属性动画的原理。">
+<meta property="og:updated_time" content="2017-01-19T08:33:47.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android属性动画源码浅析">
+<meta name="twitter:description" content="前言日常开发离不开动画，属性动画更为强大，我们不仅要知道如何使用，更要知道他的原理。这样，才能得心应手。那么，今天，就从最简单的来说，了解下属性动画的原理。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"always"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'guolei1130',
+      author: '菜鸡郭'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://guolei1130.github.io/2017/01/19/Android属性动画源码浅析/"/>
+
+
+
+
+
+  <title> Android属性动画源码浅析 | _StriveG Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">_StriveG Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle"></p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/me" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://guolei1130.github.io/2017/01/19/Android属性动画源码浅析/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="_StriveG">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/img/head.png">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="_StriveG Blog">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="_StriveG Blog" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android属性动画源码浅析
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-19T16:32:38+08:00">
+                2017-01-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/01/19/Android属性动画源码浅析/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/01/19/Android属性动画源码浅析/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><excerpt in="" index="" |="" 首页摘要=""></excerpt></p>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>日常开发离不开动画，属性动画更为强大，我们不仅要知道如何使用，更要知道他的原理。这样，才能得心应手。那么，今天，就从最简单的来说，了解下属性动画的原理。</p>
+<a id="more"></a>
+<the rest="" of="" contents="" |="" 余下全文="">
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ObjectAnimator</div><div class="line">        .ofInt(mView,&quot;width&quot;,100,500)</div><div class="line">        .setDuration(1000)</div><div class="line">        .start();</div></pre></td></tr></table></figure>
+<h3 id="ObjectAnimator-ofInt"><a href="#ObjectAnimator-ofInt" class="headerlink" title="ObjectAnimator#ofInt"></a>ObjectAnimator#ofInt</h3><p>以这个为例，代码如下。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">public static ObjectAnimator ofInt(Object target, String propertyName, int... values) &#123;</div><div class="line">    ObjectAnimator anim = new ObjectAnimator(target, propertyName);</div><div class="line">    anim.setIntValues(values);</div><div class="line">    return anim;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在这个方法中，首先会new一个ObjectAnimator对象，然后通过setIntValues方法将值设置进去，然后返回。在ObjectAnimator的构造方法中，会通过setTarget方法设置当前动画的对象，通过setPropertyName设置当前的属性名。我们重点说下setIntValues方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">public void setIntValues(int... values) &#123;</div><div class="line">    if (mValues == null || mValues.length == 0) &#123;</div><div class="line">        // No values yet - this animator is being constructed piecemeal. Init the values with</div><div class="line">        // whatever the current propertyName is</div><div class="line">        if (mProperty != null) &#123;</div><div class="line">            setValues(PropertyValuesHolder.ofInt(mProperty, values));</div><div class="line">        &#125; else &#123;</div><div class="line">            setValues(PropertyValuesHolder.ofInt(mPropertyName, values));</div><div class="line">        &#125;</div><div class="line">    &#125; else &#123;</div><div class="line">        super.setIntValues(values);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>首先会判断，mValues是不是null，我们这里是null，并且mProperty也是null，所以会调用<br>setValues(PropertyValuesHolder.ofInt(mPropertyName, values));方法。先看PropertyValuesHolder.ofInt方法，PropertyValuesHolder这个类是holds属性和值的，在这个方法会构造一个IntPropertyValuesHolder对象并返回。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public static PropertyValuesHolder ofInt(String propertyName, int... values) &#123;</div><div class="line">    return new IntPropertyValuesHolder(propertyName, values);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>IntPropertyValuesHolder的构造方法如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">public IntPropertyValuesHolder(String propertyName, int... values) &#123;</div><div class="line">    super(propertyName);</div><div class="line">    setIntValues(values);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在这里，首先会调用他的分类的构造方法，然后调用setIntValues方法，在他父类的构造方法中，只是设置了下propertyName。setIntValues内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">public void setIntValues(int... values) &#123;</div><div class="line">    super.setIntValues(values);</div><div class="line">    mIntKeyframes = (Keyframes.IntKeyframes) mKeyframes;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在父类的setIntValues方法中，初始化了mValueType为int.class，mKeyframes为KeyframeSet.ofInt(values)。其中KeyframeSet为关键帧集合。然后将mKeyframes赋值给mIntKeyframes。</p>
+<h4 id="KeyframeSet"><a href="#KeyframeSet" class="headerlink" title="KeyframeSet"></a>KeyframeSet</h4><p>这个类是记录关键帧的。我们看下他的ofInt方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">public static KeyframeSet ofInt(int... values) &#123;</div><div class="line">    int numKeyframes = values.length;</div><div class="line">    IntKeyframe keyframes[] = new IntKeyframe[Math.max(numKeyframes,2)];</div><div class="line">    if (numKeyframes == 1) &#123;</div><div class="line">        keyframes[0] = (IntKeyframe) Keyframe.ofInt(0f);</div><div class="line">        keyframes[1] = (IntKeyframe) Keyframe.ofInt(1f, values[0]);</div><div class="line">    &#125; else &#123;</div><div class="line">        keyframes[0] = (IntKeyframe) Keyframe.ofInt(0f, values[0]);</div><div class="line">        for (int i = 1; i &lt; numKeyframes; ++i) &#123;</div><div class="line">            keyframes[i] =</div><div class="line">                    (IntKeyframe) Keyframe.ofInt((float) i / (numKeyframes - 1), values[i]);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    return new IntKeyframeSet(keyframes);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在这里呢？根据传入的values来计算关键帧，最后返回IntKeyframeSet。</p>
+<p>回到ObjectAnimator里面，这里的setValues用的是父类ValueAnimator的</p>
+<h4 id="ValueAnimator-setValues"><a href="#ValueAnimator-setValues" class="headerlink" title="ValueAnimator#setValues"></a>ValueAnimator#setValues</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">public void setValues(PropertyValuesHolder... values) &#123;</div><div class="line">    int numValues = values.length;</div><div class="line">    mValues = values;</div><div class="line">    mValuesMap = new HashMap&lt;String, PropertyValuesHolder&gt;(numValues);</div><div class="line">    for (int i = 0; i &lt; numValues; ++i) &#123;</div><div class="line">        PropertyValuesHolder valuesHolder = values[i];</div><div class="line">        mValuesMap.put(valuesHolder.getPropertyName(), valuesHolder);</div><div class="line">    &#125;</div><div class="line">    // New property/values/target should cause re-initialization prior to starting</div><div class="line">    mInitialized = false;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里的操作就简单了，就是把PropertyValuesHolder放入到mValuesMap中。</p>
+<h3 id="ObjectAnimator-start"><a href="#ObjectAnimator-start" class="headerlink" title="ObjectAnimator#start"></a>ObjectAnimator#start</h3><p>这个方法就是动画开始的地方。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">public void start() &#123;</div><div class="line">    // See if any of the current active/pending animators need to be canceled</div><div class="line">    AnimationHandler handler = sAnimationHandler.get();</div><div class="line">    if (handler != null) &#123;</div><div class="line">        int numAnims = handler.mAnimations.size();</div><div class="line">        for (int i = numAnims - 1; i &gt;= 0; i--) &#123;</div><div class="line">            if (handler.mAnimations.get(i) instanceof ObjectAnimator) &#123;</div><div class="line">                ObjectAnimator anim = (ObjectAnimator) handler.mAnimations.get(i);</div><div class="line">                if (anim.mAutoCancel &amp;&amp; hasSameTargetAndProperties(anim)) &#123;</div><div class="line">                    anim.cancel();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        numAnims = handler.mPendingAnimations.size();</div><div class="line">        for (int i = numAnims - 1; i &gt;= 0; i--) &#123;</div><div class="line">            if (handler.mPendingAnimations.get(i) instanceof ObjectAnimator) &#123;</div><div class="line">                ObjectAnimator anim = (ObjectAnimator) handler.mPendingAnimations.get(i);</div><div class="line">                if (anim.mAutoCancel &amp;&amp; hasSameTargetAndProperties(anim)) &#123;</div><div class="line">                    anim.cancel();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        numAnims = handler.mDelayedAnims.size();</div><div class="line">        for (int i = numAnims - 1; i &gt;= 0; i--) &#123;</div><div class="line">            if (handler.mDelayedAnims.get(i) instanceof ObjectAnimator) &#123;</div><div class="line">                ObjectAnimator anim = (ObjectAnimator) handler.mDelayedAnims.get(i);</div><div class="line">                if (anim.mAutoCancel &amp;&amp; hasSameTargetAndProperties(anim)) &#123;</div><div class="line">                    anim.cancel();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    if (DBG) &#123;</div><div class="line">        Log.d(LOG_TAG, &quot;Anim target, duration: &quot; + getTarget() + &quot;, &quot; + getDuration());</div><div class="line">        for (int i = 0; i &lt; mValues.length; ++i) &#123;</div><div class="line">            PropertyValuesHolder pvh = mValues[i];</div><div class="line">            Log.d(LOG_TAG, &quot;   Values[&quot; + i + &quot;]: &quot; +</div><div class="line">                pvh.getPropertyName() + &quot;, &quot; + pvh.mKeyframes.getValue(0) + &quot;, &quot; +</div><div class="line">                pvh.mKeyframes.getValue(1));</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    super.start();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>首先呢，会获取AnimationHandler对象，如果不为空的话，就会判断是mAnimations、mPendingAnimations、mDelayedAnims中的动画，并且取消。最后调用父类的start方法。</p>
+<h3 id="ValueAnimator-start"><a href="#ValueAnimator-start" class="headerlink" title="ValueAnimator#start"></a>ValueAnimator#start</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line">private void start(boolean playBackwards) &#123;</div><div class="line">    if (Looper.myLooper() == null) &#123;</div><div class="line">        throw new AndroidRuntimeException(&quot;Animators may only be run on Looper threads&quot;);</div><div class="line">    &#125;</div><div class="line">    mReversing = playBackwards;</div><div class="line">    mPlayingBackwards = playBackwards;</div><div class="line">    if (playBackwards &amp;&amp; mSeekFraction != -1) &#123;</div><div class="line">        if (mSeekFraction == 0 &amp;&amp; mCurrentIteration == 0) &#123;</div><div class="line">            // special case: reversing from seek-to-0 should act as if not seeked at all</div><div class="line">            mSeekFraction = 0;</div><div class="line">        &#125; else if (mRepeatCount == INFINITE) &#123;</div><div class="line">            mSeekFraction = 1 - (mSeekFraction % 1);</div><div class="line">        &#125; else &#123;</div><div class="line">            mSeekFraction = 1 + mRepeatCount - (mCurrentIteration + mSeekFraction);</div><div class="line">        &#125;</div><div class="line">        mCurrentIteration = (int) mSeekFraction;</div><div class="line">        mSeekFraction = mSeekFraction % 1;</div><div class="line">    &#125;</div><div class="line">    if (mCurrentIteration &gt; 0 &amp;&amp; mRepeatMode == REVERSE &amp;&amp;</div><div class="line">            (mCurrentIteration &lt; (mRepeatCount + 1) || mRepeatCount == INFINITE)) &#123;</div><div class="line">        // if we were seeked to some other iteration in a reversing animator,</div><div class="line">        // figure out the correct direction to start playing based on the iteration</div><div class="line">        if (playBackwards) &#123;</div><div class="line">            mPlayingBackwards = (mCurrentIteration % 2) == 0;</div><div class="line">        &#125; else &#123;</div><div class="line">            mPlayingBackwards = (mCurrentIteration % 2) != 0;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    int prevPlayingState = mPlayingState;</div><div class="line">    mPlayingState = STOPPED;</div><div class="line">    mStarted = true;</div><div class="line">    mStartedDelay = false;</div><div class="line">    mPaused = false;</div><div class="line">    updateScaledDuration(); // in case the scale factor has changed since creation time</div><div class="line">    AnimationHandler animationHandler = getOrCreateAnimationHandler();</div><div class="line">    animationHandler.mPendingAnimations.add(this);</div><div class="line">    if (mStartDelay == 0) &#123;</div><div class="line">        // This sets the initial value of the animation, prior to actually starting it running</div><div class="line">        if (prevPlayingState != SEEKED) &#123;</div><div class="line">            setCurrentPlayTime(0);</div><div class="line">        &#125;</div><div class="line">        mPlayingState = STOPPED;</div><div class="line">        mRunning = true;</div><div class="line">        notifyStartListeners();</div><div class="line">    &#125;</div><div class="line">    animationHandler.start();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>先初始化一些值</li>
+<li>updateScaledDuration 缩放时间，默认为1.0f</li>
+<li>获取或者创建AnimationHandler，将动画加入到mPendingAnimations列表中，</li>
+<li>如果没延迟，通知监听器</li>
+<li>animationHandler.start</li>
+</ul>
+<p>在animationHandler.start中，会调用scheduleAnimation方法，在这个种，会用mChoreographerpost一个callback，最终会执行mAnimate的run方法。mChoreographerpost涉及到VSYNC，这里不多介绍。</p>
+<h3 id="mAnimate-run"><a href="#mAnimate-run" class="headerlink" title="mAnimate#run"></a>mAnimate#run</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">doAnimationFrame(mChoreographer.getFrameTime());</div></pre></td></tr></table></figure>
+<p>在这里会用过doAnimationFrame设置动画帧，我们看下这个方法的代码。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div></pre></td><td class="code"><pre><div class="line">void doAnimationFrame(long frameTime) &#123;</div><div class="line">    mLastFrameTime = frameTime;</div><div class="line"></div><div class="line">    // mPendingAnimations holds any animations that have requested to be started</div><div class="line">    // We&apos;re going to clear mPendingAnimations, but starting animation may</div><div class="line">    // cause more to be added to the pending list (for example, if one animation</div><div class="line">    // starting triggers another starting). So we loop until mPendingAnimations</div><div class="line">    // is empty.</div><div class="line">    while (mPendingAnimations.size() &gt; 0) &#123;</div><div class="line">        ArrayList&lt;ValueAnimator&gt; pendingCopy =</div><div class="line">                (ArrayList&lt;ValueAnimator&gt;) mPendingAnimations.clone();</div><div class="line">        mPendingAnimations.clear();</div><div class="line">        int count = pendingCopy.size();</div><div class="line">        for (int i = 0; i &lt; count; ++i) &#123;</div><div class="line">            ValueAnimator anim = pendingCopy.get(i);</div><div class="line">            // If the animation has a startDelay, place it on the delayed list</div><div class="line">            if (anim.mStartDelay == 0) &#123;</div><div class="line">                anim.startAnimation(this);</div><div class="line">            &#125; else &#123;</div><div class="line">                mDelayedAnims.add(anim);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // Next, process animations currently sitting on the delayed queue, adding</div><div class="line">    // them to the active animations if they are ready</div><div class="line">    int numDelayedAnims = mDelayedAnims.size();</div><div class="line">    for (int i = 0; i &lt; numDelayedAnims; ++i) &#123;</div><div class="line">        ValueAnimator anim = mDelayedAnims.get(i);</div><div class="line">        if (anim.delayedAnimationFrame(frameTime)) &#123;</div><div class="line">            mReadyAnims.add(anim);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    int numReadyAnims = mReadyAnims.size();</div><div class="line">    if (numReadyAnims &gt; 0) &#123;</div><div class="line">        for (int i = 0; i &lt; numReadyAnims; ++i) &#123;</div><div class="line">            ValueAnimator anim = mReadyAnims.get(i);</div><div class="line">            anim.startAnimation(this);</div><div class="line">            anim.mRunning = true;</div><div class="line">            mDelayedAnims.remove(anim);</div><div class="line">        &#125;</div><div class="line">        mReadyAnims.clear();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // Now process all active animations. The return value from animationFrame()</div><div class="line">    // tells the handler whether it should now be ended</div><div class="line">    int numAnims = mAnimations.size();</div><div class="line">    for (int i = 0; i &lt; numAnims; ++i) &#123;</div><div class="line">        mTmpAnimations.add(mAnimations.get(i));</div><div class="line">    &#125;</div><div class="line">    for (int i = 0; i &lt; numAnims; ++i) &#123;</div><div class="line">        ValueAnimator anim = mTmpAnimations.get(i);</div><div class="line">        if (mAnimations.contains(anim) &amp;&amp; anim.doAnimationFrame(frameTime)) &#123;</div><div class="line">            mEndingAnims.add(anim);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    mTmpAnimations.clear();</div><div class="line">    if (mEndingAnims.size() &gt; 0) &#123;</div><div class="line">        for (int i = 0; i &lt; mEndingAnims.size(); ++i) &#123;</div><div class="line">            mEndingAnims.get(i).endAnimation(this);</div><div class="line">        &#125;</div><div class="line">        mEndingAnims.clear();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // Schedule final commit for the frame.</div><div class="line">    mChoreographer.postCallback(Choreographer.CALLBACK_COMMIT, mCommit, null);</div><div class="line"></div><div class="line">    // If there are still active or delayed animations, schedule a future call to</div><div class="line">    // onAnimate to process the next frame of the animations.</div><div class="line">    if (!mAnimations.isEmpty() || !mDelayedAnims.isEmpty()) &#123;</div><div class="line">        scheduleAnimation();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>方法较长，逻辑如下：</p>
+<ul>
+<li>从mPendingAnimations中取出动画，根据事先选择startAnimation还是加入到mDelayedAnims列表。</li>
+<li>如果mDelayedAnims列表中的动画准备好了，就加入到mReadyAnims列表中</li>
+<li>从mAnimations列表中取出要执行的动画，加入到mTmpAnimations列表</li>
+<li>通过doAnimationFrame方法执行动画帧</li>
+<li>继续执行scheduleAnimation</li>
+</ul>
+<p>从上面我们能看出，执行动画的关键是doAnimationFrame方法。在这个方法中，会调用animationFrame方法。</p>
+<h3 id="ValueAniator-animationFrame"><a href="#ValueAniator-animationFrame" class="headerlink" title="ValueAniator#animationFrame"></a>ValueAniator#animationFrame</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line">boolean animationFrame(long currentTime) &#123;</div><div class="line">     boolean done = false;</div><div class="line">     switch (mPlayingState) &#123;</div><div class="line">     case RUNNING:</div><div class="line">     case SEEKED:</div><div class="line">         float fraction = mDuration &gt; 0 ? (float)(currentTime - mStartTime) / mDuration : 1f;</div><div class="line">         if (mDuration == 0 &amp;&amp; mRepeatCount != INFINITE) &#123;</div><div class="line">             // Skip to the end</div><div class="line">             mCurrentIteration = mRepeatCount;</div><div class="line">             if (!mReversing) &#123;</div><div class="line">                 mPlayingBackwards = false;</div><div class="line">             &#125;</div><div class="line">         &#125;</div><div class="line">         if (fraction &gt;= 1f) &#123;</div><div class="line">             if (mCurrentIteration &lt; mRepeatCount || mRepeatCount == INFINITE) &#123;</div><div class="line">                 // Time to repeat</div><div class="line">                 if (mListeners != null) &#123;</div><div class="line">                     int numListeners = mListeners.size();</div><div class="line">                     for (int i = 0; i &lt; numListeners; ++i) &#123;</div><div class="line">                         mListeners.get(i).onAnimationRepeat(this);</div><div class="line">                     &#125;</div><div class="line">                 &#125;</div><div class="line">                 if (mRepeatMode == REVERSE) &#123;</div><div class="line">                     mPlayingBackwards = !mPlayingBackwards;</div><div class="line">                 &#125;</div><div class="line">                 mCurrentIteration += (int) fraction;</div><div class="line">                 fraction = fraction % 1f;</div><div class="line">                 mStartTime += mDuration;</div><div class="line">                 // Note: We do not need to update the value of mStartTimeCommitted here</div><div class="line">                 // since we just added a duration offset.</div><div class="line">             &#125; else &#123;</div><div class="line">                 done = true;</div><div class="line">                 fraction = Math.min(fraction, 1.0f);</div><div class="line">             &#125;</div><div class="line">         &#125;</div><div class="line">         if (mPlayingBackwards) &#123;</div><div class="line">             fraction = 1f - fraction;</div><div class="line">         &#125;</div><div class="line">         animateValue(fraction);</div><div class="line">         break;</div><div class="line">     &#125;</div><div class="line"></div><div class="line">     return done;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>计算fraction</li>
+<li>调用animateValue方法</li>
+</ul>
+<p><span style="color:red">根据虚拟机执行引擎动态分派原则，这里会调用ObjectAnimator的animateValue方法。<span></span></span></p>
+<h3 id="ObjectAnimator-animateValue"><a href="#ObjectAnimator-animateValue" class="headerlink" title="ObjectAnimator#animateValue"></a>ObjectAnimator#animateValue</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">void animateValue(float fraction) &#123;</div><div class="line">    final Object target = getTarget();</div><div class="line">    if (mTarget != null &amp;&amp; target == null) &#123;</div><div class="line">        // We lost the target reference, cancel and clean up.</div><div class="line">        cancel();</div><div class="line">        return;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    super.animateValue(fraction);</div><div class="line">    int numValues = mValues.length;</div><div class="line">    for (int i = 0; i &lt; numValues; ++i) &#123;</div><div class="line">        mValues[i].setAnimatedValue(target);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里主要干了两件事，</p>
+<ul>
+<li>调用父类的animateValue方法</li>
+<li>通过setAnimatedValue设置属性</li>
+</ul>
+<p>其父类的方法如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">void animateValue(float fraction) &#123;</div><div class="line">    fraction = mInterpolator.getInterpolation(fraction);</div><div class="line">    mCurrentFraction = fraction;</div><div class="line">    int numValues = mValues.length;</div><div class="line">    for (int i = 0; i &lt; numValues; ++i) &#123;</div><div class="line">        mValues[i].calculateValue(fraction);</div><div class="line">    &#125;</div><div class="line">    if (mUpdateListeners != null) &#123;</div><div class="line">        int numListeners = mUpdateListeners.size();</div><div class="line">        for (int i = 0; i &lt; numListeners; ++i) &#123;</div><div class="line">            mUpdateListeners.get(i).onAnimationUpdate(this);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在这个方法中，会通过Interpolator得到出当前的fraction，并通过calculateValue来计算当前应该的值，这里会调用IntPropertyValuesHolder的calculateValue</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">void calculateValue(float fraction) &#123;</div><div class="line">    mIntAnimatedValue = mIntKeyframes.getIntValue(fraction);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我们知道，mIntKeyframes对应的是IntKeyframeSet。在这个类的getIntValue中，会通过TypeEvaluator来计算当前对应的值。不多说了。</p>
+<p>最后，回到animateValue。计算了值之后，会调用setAnimatedValue来设置值。我们看看他的实现。</p>
+<h3 id="IntPropertyValuesHolder-setAnimatedValue"><a href="#IntPropertyValuesHolder-setAnimatedValue" class="headerlink" title="IntPropertyValuesHolder#setAnimatedValue"></a>IntPropertyValuesHolder#setAnimatedValue</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">void setAnimatedValue(Object target) &#123;</div><div class="line">    if (mIntProperty != null) &#123;</div><div class="line">        mIntProperty.setValue(target, mIntAnimatedValue);</div><div class="line">        return;</div><div class="line">    &#125;</div><div class="line">    if (mProperty != null) &#123;</div><div class="line">        mProperty.set(target, mIntAnimatedValue);</div><div class="line">        return;</div><div class="line">    &#125;</div><div class="line">    if (mJniSetter != 0) &#123;</div><div class="line">        nCallIntMethod(target, mJniSetter, mIntAnimatedValue);</div><div class="line">        return;</div><div class="line">    &#125;</div><div class="line">    if (mSetter != null) &#123;</div><div class="line">        try &#123;</div><div class="line">            mTmpValueArray[0] = mIntAnimatedValue;</div><div class="line">            mSetter.invoke(target, mTmpValueArray);</div><div class="line">        &#125; catch (InvocationTargetException e) &#123;</div><div class="line">            Log.e(&quot;PropertyValuesHolder&quot;, e.toString());</div><div class="line">        &#125; catch (IllegalAccessException e) &#123;</div><div class="line">            Log.e(&quot;PropertyValuesHolder&quot;, e.toString());</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>恩，到这里就能看到修改属性值得痕迹了，有以下四种情况</p>
+<ul>
+<li>mIntProperty不为null</li>
+<li>mProperty不为null</li>
+<li>mJniSetter不为null</li>
+<li>mSetter不为null</li>
+</ul>
+<p>首先，我们通过String propertyName, int… values参数构造的对象，mIntProperty为null，并且mProperty也为null。那其他两个是怎么来的呢？似乎漏了什么？</p>
+<p>还节的，在doAnimationFrame中，直接调用startAnimation么?没错，就是这里。</p>
+<h3 id="startAnimation"><a href="#startAnimation" class="headerlink" title="startAnimation"></a>startAnimation</h3><p>在这个方法中调用了initAnimation方法。还是根据动态分派规则，这里调用ObjectAnimator的initAnimation方法。在这里调用PropertyValuesHolder的setupSetterAndGetter方法，在这里对mSetter等进行了初始化，这里就不多说了，大家自己看代码吧。</p>
+<h3 id="最近访客"><a href="#最近访客" class="headerlink" title="最近访客"></a>最近访客</h3><ul class="ds-recent-visitors" data-num-items="46" data-avatar-size="40"></ul></the>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/源码/" rel="tag"># 源码</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/18/jvm字节码执行引擎/" rel="next" title="jvm字节码执行引擎">
+                <i class="fa fa-chevron-left"></i> jvm字节码执行引擎
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+  <p>热评文章</p>
+  <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/01/19/Android属性动画源码浅析/"
+           data-title="Android属性动画源码浅析" data-url="http://guolei1130.github.io/2017/01/19/Android属性动画源码浅析/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/img/head.png"
+               alt="_StriveG" />
+          <p class="site-author-name" itemprop="name">_StriveG</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://guolei1130.github.io/" target="_blank" title="博客首页">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  博客首页
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Guolei1130/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/qq_21430549" target="_blank" title="csdn博客">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  csdn博客
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://monsterlin.com/" target="_blank" title="友情链接">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  友情链接
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ObjectAnimator-ofInt"><span class="nav-number">2.</span> <span class="nav-text">ObjectAnimator#ofInt</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#KeyframeSet"><span class="nav-number">2.1.</span> <span class="nav-text">KeyframeSet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ValueAnimator-setValues"><span class="nav-number">2.2.</span> <span class="nav-text">ValueAnimator#setValues</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ObjectAnimator-start"><span class="nav-number">3.</span> <span class="nav-text">ObjectAnimator#start</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ValueAnimator-start"><span class="nav-number">4.</span> <span class="nav-text">ValueAnimator#start</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mAnimate-run"><span class="nav-number">5.</span> <span class="nav-text">mAnimate#run</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ValueAniator-animationFrame"><span class="nav-number">6.</span> <span class="nav-text">ValueAniator#animationFrame</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ObjectAnimator-animateValue"><span class="nav-number">7.</span> <span class="nav-text">ObjectAnimator#animateValue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IntPropertyValuesHolder-setAnimatedValue"><span class="nav-number">8.</span> <span class="nav-text">IntPropertyValuesHolder#setAnimatedValue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#startAnimation"><span class="nav-number">9.</span> <span class="nav-text">startAnimation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最近访客"><span class="nav-number">10.</span> <span class="nav-text">最近访客</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">_StriveG</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"guolei1130"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>
