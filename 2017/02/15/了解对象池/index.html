@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="jvm," />
+  <meta name="keywords" content="程序设计," />
 
 
 
@@ -84,19 +84,25 @@
 
 
 
-<meta name="description" content="前言我决定停一段时间的framework，插播一些jvm的学习内容。首先，就是内存区域。学无止境，加油。">
+<meta name="description" content="认识对象池对象池是一种设计模式，预先初始化一组可重用的实体，而不是按需销毁后重建。主要是为了解决创建对象以及gc造成的性能损耗。适用于以下情景：
+
+创建对象消耗大量的资源，如线程，jdbc连接，socket连接
+创建小对象但是gc频繁，如内存抖动现象，如Android中的Message">
 <meta property="og:type" content="article">
-<meta property="og:title" content="java内存区域">
-<meta property="og:url" content="http://guolei1130.github.io/2017/01/12/java内存区域/index.html">
+<meta property="og:title" content="了解对象池">
+<meta property="og:url" content="http://guolei1130.github.io/2017/02/15/了解对象池/index.html">
 <meta property="og:site_name" content="_StriveG Blog">
-<meta property="og:description" content="前言我决定停一段时间的framework，插播一些jvm的学习内容。首先，就是内存区域。学无止境，加油。">
-<meta property="og:image" content="http://guolei1130.github.io/images/jvm/内存区域.png">
-<meta property="og:image" content="http://img.blog.csdn.net/20160808174044369">
-<meta property="og:updated_time" content="2017-01-12T13:33:07.000Z">
+<meta property="og:description" content="认识对象池对象池是一种设计模式，预先初始化一组可重用的实体，而不是按需销毁后重建。主要是为了解决创建对象以及gc造成的性能损耗。适用于以下情景：
+
+创建对象消耗大量的资源，如线程，jdbc连接，socket连接
+创建小对象但是gc频繁，如内存抖动现象，如Android中的Message">
+<meta property="og:updated_time" content="2017-02-15T15:35:47.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="java内存区域">
-<meta name="twitter:description" content="前言我决定停一段时间的framework，插播一些jvm的学习内容。首先，就是内存区域。学无止境，加油。">
-<meta name="twitter:image" content="http://guolei1130.github.io/images/jvm/内存区域.png">
+<meta name="twitter:title" content="了解对象池">
+<meta name="twitter:description" content="认识对象池对象池是一种设计模式，预先初始化一组可重用的实体，而不是按需销毁后重建。主要是为了解决创建对象以及gc造成的性能损耗。适用于以下情景：
+
+创建对象消耗大量的资源，如线程，jdbc连接，socket连接
+创建小对象但是gc频繁，如内存抖动现象，如Android中的Message">
 
 
 
@@ -124,13 +130,13 @@
 
 
 
-  <link rel="canonical" href="http://guolei1130.github.io/2017/01/12/java内存区域/"/>
+  <link rel="canonical" href="http://guolei1130.github.io/2017/02/15/了解对象池/"/>
 
 
 
 
 
-  <title> java内存区域 | _StriveG Blog </title>
+  <title> 了解对象池 | _StriveG Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -263,7 +269,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://guolei1130.github.io/2017/01/12/java内存区域/">
+  <link itemprop="mainEntityOfPage" href="http://guolei1130.github.io/2017/02/15/了解对象池/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="_StriveG">
@@ -287,7 +293,7 @@
             
             
               
-                java内存区域
+                了解对象池
               
             
           </h1>
@@ -302,8 +308,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-12T21:31:56+08:00">
-                2017-01-12
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-15T23:34:44+08:00">
+                2017-02-15
               </time>
             
 
@@ -313,28 +319,6 @@
           </span>
 
           
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
 
           
             
@@ -343,8 +327,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/01/12/java内存区域/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/01/12/java内存区域/" itemprop="commentCount"></span>
+                <a href="/2017/02/15/了解对象池/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/02/15/了解对象池/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -376,115 +360,46 @@
 
       
         <p><excerpt in="" index="" |="" 首页摘要=""></excerpt></p>
-<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>我决定停一段时间的framework，插播一些jvm的学习内容。首先，就是内存区域。学无止境，加油。</p>
+<h3 id="认识对象池"><a href="#认识对象池" class="headerlink" title="认识对象池"></a>认识对象池</h3><p>对象池是一种设计模式，预先初始化一组可重用的实体，而不是按需销毁后重建。主要是为了解决创建对象以及gc造成的性能损耗。适用于以下情景：</p>
+<ul>
+<li>创建对象消耗大量的资源，如线程，jdbc连接，socket连接</li>
+<li>创建小对象但是gc频繁，如内存抖动现象，如Android中的Message</li>
+</ul>
 <a id="more"></a>
 <the rest="" of="" contents="" |="" 余下全文="">
 
 
-<h3 id="运行时的数据区域"><a href="#运行时的数据区域" class="headerlink" title="运行时的数据区域"></a>运行时的数据区域</h3><p>根据jvm规范，java虚拟机所管理的内存区域包括图中的几个运行时数据区域，下面，来进行学习。</p>
-<p><img src="/images/jvm/内存区域.png" alt=""></p>
-<h4 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h4><ul>
-<li>线程私有</li>
-</ul>
-<blockquote>
-<p>程序计数器(Program Counter Register)是一块较小的内存空间，可以看成是线程执行的字节码的行号指示器(执行到多少行字节码指令),在概念模型中，通过改变这个计数器的值来选取下一条需要执行的字节码指令，分支、循环、跳转、异常处理、线程恢复等基础功能都需要依赖这个计数器来实现。</p>
-<p>如果虚拟机执行的是java方法，这个计数器记录的是正在执行的虚拟机字节码的指令地址，如果是native方法，这为空。</p>
-</blockquote>
-<h4 id="Java虚拟机栈"><a href="#Java虚拟机栈" class="headerlink" title="Java虚拟机栈"></a>Java虚拟机栈</h4><ul>
-<li>线程私有</li>
-<li>生命周期和线程相同</li>
-<li>StackOverflowError</li>
-<li>OutOfMemoryError</li>
-</ul>
-<blockquote>
-<p>每个方法在执行时都会创建一个栈帧，用于存储局部变量表、操作数栈、动态链接、方法出口等信息，每一个方法从调用到执行完成，就对应一个栈帧在虚拟机栈的入栈和出栈。</p>
-</blockquote>
-<p>局部变量表存放了编译时期的一些数据：</p>
+<p>对象池的设计中，涉及到以下几个方面：</p>
 <ul>
-<li>8种基本数据类型，</li>
-<li>引用类型<ul>
-<li>指向对象起点的引用指针</li>
-<li>代表对象的句柄或其他与此对象相关的地址</li>
-<li>returnAddress类型(指向一条字节码指令的地址)</li>
+<li>对象池容量</li>
+<li>从对象池中取对象</li>
+<li>向对象池中存对象</li>
+<li>高并发对象池</li>
 </ul>
-</li>
-</ul>
-<blockquote>
-<p>局部变量表所需要的空间在编译时完成分配，当进入一个方法时，这个方法说需要在帧中分配的空间时完全确定的，在方法运行时间不会修改局部变量表的大小。</p>
-</blockquote>
-<h4 id="本地方法栈"><a href="#本地方法栈" class="headerlink" title="本地方法栈"></a>本地方法栈</h4><blockquote>
-<p>与虚拟机栈类似，只不过本地方法栈为虚拟机使用到的Native方法服务。</p>
-</blockquote>
-<h4 id="Java堆"><a href="#Java堆" class="headerlink" title="Java堆"></a>Java堆</h4><ul>
-<li>大</li>
-<li>线程共享</li>
-<li>OutOfMemoryError</li>
-</ul>
-<p>几乎所有的对象实例都在这里分配内存(包括数组)</p>
-<h4 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h4><ul>
-<li>线程共享</li>
-<li>OutOfMemoryError</li>
-</ul>
-<p>用于存储已经被虚拟机加载的类信息、常量、静态变量、即使编译后的代码等数据。</p>
-<h5 id="运行时常量池"><a href="#运行时常量池" class="headerlink" title="运行时常量池"></a>运行时常量池</h5><ul>
-<li>OutOfMemoryError</li>
-</ul>
-<p>这是方法区的一部分，用于存放编译时期生成的各种字面量和符号引用，这部分内容将在类加载后进入方法区的运行时常量池中存放。</p>
-<h3 id="直接存储"><a href="#直接存储" class="headerlink" title="直接存储"></a>直接存储</h3><p>并不是运行时数据区的一部分，如使用nio。</p>
-<h3 id="hotspot虚拟机对象"><a href="#hotspot虚拟机对象" class="headerlink" title="hotspot虚拟机对象"></a>hotspot虚拟机对象</h3><h4 id="对象的创建"><a href="#对象的创建" class="headerlink" title="对象的创建"></a>对象的创建</h4><p>虚拟机遇到一条new指令时，首先会去检查这个指令的参数是否能在常量池中定位到一个类的符号引用，并检查是否经过了类加载，如果没有，则执行类加载过程。对象的大小在类加载完之后就确定了。</p>
-<p>解析来虚拟机为对象分配内存，(从java堆中划分),有两种分配方式:</p>
+<p>因为本人是做客户端开发的，所以以Android中几种不同的对象池实现方式来了解下线程池。</p>
+<h3 id="Parcel类的对象池设计"><a href="#Parcel类的对象池设计" class="headerlink" title="Parcel类的对象池设计"></a>Parcel类的对象池设计</h3><p>我们现在主要看这个类对对象池的设计。以obtain方法为例。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">public static Parcel obtain() &#123;</div><div class="line">    final Parcel[] pool = sOwnedPool;</div><div class="line">    synchronized (pool) &#123;</div><div class="line">        Parcel p;</div><div class="line">        for (int i=0; i&lt;POOL_SIZE; i++) &#123;</div><div class="line">            p = pool[i];</div><div class="line">            if (p != null) &#123;</div><div class="line">                pool[i] = null;</div><div class="line">                if (DEBUG_RECYCLE) &#123;</div><div class="line">                    p.mStack = new RuntimeException();</div><div class="line">                &#125;</div><div class="line">                return p;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    return new Parcel(0);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在这里，我们要注意到这里的池 是一个数组，从里提对象的时候，从头到尾扫描，找到不为null的对象，返回。再来看下recycle方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">public final void recycle() &#123;</div><div class="line">    if (DEBUG_RECYCLE) mStack = null;</div><div class="line">    freeBuffer();</div><div class="line"></div><div class="line">    final Parcel[] pool;</div><div class="line">    if (mOwnsNativeParcelObject) &#123;</div><div class="line">        pool = sOwnedPool;</div><div class="line">    &#125; else &#123;</div><div class="line">        mNativePtr = 0;</div><div class="line">        pool = sHolderPool;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    synchronized (pool) &#123;</div><div class="line">        for (int i=0; i&lt;POOL_SIZE; i++) &#123;</div><div class="line">            if (pool[i] == null) &#123;</div><div class="line">                pool[i] = this;</div><div class="line">                return;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <ul>
-<li>指针碰撞方式 内存是规整的，中间放着一个指示器，一边是分配了的，一边是空闲的，给对象分配内存的时候，只需要将指示器往空闲的一边移动对象大小的位置就好</li>
-<li>空闲列表方式 虚拟机维护着一个列表，列表纪录着哪块内存可用，分配内存时，在列表中找一个足够大的划分给对象，更新列表。</li>
+<li>找数组中第一个为null的，插入进入。</li>
 </ul>
-<p>这些分配方式，在并发的情况下并不是线程安全的。解决办法：</p>
+<p>当然，上面的代码还存在可优化的地方，原因在对存取的时候时复杂度都是O(n)，那么下面我们就来看一种，稍微优化过的。</p>
+<h3 id="v4包中的Pools类"><a href="#v4包中的Pools类" class="headerlink" title="v4包中的Pools类"></a>v4包中的Pools类</h3><p>同样，这里还是用数组来实现对象池。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">public T acquire() &#123;</div><div class="line">    if (mPoolSize &gt; 0) &#123;</div><div class="line">        final int lastPooledIndex = mPoolSize - 1;</div><div class="line">        T instance = (T) mPool[lastPooledIndex];</div><div class="line">        mPool[lastPooledIndex] = null;</div><div class="line">        mPoolSize--;</div><div class="line">        return instance;</div><div class="line">    &#125;</div><div class="line">    return null;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>能看到优化么？这里和原先的不一样，我们现在不便利了，直接从后面取，取一个，size–、这样，时间复杂度就是0(1)了，确实做到了优化，当然，release方法也一样。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">public boolean release(T instance) &#123;</div><div class="line">    if (isInPool(instance)) &#123;</div><div class="line">        throw new IllegalStateException(&quot;Already in the pool!&quot;);</div><div class="line">    &#125;</div><div class="line">    if (mPoolSize &lt; mPool.length) &#123;</div><div class="line">        mPool[mPoolSize] = instance;</div><div class="line">        mPoolSize++;</div><div class="line">        return true;</div><div class="line">    &#125;</div><div class="line">    return false;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>除了使用数组的方式，Android代码中还有以单链表来实现对象池的类，就是俺们的Message。</p>
+<h3 id="Message-单链表的对象池设计"><a href="#Message-单链表的对象池设计" class="headerlink" title="Message-单链表的对象池设计"></a>Message-单链表的对象池设计</h3><p>我们看下他的取和存(回收)。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">public static Message obtain() &#123;</div><div class="line">    synchronized (sPoolSync) &#123;</div><div class="line">        if (sPool != null) &#123;</div><div class="line">            Message m = sPool;</div><div class="line">            sPool = m.next;</div><div class="line">            m.next = null;</div><div class="line">            m.flags = 0; // clear in-use flag</div><div class="line">            sPoolSize--;</div><div class="line">            return m;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    return new Message();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">void recycleUnchecked() &#123;</div><div class="line">    // Mark the message as in use while it remains in the recycled object pool.</div><div class="line">    // Clear out all other details.</div><div class="line">    flags = FLAG_IN_USE;</div><div class="line">    what = 0;</div><div class="line">    arg1 = 0;</div><div class="line">    arg2 = 0;</div><div class="line">    obj = null;</div><div class="line">    replyTo = null;</div><div class="line">    sendingUid = -1;</div><div class="line">    when = 0;</div><div class="line">    target = null;</div><div class="line">    callback = null;</div><div class="line">    data = null;</div><div class="line"></div><div class="line">    synchronized (sPoolSync) &#123;</div><div class="line">        if (sPoolSize &lt; MAX_POOL_SIZE) &#123;</div><div class="line">            next = sPool;</div><div class="line">            sPool = this;</div><div class="line">            sPoolSize++;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <ul>
-<li>cas配合失败重试的方式保持原子性</li>
-<li>按线程分配在不同的空间中，每个线程在java堆预先分配一块内存，称为本地线程分配缓冲(Thread Local Allocation Buffer,TLAB)</li>
+<li>取对象的时候，我们从链表头拿个对象</li>
+<li>回收的时候，相当于在头部插入一个节点。</li>
 </ul>
-<p>分配完毕之后，将分配到的内存空间初始化为0值(不包括对象头),如果使用了tlab，初始化过程将会提前到tlab分配时，</p>
-<p>接下来对对象进行必要的设置，如是哪个对象的实例、对象的hash值、对象的gc年龄代、这些存在对象头中。</p>
-<p>最后，进行对象的初始化。</p>
-<p>总结下，对象的创建过程如下：</p>
-<ol>
-<li>碰到new指令</li>
-<li>执行类加载过程(如果没加载过)</li>
-<li>在java堆上分配内存</li>
-<li>内存初始化为0值</li>
-<li>设置对象头</li>
-<li>进行对象初始化</li>
-</ol>
-<h4 id="对象的内存布局"><a href="#对象的内存布局" class="headerlink" title="对象的内存布局"></a>对象的内存布局</h4><p>分为三块区域:</p>
-<ul>
-<li>对象头 Header<ul>
-<li>对象自身的运行时数据 Mark World</li>
-<li>类型指针</li>
-</ul>
-</li>
-<li>实例数据 Instance Data</li>
-<li>对齐填充 Padding</li>
-</ul>
-<p><img src="http://img.blog.csdn.net/20160808174044369" alt=""></p>
-<h5 id="Mark-World"><a href="#Mark-World" class="headerlink" title="Mark World"></a>Mark World</h5><p>存储了如hashcode、gc年龄代、锁状态标志、线程持有的锁，偏向线程id，偏向时间挫等</p>
-<h5 id="类型指针"><a href="#类型指针" class="headerlink" title="类型指针"></a>类型指针</h5><p>对象指向它的类元数据的指针，虚拟机通过这个指针来确定这个对象是那个类的实例。但是，并不是所有的都有，如数组。</p>
-<h5 id="实例数据"><a href="#实例数据" class="headerlink" title="实例数据"></a>实例数据</h5><p>对象正在存储的有效信息</p>
-<h5 id="对其填充"><a href="#对其填充" class="headerlink" title="对其填充"></a>对其填充</h5><p>起占位符的作用，保证对象的大小是8字节的整数倍。</p>
-<h4 id="对象的访问定位"><a href="#对象的访问定位" class="headerlink" title="对象的访问定位"></a>对象的访问定位</h4><p>目前访问对象有两种方式：</p>
-<ul>
-<li>使用句柄</li>
-<li>直接指针</li>
-</ul>
-<h5 id="使用句柄"><a href="#使用句柄" class="headerlink" title="使用句柄"></a>使用句柄</h5><p>java堆分配出一块区域当作句柄池，句柄中包含了对象实例数据与类型数据各自具体的地址信息。</p>
-<ul>
-<li>稳定，不需要根据对象移动而修改</li>
-<li>访问速度慢</li>
-</ul>
-<h5 id="直接地址"><a href="#直接地址" class="headerlink" title="直接地址"></a>直接地址</h5><p>存储的直接是对象地址。</p>
-<ul>
-<li>访问速度快</li>
-</ul>
+<h3 id="其他的一些设计"><a href="#其他的一些设计" class="headerlink" title="其他的一些设计"></a>其他的一些设计</h3><p>其他的一些设计 如线程池，socket连接池这里就不说了。</p>
 <h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
-<li>深入理解java虚拟机</li>
+<li><a href="http://www.infoq.com/cn/news/2015/07/ClojureWerkz" target="_blank" rel="external">一个广为人知但鲜有人用的技巧：对象池</a></li>
 </ul>
 <h3 id="最近访客"><a href="#最近访客" class="headerlink" title="最近访客"></a>最近访客</h3><ul class="ds-recent-visitors" data-num-items="46" data-avatar-size="40"></ul></the>
       
@@ -509,7 +424,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/jvm/" rel="tag"># jvm</a>
+            <a href="/tags/程序设计/" rel="tag"># 程序设计</a>
           
         </div>
       
@@ -518,8 +433,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/01/11/2017学习计划/" rel="next" title="2017学习计划">
-                <i class="fa fa-chevron-left"></i> 2017学习计划
+              <a href="/2017/01/20/jvm运行时优化/" rel="next" title="jvm运行时优化">
+                <i class="fa fa-chevron-left"></i> jvm运行时优化
               </a>
             
           </div>
@@ -527,10 +442,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/01/13/LruCache源码浅析/" rel="prev" title="LruCache源码浅析">
-                LruCache源码浅析 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -559,8 +470,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2017/01/12/java内存区域/"
-           data-title="java内存区域" data-url="http://guolei1130.github.io/2017/01/12/java内存区域/">
+      <div class="ds-thread" data-thread-key="2017/02/15/了解对象池/"
+           data-title="了解对象池" data-url="http://guolei1130.github.io/2017/02/15/了解对象池/">
       </div>
     
   </div>
@@ -698,7 +609,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行时的数据区域"><span class="nav-number">2.</span> <span class="nav-text">运行时的数据区域</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#程序计数器"><span class="nav-number">2.1.</span> <span class="nav-text">程序计数器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Java虚拟机栈"><span class="nav-number">2.2.</span> <span class="nav-text">Java虚拟机栈</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#本地方法栈"><span class="nav-number">2.3.</span> <span class="nav-text">本地方法栈</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Java堆"><span class="nav-number">2.4.</span> <span class="nav-text">Java堆</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#方法区"><span class="nav-number">2.5.</span> <span class="nav-text">方法区</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#运行时常量池"><span class="nav-number">2.5.1.</span> <span class="nav-text">运行时常量池</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#直接存储"><span class="nav-number">3.</span> <span class="nav-text">直接存储</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hotspot虚拟机对象"><span class="nav-number">4.</span> <span class="nav-text">hotspot虚拟机对象</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#对象的创建"><span class="nav-number">4.1.</span> <span class="nav-text">对象的创建</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#对象的内存布局"><span class="nav-number">4.2.</span> <span class="nav-text">对象的内存布局</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Mark-World"><span class="nav-number">4.2.1.</span> <span class="nav-text">Mark World</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#类型指针"><span class="nav-number">4.2.2.</span> <span class="nav-text">类型指针</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#实例数据"><span class="nav-number">4.2.3.</span> <span class="nav-text">实例数据</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#对其填充"><span class="nav-number">4.2.4.</span> <span class="nav-text">对其填充</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#对象的访问定位"><span class="nav-number">4.3.</span> <span class="nav-text">对象的访问定位</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#使用句柄"><span class="nav-number">4.3.1.</span> <span class="nav-text">使用句柄</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#直接地址"><span class="nav-number">4.3.2.</span> <span class="nav-text">直接地址</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最近访客"><span class="nav-number">6.</span> <span class="nav-text">最近访客</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#认识对象池"><span class="nav-number">1.</span> <span class="nav-text">认识对象池</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Parcel类的对象池设计"><span class="nav-number">2.</span> <span class="nav-text">Parcel类的对象池设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#v4包中的Pools类"><span class="nav-number">3.</span> <span class="nav-text">v4包中的Pools类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Message-单链表的对象池设计"><span class="nav-number">4.</span> <span class="nav-text">Message-单链表的对象池设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他的一些设计"><span class="nav-number">5.</span> <span class="nav-text">其他的一些设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">6.</span> <span class="nav-text">参考资料</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最近访客"><span class="nav-number">7.</span> <span class="nav-text">最近访客</span></a></li></ol></div>
             
 
           </div>
