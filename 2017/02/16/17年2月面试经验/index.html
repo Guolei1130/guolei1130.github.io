@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="jvm," />
+  <meta name="keywords" content="职业生涯," />
 
 
 
@@ -84,27 +84,19 @@
 
 
 
-<meta name="description" content="前言
-深入理解java虚拟机
-
-java虚拟机最开始是通过解释器进行解释执行的，当虚拟机发现某个方法或者代码块的运行特别频繁时，就会把这些代码认定为”热点代码”，为了提高热点代码的执行效率，在运行时，虚拟机会把这些代码编译成与本地平台相关的机器码，并进行各种层次的优化，完成这个任务的编译器称为即时编译器(JIT)">
+<meta name="description" content="前言小插曲：我年前就开始投简历，投了很长时间没人联系，结果年后回来一看，尼玛，电话写错了。
+又到了一年一度换工作的时候，我也不例外，因为去年一年都在乙方公司工作，自己不是很喜欢，因此想换家公司。由于目前还在职，因此只面试了四家。分别为X氧，X易贷，X邦集团，某创业公司。接下来就谈谈我对面试的感受。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="jvm运行时优化">
-<meta property="og:url" content="http://guolei1130.github.io/2017/01/20/jvm运行时优化/index.html">
+<meta property="og:title" content="17年2月面试经验">
+<meta property="og:url" content="http://guolei1130.github.io/2017/02/16/17年2月面试经验/index.html">
 <meta property="og:site_name" content="_StriveG Blog">
-<meta property="og:description" content="前言
-深入理解java虚拟机
-
-java虚拟机最开始是通过解释器进行解释执行的，当虚拟机发现某个方法或者代码块的运行特别频繁时，就会把这些代码认定为”热点代码”，为了提高热点代码的执行效率，在运行时，虚拟机会把这些代码编译成与本地平台相关的机器码，并进行各种层次的优化，完成这个任务的编译器称为即时编译器(JIT)">
-<meta property="og:image" content="http://s15.sinaimg.cn/mw690/0019kvgRgy6XClCB6OOfe">
-<meta property="og:updated_time" content="2017-01-20T13:49:53.000Z">
+<meta property="og:description" content="前言小插曲：我年前就开始投简历，投了很长时间没人联系，结果年后回来一看，尼玛，电话写错了。
+又到了一年一度换工作的时候，我也不例外，因为去年一年都在乙方公司工作，自己不是很喜欢，因此想换家公司。由于目前还在职，因此只面试了四家。分别为X氧，X易贷，X邦集团，某创业公司。接下来就谈谈我对面试的感受。">
+<meta property="og:updated_time" content="2017-02-16T12:52:52.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="jvm运行时优化">
-<meta name="twitter:description" content="前言
-深入理解java虚拟机
-
-java虚拟机最开始是通过解释器进行解释执行的，当虚拟机发现某个方法或者代码块的运行特别频繁时，就会把这些代码认定为”热点代码”，为了提高热点代码的执行效率，在运行时，虚拟机会把这些代码编译成与本地平台相关的机器码，并进行各种层次的优化，完成这个任务的编译器称为即时编译器(JIT)">
-<meta name="twitter:image" content="http://s15.sinaimg.cn/mw690/0019kvgRgy6XClCB6OOfe">
+<meta name="twitter:title" content="17年2月面试经验">
+<meta name="twitter:description" content="前言小插曲：我年前就开始投简历，投了很长时间没人联系，结果年后回来一看，尼玛，电话写错了。
+又到了一年一度换工作的时候，我也不例外，因为去年一年都在乙方公司工作，自己不是很喜欢，因此想换家公司。由于目前还在职，因此只面试了四家。分别为X氧，X易贷，X邦集团，某创业公司。接下来就谈谈我对面试的感受。">
 
 
 
@@ -132,13 +124,13 @@ java虚拟机最开始是通过解释器进行解释执行的，当虚拟机发�
 
 
 
-  <link rel="canonical" href="http://guolei1130.github.io/2017/01/20/jvm运行时优化/"/>
+  <link rel="canonical" href="http://guolei1130.github.io/2017/02/16/17年2月面试经验/"/>
 
 
 
 
 
-  <title> jvm运行时优化 | _StriveG Blog </title>
+  <title> 17年2月面试经验 | _StriveG Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -271,7 +263,7 @@ java虚拟机最开始是通过解释器进行解释执行的，当虚拟机发�
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://guolei1130.github.io/2017/01/20/jvm运行时优化/">
+  <link itemprop="mainEntityOfPage" href="http://guolei1130.github.io/2017/02/16/17年2月面试经验/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="_StriveG">
@@ -295,7 +287,7 @@ java虚拟机最开始是通过解释器进行解释执行的，当虚拟机发�
             
             
               
-                jvm运行时优化
+                17年2月面试经验
               
             
           </h1>
@@ -310,8 +302,8 @@ java虚拟机最开始是通过解释器进行解释执行的，当虚拟机发�
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-20T21:48:56+08:00">
-                2017-01-20
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-16T20:23:13+08:00">
+                2017-02-16
               </time>
             
 
@@ -321,28 +313,6 @@ java虚拟机最开始是通过解释器进行解释执行的，当虚拟机发�
           </span>
 
           
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
 
           
             
@@ -351,8 +321,8 @@ java虚拟机最开始是通过解释器进行解释执行的，当虚拟机发�
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/01/20/jvm运行时优化/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/01/20/jvm运行时优化/" itemprop="commentCount"></span>
+                <a href="/2017/02/16/17年2月面试经验/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/02/16/17年2月面试经验/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -384,52 +354,75 @@ java虚拟机最开始是通过解释器进行解释执行的，当虚拟机发�
 
       
         <p><excerpt in="" index="" |="" 首页摘要=""></excerpt></p>
-<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><blockquote>
-<p>深入理解java虚拟机</p>
-</blockquote>
-<p>java虚拟机最开始是通过解释器进行解释执行的，当虚拟机发现某个方法或者代码块的运行特别频繁时，就会把这些代码认定为”热点代码”，为了提高热点代码的执行效率，在运行时，虚拟机会把这些代码编译成与本地平台相关的机器码，并进行各种层次的优化，完成这个任务的编译器称为即时编译器(JIT)</p>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>小插曲：我年前就开始投简历，投了很长时间没人联系，结果年后回来一看，尼玛，电话写错了。</p>
+<p>又到了一年一度换工作的时候，我也不例外，因为去年一年都在乙方公司工作，自己不是很喜欢，因此想换家公司。由于目前还在职，因此只面试了四家。分别为X氧，X易贷，X邦集团，某创业公司。接下来就谈谈我对面试的感受。</p>
 <a id="more"></a>
 <the rest="" of="" contents="" |="" 余下全文="">
 
 
-<p><img src="http://s15.sinaimg.cn/mw690/0019kvgRgy6XClCB6OOfe" alt=""></p>
+<h3 id="X氧"><a href="#X氧" class="headerlink" title="X氧"></a>X氧</h3><p>很莫名奇妙的挂了，因为啥呢？我也不知道，后来问hr的时候，说经验不符，但我感觉不是这样子。</p>
+<p>这家公司面试很简单，几乎没啥难点，我也没记录东西，面了40分钟左右。面试官基本就问些 项目中的问题，一些基本的java、网络知识，等等。而且，我记忆犹新的一点是，那个面试官不知道webview播放视频，退出还有声音是没回收，内存泄漏的原因。</p>
 <ul>
-<li>Clinet Compiler C1编译器</li>
-<li>Server Compiler C2编译器</li>
-</ul>
-<p>为了在程序启动和运行效率之间达到平衡，hotspot虚拟机会逐渐启动分层编译:</p>
-<ul>
-<li>第一层 程序解释执行</li>
-<li>第二层 C1编译，将字节码编译成本地代码，进行简单、可靠的优化</li>
-<li>第二层 C2编译，将字节码编译成本地代码，会进行深层次的优化</li>
-</ul>
-<h3 id="编译对象与触发条件"><a href="#编译对象与触发条件" class="headerlink" title="编译对象与触发条件"></a>编译对象与触发条件</h3><p>热点代码有两种:</p>
-<ul>
-<li>被多次调用的方法体，编译器会以整个方法作为编译对象，标准的JIT编译</li>
-<li>被多次执行的循环体，编译器依然会编译整个方法，发生在方法的执行过程中，被称为栈上替换。</li>
-</ul>
-<p>判断热点代码的方式有两种：</p>
-<ul>
-<li>基于采样的热点探测</li>
-<li>基于计数器的热点探测</li>
-</ul>
-<p>hotspot虚拟机中采用的是第二种。为每个方法提供两种计数器:方法计数器(计数方法被调用次数)和回边计数器(循环体代码执行次数)，当两个计数器的和达到阀值，就会触发JIT编译。在一定的时间内，如果没有代码执行，就会衰减。</p>
-<h3 id="编译优化技术"><a href="#编译优化技术" class="headerlink" title="编译优化技术"></a>编译优化技术</h3><p>编译优化的技术特别多，这里记录下书中的几个。</p>
-<ul>
-<li>方法内联，去除方法调用成本，</li>
-<li>冗余访问消除</li>
-<li>复写传播</li>
-<li>无用代码消除</li>
-<li>公共子表达式消除，没必要重复计算公共子表达式的值</li>
-<li>数组边界检查消除</li>
-<li>逃逸分析，分析对象的动态作用域，一个对象定以后，被外部方法调用，称为方法逃逸，被其他线程访问到，称为线程逃逸<ul>
-<li>栈上分配</li>
-<li>同步消除</li>
-<li>标量替换</li>
-</ul>
+<li>基本的java、android、网络知识</li>
+<li><p>项目中的难点、解决办法</p>
+</li>
+<li><p>无难点，挂的莫名其妙</p>
 </li>
 </ul>
-<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p>来自经典好书 深入理解java虚拟机。建议入手一本，</p>
+<h3 id="X易贷"><a href="#X易贷" class="headerlink" title="X易贷"></a>X易贷</h3><p>握草，先做份题，不难，就两道，考察类锁、对象锁、方法锁的。</p>
+<p>然后两个面试在面我，其中一个几乎没问，问我的那个是个大神，以前做framework的。我把问题记录了下，如下：</p>
+<ul>
+<li>自我介绍，</li>
+<li>布局优化</li>
+<li>recyclerview和listview的不同，他们的缓存机制</li>
+<li>6.0，7.0的特性</li>
+<li>事件传递机制</li>
+<li>自定义view</li>
+<li>挑两个framework说一说</li>
+<li>启动模式</li>
+<li>有序广播</li>
+<li>pms的作用</li>
+<li>静态广播放在pms里么，动态广播呢？</li>
+<li>如何停掉静态广播</li>
+<li>发广播的时候，先查静态注册还是动态注册</li>
+<li>如何重启app</li>
+<li>如何清掉所有的activity，进行管理的activity，大小容量怎么设计中间有个activity太大怎么办</li>
+<li>内存泄露怎么检查，要是定位到framework，怎么确认</li>
+<li>如何让activity不被外部访问到</li>
+<li>你平常用shell干啥</li>
+<li>一些linux命令</li>
+<li>view如何更新</li>
+</ul>
+<p>这个面试官问的时候，会逮住一点，一直问。难，很多没回答好。不出意外，一面就挂了。</p>
+<h3 id="X邦保险集团"><a href="#X邦保险集团" class="headerlink" title="X邦保险集团"></a>X邦保险集团</h3><h4 id="一面"><a href="#一面" class="headerlink" title="一面"></a>一面</h4><p>额，好像没啥一面，内部内推的。</p>
+<h4 id="二面"><a href="#二面" class="headerlink" title="二面"></a>二面</h4><p>直接过去就是二面，问的是一些基础算法知识，难度不大。如下：</p>
+<ul>
+<li>平衡二叉树，应用场景有那些</li>
+<li>说出你知道的排序算法</li>
+<li>快排，时间复杂度</li>
+<li>哈弗曼树，压缩原理，一片纯英文的文章，压缩率多少</li>
+<li>java堆和栈</li>
+<li>jni原理，动态注册</li>
+<li>表达式求值(后缀表达式，逆波兰)</li>
+</ul>
+<h4 id="三面"><a href="#三面" class="headerlink" title="三面"></a>三面</h4><p>三面约在早上，等了会。</p>
+<ul>
+<li>eventbus，如何实现跨进城，</li>
+<li>如何使用java堆，</li>
+<li>fresco的内存管理，匿名共享内存，匿名共享内存是谁提出的，Android怎么实现，</li>
+<li>如何压缩图片，同时压缩一百张怎么做</li>
+<li>android应用，官方给的可用内存是多少。</li>
+</ul>
+<p>有一部分没回答好，面试完之后，面试官说 挺好，我以为有戏，结果下午告诉我挂了。</p>
+<p>后来听说，二面 三面面试官，一个做塞班出身，一个做linux出身，膜拜。</p>
+<h3 id="创业公司"><a href="#创业公司" class="headerlink" title="创业公司"></a>创业公司</h3><p>聊得挺hign，和第一家一样，就是项目中具体的一些问题，还有一部分说出来怕被笑话，就不说了。20人左右的研发团队，感觉还靠谱点。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>因为在之前很少面试，不对，不能说很少，就没有当面面试过一次，有些紧张和恐惧，导致很多问题短暂性忘记。</p>
+<ul>
+<li>不紧张，不怯场，此处不留爷，自有留爷处，处处不留爷，爷干个体户</li>
+<li>千万不要进入面试官的套路，要将他引入你擅长的部分</li>
+<li>如果数据结构和算法不行，花点时间，看看大话数据结构和剑指offer吧。</li>
+</ul>
+<p>PS:有疑问，留言。</p>
 <h3 id="最近访客"><a href="#最近访客" class="headerlink" title="最近访客"></a>最近访客</h3><ul class="ds-recent-visitors" data-num-items="46" data-avatar-size="40"></ul></the>
       
     </div>
@@ -453,7 +446,7 @@ java虚拟机最开始是通过解释器进行解释执行的，当虚拟机发�
       
         <div class="post-tags">
           
-            <a href="/tags/jvm/" rel="tag"># jvm</a>
+            <a href="/tags/职业生涯/" rel="tag"># 职业生涯</a>
           
         </div>
       
@@ -462,8 +455,8 @@ java虚拟机最开始是通过解释器进行解释执行的，当虚拟机发�
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/01/19/jvm编译器优化/" rel="next" title="jvm编译器优化">
-                <i class="fa fa-chevron-left"></i> jvm编译器优化
+              <a href="/2017/02/15/了解对象池/" rel="next" title="了解对象池">
+                <i class="fa fa-chevron-left"></i> 了解对象池
               </a>
             
           </div>
@@ -471,10 +464,6 @@ java虚拟机最开始是通过解释器进行解释执行的，当虚拟机发�
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/02/15/了解对象池/" rel="prev" title="了解对象池">
-                了解对象池 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -503,8 +492,8 @@ java虚拟机最开始是通过解释器进行解释执行的，当虚拟机发�
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2017/01/20/jvm运行时优化/"
-           data-title="jvm运行时优化" data-url="http://guolei1130.github.io/2017/01/20/jvm运行时优化/">
+      <div class="ds-thread" data-thread-key="2017/02/16/17年2月面试经验/"
+           data-title="17年2月面试经验" data-url="http://guolei1130.github.io/2017/02/16/17年2月面试经验/">
       </div>
     
   </div>
@@ -642,7 +631,7 @@ java虚拟机最开始是通过解释器进行解释执行的，当虚拟机发�
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译对象与触发条件"><span class="nav-number">2.</span> <span class="nav-text">编译对象与触发条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译优化技术"><span class="nav-number">3.</span> <span class="nav-text">编译优化技术</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最近访客"><span class="nav-number">5.</span> <span class="nav-text">最近访客</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#X氧"><span class="nav-number">2.</span> <span class="nav-text">X氧</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#X易贷"><span class="nav-number">3.</span> <span class="nav-text">X易贷</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#X邦保险集团"><span class="nav-number">4.</span> <span class="nav-text">X邦保险集团</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一面"><span class="nav-number">4.1.</span> <span class="nav-text">一面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二面"><span class="nav-number">4.2.</span> <span class="nav-text">二面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三面"><span class="nav-number">4.3.</span> <span class="nav-text">三面</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创业公司"><span class="nav-number">5.</span> <span class="nav-text">创业公司</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最近访客"><span class="nav-number">7.</span> <span class="nav-text">最近访客</span></a></li></ol></div>
             
 
           </div>
