@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="jvm," />
+  <meta name="keywords" content="gradle," />
 
 
 
@@ -84,27 +84,16 @@
 
 
 
-<meta name="description" content="前言
-深入理解java虚拟机
-
-类加载机制是jvm中，非常重要的一部分，也是后面可能说道的分包、插件化、热修复等技术的基础。">
+<meta name="description" content="前言最近入职新公司，也开发出来一些比较不错的小技巧，来分享给大家。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="jvm类加载机制">
-<meta property="og:url" content="http://guolei1130.github.io/2017/01/17/jvm类加载机制/index.html">
+<meta property="og:title" content="gradle的几点小技巧">
+<meta property="og:url" content="http://guolei1130.github.io/2017/03/14/gradle的几点小技巧/index.html">
 <meta property="og:site_name" content="_StriveG Blog">
-<meta property="og:description" content="前言
-深入理解java虚拟机
-
-类加载机制是jvm中，非常重要的一部分，也是后面可能说道的分包、插件化、热修复等技术的基础。">
-<meta property="og:image" content="http://img.blog.csdn.net/20160102154038185">
-<meta property="og:updated_time" content="2017-01-17T15:00:48.000Z">
+<meta property="og:description" content="前言最近入职新公司，也开发出来一些比较不错的小技巧，来分享给大家。">
+<meta property="og:updated_time" content="2017-03-14T14:16:13.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="jvm类加载机制">
-<meta name="twitter:description" content="前言
-深入理解java虚拟机
-
-类加载机制是jvm中，非常重要的一部分，也是后面可能说道的分包、插件化、热修复等技术的基础。">
-<meta name="twitter:image" content="http://img.blog.csdn.net/20160102154038185">
+<meta name="twitter:title" content="gradle的几点小技巧">
+<meta name="twitter:description" content="前言最近入职新公司，也开发出来一些比较不错的小技巧，来分享给大家。">
 
 
 
@@ -132,13 +121,13 @@
 
 
 
-  <link rel="canonical" href="http://guolei1130.github.io/2017/01/17/jvm类加载机制/"/>
+  <link rel="canonical" href="http://guolei1130.github.io/2017/03/14/gradle的几点小技巧/"/>
 
 
 
 
 
-  <title> jvm类加载机制 | _StriveG Blog </title>
+  <title> gradle的几点小技巧 | _StriveG Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -271,7 +260,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://guolei1130.github.io/2017/01/17/jvm类加载机制/">
+  <link itemprop="mainEntityOfPage" href="http://guolei1130.github.io/2017/03/14/gradle的几点小技巧/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="_StriveG">
@@ -295,7 +284,7 @@
             
             
               
-                jvm类加载机制
+                gradle的几点小技巧
               
             
           </h1>
@@ -310,8 +299,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-17T22:59:18+08:00">
-                2017-01-17
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-14T22:15:12+08:00">
+                2017-03-14
               </time>
             
 
@@ -321,28 +310,6 @@
           </span>
 
           
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
 
           
             
@@ -351,8 +318,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/01/17/jvm类加载机制/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/01/17/jvm类加载机制/" itemprop="commentCount"></span>
+                <a href="/2017/03/14/gradle的几点小技巧/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/14/gradle的几点小技巧/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -384,119 +351,30 @@
 
       
         <p><excerpt in="" index="" |="" 首页摘要=""></excerpt></p>
-<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><blockquote>
-<p>深入理解java虚拟机</p>
-</blockquote>
-<p>类加载机制是jvm中，非常重要的一部分，也是后面可能说道的分包、插件化、热修复等技术的基础。</p>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>最近入职新公司，也开发出来一些比较不错的小技巧，来分享给大家。</p>
 <a id="more"></a>
 <the rest="" of="" contents="" |="" 余下全文="">
 
 
-<p>虚拟机把描述类的数据从Class文件加载到内存，并对数据进行校验、转换解析和初始化，最终形成可以被虚拟机直接使用的java类型，这就是虚拟机的加载机制。</p>
-<h3 id="类加载机制的时机"><a href="#类加载机制的时机" class="headerlink" title="类加载机制的时机"></a>类加载机制的时机</h3><p>类加载机制的整个生命周期如下：</p>
-<ul>
-<li>加载</li>
-<li>验证</li>
-<li>准备</li>
-<li>解析</li>
-<li>初始化</li>
-<li>使用</li>
-<li>卸载</li>
-</ul>
-<p>其中，卸载的条件比较难达到，在方法区gc的时候提到过。</p>
-<p>虚拟机规范中，严格规定了有且只有5种情况必须对类进行”初始化”(而加载、验证、准备、初始化需要在此之前)</p>
-<ol>
-<li>遇到new、getstatic、putstatic或者invokestatic这四条字节码指令时，如果没有进行过初始化，则要先出发初始化，对应的操作为new对象、读取或设置static字段(被final修饰或编译器把结果放入到常量池的静态字段)，以及屌用一个类的静态方法的时候，PS：因为被final修饰的字段，在编译期会被优化，放入到类的常量池中。</li>
-<li>使用java.lang.reflect包的方法对类进行反射调用</li>
-<li>当初始化一个类时，如果其父类没有进行过初始化，则先初始化父类</li>
-<li>当虚拟机启动时，需要指定一个执行的主类(入口)，虚拟机会先初始化这个类</li>
-<li>使用动态语言支持时，动态代理，遇到REF_getStatic、REF_putStatic、REF_invokeStatic的方法句柄</li>
-</ol>
-<p>上面的几种为主动引用，而被动引用就不会触发初始化，被动引用的例子如：</p>
-<ul>
-<li>子类引用父类的静态字段</li>
-<li>通过数组定义引用类</li>
-<li>常量在编译时会被放入常量池，本质上并没有引用到类</li>
-</ul>
-<h3 id="加载阶段"><a href="#加载阶段" class="headerlink" title="加载阶段"></a>加载阶段</h3><p>在加载阶段，虚拟机需要完成三件事情：</p>
-<ol>
-<li>通过类的全限定名来获取定义此类的二进制流(全限定名,用/替换.)</li>
-<li>将这个字节流所代表的静态存储结构转化为方法区的运行时数据</li>
-<li>在内存中生成一个代表这个类的Class对象，作为方法区这个类的各种数据的访问入口</li>
-</ol>
-<p>加载二进制流的手段如下：</p>
-<ul>
-<li>从zip包中获取，如jar</li>
-<li>从网络中获取，Applet</li>
-<li>运行时计算生成，动态代理</li>
-<li>由其他文件生成，jsp</li>
-<li>从数据库中读取，较少</li>
-</ul>
-<p>对我们Android程序员来说，最常见的就是zip包和动态代理这种。</p>
-<p></p><p style="color:red">对于数组类，不一样了，数组类由不通过类加载器创建，而由虚拟机直接创建，</p>数组类的加载过程遵循以下规则：<p></p>
-<ol>
-<li>如果数组的组件类型(每一个值)是引用类型，则递归采用类的家在过程去加载</li>
-<li>如果不是引用类型，而是int[]中，将数组标记为与引导类加载器关联</li>
-<li>如果不是引用类型，则数组的可见类型默认为public</li>
-</ol>
-<h3 id="验证阶段"><a href="#验证阶段" class="headerlink" title="验证阶段"></a>验证阶段</h3><p>这一阶段是为了保证Class文件的字节流中包含的信息符合当前虚拟机的要求，并且不会危害虚拟机自身的安全。验证阶段大致分为四个检验工作，如下：</p>
-<ol>
-<li>文件格式验证，验证字节流是否符合Class文件格式的规范，并且是否能被虚拟机处理(版本号是否在处理范围)<ul>
-<li>是否以魔数0xCAFEBABE开头</li>
-<li>主次版本号是否在虚拟机处理范围内</li>
-<li>常量池中的常量是否有不被支持的类型</li>
-<li>指向常量的各种引用值中是否有不存在的常量或者不支持的类型</li>
-<li>等等<br>后面会说道class文件结构</li>
-</ul>
-</li>
-<li>元数据验证 进行语义分析<ul>
-<li>是否有父类(Object类除外)</li>
-<li>是否继承了不允许被继承的类</li>
-<li>如果不是抽象类，要求实现父类或者接口中要求实现的类</li>
-<li>类中的字段、方法是否与父类产生矛盾</li>
-<li>…</li>
-</ul>
-</li>
-<li>字节码验证 确定程序语义是否合法、符合逻辑<ul>
-<li>保证任意时刻操作数栈的数据类型与指令代码序列都能配合工作</li>
-<li>保证跳转指令不会跳转到方法体以外的字节码指令上</li>
-<li>保证方法体中类型转换是有效的</li>
-<li>…</li>
-</ul>
-</li>
-<li>符号引用验证 发生在虚拟机将符号引用转化为直接引用的时候<ul>
-<li>符号引用中能否通过字符串描述的全限定名找到对应的类</li>
-<li>在指定类中是否存在符合方法的字段描述符以及简单名称所描述的方法和字段</li>
-<li>符号引用中的类、字段、方法的访问性是否可被当前类引用</li>
-</ul>
-</li>
-</ol>
-<h3 id="准备阶段"><a href="#准备阶段" class="headerlink" title="准备阶段"></a>准备阶段</h3><p>准备阶段正式为类变量分配内存并设置类变量的初始值，这些变量所使用的内存都在方法区进行分配。这里只包括类变量，不包括实例变量，<br><span style="color:red">如果被final修饰，则进行赋值操作，就不是零值了，千万注意<span></span></span></p>
-<h3 id="解析阶段"><a href="#解析阶段" class="headerlink" title="解析阶段"></a>解析阶段</h3><p>解析阶段是讲常量池内的符号引用解析成直接引用的过程。解析动作主要针对类或接口、字段、类方法、接口方法、方法类型、方法句柄和调用点限定符7类符号进行。</p>
-<h3 id="初始化阶段"><a href="#初始化阶段" class="headerlink" title="初始化阶段"></a>初始化阶段</h3><p>初始化阶段，根据程序的主观计划去初始化一个类变量和其他资源，也就是执行类构造器<clinit>()方法的过程</clinit></p>
-<ul>
-<li><clinit>(),由编译器自动收集类中的所有类变量的赋值动作和静态语句块(static{})中的语句合而成。顺序，有语句在源文件出现的顺序决定</clinit></li>
-<li><clinit>() 和<init>()不同，不需要显示的调用父类的这个方法，会保证子类的<clinit>()执行之前，父类的<clinit>()已经执行完毕。</clinit></clinit></init></clinit></li>
-<li>父类的静态语句块优与子类</li>
-<li><clinit>() 对类和接口来说并不是必须的，如果没有静态语句块和赋值操作，就不生成</clinit></li>
-<li>执行接口的<clinit>()之前，不需要先执行父类的</clinit></li>
-<li>保证类的<clinit>()在多线程环境中正确使用</clinit></li>
-</ul>
-<h3 id="类与类加载器"><a href="#类与类加载器" class="headerlink" title="类与类加载器"></a>类与类加载器</h3><p>比较两个类是否相等，只有这两个类是由同一个类加载器加载，并且来自同一个Class文件。</p>
-<h3 id="双亲委派模型"><a href="#双亲委派模型" class="headerlink" title="双亲委派模型"></a>双亲委派模型</h3><p><img src="http://img.blog.csdn.net/20160102154038185" alt=""></p>
-<ul>
-<li>BootStrap ClassLoader：启动类加载器，负责加载存放在%JAVA_HOME%\lib目录中的，或者通被-Xbootclasspath参数所指定的路径中的，并且被java虚拟机识别的(仅按照文件名识别，如rt.jar，名字不符合的类库，即使放在指定路径中也不会被加载)类库到虚拟机的内存中，启动类加载器无法被java程序直接引用。</li>
-<li>Extension ClassLoader：扩展类加载器，由sun.misc.Launcher$ExtClassLoader实现，负责加载%JAVA_HOME%\lib\ext目录中的，或者被java.ext.dirs系统变量所指定的路径中的所有类库，开发者可以直接使用扩展类加载器。</li>
-<li>Application ClassLoader：应用程序类加载器，由sun.misc.Launcher$AppClassLoader实现，负责加载用户类路径classpath上所指定的类库，是类加载器ClassLoader中的getSystemClassLoader()方法的返回值，开发者可以直接使用应用程序类加载器，如果程序中没有自定义过类加载器，该加载器就是程序中默认的类加载器。</li>
-</ul>
-<p>加载过程如下：</p>
-<ol>
-<li>如果一个类加载器收到了类加载请求，它首先不会自己去尝试加载这个类，而是把类加载请求委派给父类加载器去完成。</li>
-<li>每一层的类加载器都把类加载请求委派给父类加载器，直到所有的类加载请求都应该传递给顶层的启动类加载器</li>
-<li>如果顶层的启动类加载器无法完成加载请求，子类加载器尝试去加载，如果连最初发起类加载请求的类加载器也无法完成加载请求时，将会抛出ClassNotFoundException，而不再调用其子类加载器去进行类加载</li>
-</ol>
-<p>双亲委派 模式的类加载机制的优点是java类它的类加载器一起具备了一种带优先级的层次关系，越是基础的类，越是被上层的类加载器进行加载，保证了java程序的稳定运行。</p>
-<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p>来自经典好书 深入理解java虚拟机。建议入手一本，</p>
+<h3 id="如何在release包中去除一些debug包中的东西"><a href="#如何在release包中去除一些debug包中的东西" class="headerlink" title="如何在release包中去除一些debug包中的东西"></a>如何在release包中去除一些debug包中的东西</h3><p>我们平常肯定有遇到过这种情况，就是我们一些帮助调试的三方框架，我们并不想打包到release包中，而一次次的删出代码、删依赖总是很麻烦，有没有简单点的办法呢。必须有。思路是这样的，创建一个debughelper，我们在打包的时候，分别针对release和debug包，做依赖以及文件排除、等工作。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">--debug</div><div class="line">	--DebugHelper.java</div><div class="line">--main</div><div class="line">--release</div><div class="line">	--DebugHelper.java</div></pre></td></tr></table></figure>
+<p>其中，我们在debug目录下，放debug的一些代码，如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">public static void initLeakCanary(Application application)&#123;</div><div class="line">    if (LeakCanary.isInAnalyzerProcess(application))&#123;</div><div class="line">        return;</div><div class="line">    &#125;</div><div class="line">    LeakCanary.install(application);</div><div class="line">&#125;</div><div class="line"></div><div class="line">public static OkHttpClient.Builder createOkHttpBuilder()&#123;</div><div class="line">    return new OkHttpClient().newBuilder()</div><div class="line">            .addNetworkInterceptor(new HttpLoggingInterceptor()</div><div class="line">                    .setLevel(HttpLoggingInterceptor.Level.BODY))</div><div class="line">            .addNetworkInterceptor(new StethoInterceptor());</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>release目录下，放release的，当然，这下面是空的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">public static void initStethoInterceptor(Application application)&#123;</div><div class="line">&#125;</div><div class="line"></div><div class="line">public static void initLeakCanary(Application application)&#123;</div><div class="line"></div><div class="line">&#125;</div><div class="line">public static OkHttpClient.Builder createOkHttpBuilder()&#123;</div><div class="line">    return new OkHttpClient().newBuilder();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>需要注意的是，debug目录、release目录都，文件的包名都要一样。<br>最后，在gradle文件中配置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">dependencies &#123;</div><div class="line">    debugCompile &quot;com.facebook.stetho:stetho:$&#123;libraryVersion.stetho&#125;&quot;</div><div class="line">    debugCompile &quot;com.facebook.stetho:stetho-okhttp3:$&#123;libraryVersion.stetho&#125;&quot;</div><div class="line">    debugCompile &quot;com.facebook.stetho:stetho-js-rhino:$&#123;libraryVersion.stetho&#125;&quot;</div><div class="line">&#125;</div><div class="line">sourceSets&#123;</div><div class="line">    sourceSets&#123;</div><div class="line">        main&#123;</div><div class="line">            java &#123;</div><div class="line">                srcDir &apos;src/main/java&apos;</div><div class="line">                exclude &apos;**/DebugHelper.java&apos;</div><div class="line">                srcDir &apos;src/debug/java&apos;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">sourceSets&#123;</div><div class="line">    main&#123;</div><div class="line">        java.srcDirs = [&apos;src/main/java&apos;,&apos;src/release/java&apos;]</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这样就可以了。</p>
+<h3 id="三方包的统一管理"><a href="#三方包的统一管理" class="headerlink" title="三方包的统一管理"></a>三方包的统一管理</h3><p>这里要说的不是在根gradle文件中，写ext的方法，而是另外一种。</p>
+<p>我们将这些写在一个properties文件中，然后在一个gradle脚本中读取。脚本内容如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">def libraryVersion = new Properties()</div><div class="line">libraryVersion.load(new FileInputStream(rootProject.file(&quot;libversion.properties&quot;)))</div><div class="line">project.ext.set(&quot;libraryVersion&quot;, libraryVersion)</div></pre></td></tr></table></figure>
+<p>然后在需要的地方。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">apply from:&apos;../libmanager.gradle&apos;</div><div class="line"></div><div class="line">compile &quot;com.squareup.okhttp3:logging-interceptor:$&#123;libraryVersion.loggingInterceptor&#125;&quot;</div></pre></td></tr></table></figure>
+<h3 id="如何在debug版本，依赖一个debug的model"><a href="#如何在debug版本，依赖一个debug的model" class="headerlink" title="如何在debug版本，依赖一个debug的model"></a>如何在debug版本，依赖一个debug的model</h3><p>首先，我们需要在module的gradle文件中，添加如下配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">oid &#123;</div><div class="line">    publishNonDefault true</div></pre></td></tr></table></figure>
+<p>在主App中的gradel中做如下配置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">buildTypes &#123;</div><div class="line"></div><div class="line">    debug &#123;</div><div class="line">        minifyEnabled false</div><div class="line">        proguardFiles getDefaultProguardFile(&apos;proguard-android.txt&apos;), &apos;proguard-rules.pro&apos;</div><div class="line">        buildConfigField &quot;boolean&quot;, &quot;IS_DEBUG&quot;, &quot;true&quot;</div><div class="line">        dependencies &#123;</div><div class="line">            debugCompile project(path:&apos;:base&apos;, configuration:&apos;debug&apos;)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    release &#123;</div><div class="line">        minifyEnabled false</div><div class="line">        proguardFiles getDefaultProguardFile(&apos;proguard-android.txt&apos;), &apos;proguard-rules.pro&apos;</div><div class="line">        buildConfigField &quot;boolean&quot;, &quot;IS_DEBUG&quot;, &quot;false&quot;</div><div class="line">        dependencies &#123;</div><div class="line">            releaseCompile project(path:&apos;:base&apos;, configuration:&apos;release&apos;)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如上配置之后，我们就能在debug版本中依赖debug的module，而在release版本中依赖release的module了。</p>
 <h3 id="最近访客"><a href="#最近访客" class="headerlink" title="最近访客"></a>最近访客</h3><ul class="ds-recent-visitors" data-num-items="46" data-avatar-size="40"></ul></the>
       
     </div>
@@ -520,7 +398,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/jvm/" rel="tag"># jvm</a>
+            <a href="/tags/gradle/" rel="tag"># gradle</a>
           
         </div>
       
@@ -529,8 +407,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/01/14/jvm垃圾回收/" rel="next" title="jvm垃圾回收">
-                <i class="fa fa-chevron-left"></i> jvm垃圾回收
+              <a href="/2017/02/22/LayoutInflater源码浅析/" rel="next" title="LayoutInflater源码浅析">
+                <i class="fa fa-chevron-left"></i> LayoutInflater源码浅析
               </a>
             
           </div>
@@ -538,10 +416,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/01/18/jvm字节码执行引擎/" rel="prev" title="jvm字节码执行引擎">
-                jvm字节码执行引擎 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -570,8 +444,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2017/01/17/jvm类加载机制/"
-           data-title="jvm类加载机制" data-url="http://guolei1130.github.io/2017/01/17/jvm类加载机制/">
+      <div class="ds-thread" data-thread-key="2017/03/14/gradle的几点小技巧/"
+           data-title="gradle的几点小技巧" data-url="http://guolei1130.github.io/2017/03/14/gradle的几点小技巧/">
       </div>
     
   </div>
@@ -709,7 +583,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类加载机制的时机"><span class="nav-number">2.</span> <span class="nav-text">类加载机制的时机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#加载阶段"><span class="nav-number">3.</span> <span class="nav-text">加载阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#验证阶段"><span class="nav-number">4.</span> <span class="nav-text">验证阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#准备阶段"><span class="nav-number">5.</span> <span class="nav-text">准备阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解析阶段"><span class="nav-number">6.</span> <span class="nav-text">解析阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#初始化阶段"><span class="nav-number">7.</span> <span class="nav-text">初始化阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类与类加载器"><span class="nav-number">8.</span> <span class="nav-text">类与类加载器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#双亲委派模型"><span class="nav-number">9.</span> <span class="nav-text">双亲委派模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">10.</span> <span class="nav-text">参考资料</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最近访客"><span class="nav-number">11.</span> <span class="nav-text">最近访客</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何在release包中去除一些debug包中的东西"><span class="nav-number">2.</span> <span class="nav-text">如何在release包中去除一些debug包中的东西</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三方包的统一管理"><span class="nav-number">3.</span> <span class="nav-text">三方包的统一管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何在debug版本，依赖一个debug的model"><span class="nav-number">4.</span> <span class="nav-text">如何在debug版本，依赖一个debug的model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最近访客"><span class="nav-number">5.</span> <span class="nav-text">最近访客</span></a></li></ol></div>
             
 
           </div>
