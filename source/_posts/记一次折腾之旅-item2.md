@@ -56,7 +56,7 @@ vim .zshrc
  POWERLINE_DISABLE_RPROMPT="true"
 ```
 
-首先我们设置THEME为powerline。然后在根据需要设置其他的属性，具体请查看[powerline的readme](https://github.com/powerline/powerline)
+首先我们设置THEME为powerline。然后在根据需要设置其他的属性，具体请查看[oh-my-zsh-powerline-theme的readme](https://github.com/jeremyFreeAgent/oh-my-zsh-powerline-theme)
 
 然后,source .zshrc 生效
 
