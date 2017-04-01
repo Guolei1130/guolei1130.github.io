@@ -37,7 +37,7 @@ python --version
 * pip install --user git+git://github.com/powerline/powerline
 * ..其他自行查看文档https://powerline.readthedocs.io/en/latest/installation.html
 
-安装好之后，我们就需要进行配置了。这里的配置很简单，就是配置.zshrc文件
+安装好之后，我们就需要进行配置了，这里需要注意的是，我们这要配置zsh theme，[oh-my-zsh-powerline-theme](https://github.com/jeremyFreeAgent/oh-my-zsh-powerline-theme)。这里的配置很简单，就是配置.zshrc文件
 
 ```
 cd ~
