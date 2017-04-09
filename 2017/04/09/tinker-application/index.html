@@ -1,0 +1,831 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="tinker," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言从上文的一些知识中，知道，真正的Application是注解生成的，并且继承与TinkerApplication。那么我们就来分析下。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tinker-application">
+<meta property="og:url" content="http://guolei1130.github.io/2017/04/09/tinker-application/index.html">
+<meta property="og:site_name" content="_StriveG Blog">
+<meta property="og:description" content="前言从上文的一些知识中，知道，真正的Application是注解生成的，并且继承与TinkerApplication。那么我们就来分析下。">
+<meta property="og:updated_time" content="2017-04-09T14:55:53.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="tinker-application">
+<meta name="twitter:description" content="前言从上文的一些知识中，知道，真正的Application是注解生成的，并且继承与TinkerApplication。那么我们就来分析下。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"always"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'guolei1130',
+      author: '菜鸡郭'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://guolei1130.github.io/2017/04/09/tinker-application/"/>
+
+
+
+
+
+  <title> tinker-application | _StriveG Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">_StriveG Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle"></p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/me" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://guolei1130.github.io/2017/04/09/tinker-application/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="_StriveG">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/img/head.png">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="_StriveG Blog">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="_StriveG Blog" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                tinker-application
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-04-09T22:54:53+08:00">
+                2017-04-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/04/09/tinker-application/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/04/09/tinker-application/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><excerpt in="" index="" |="" 首页摘要=""></excerpt></p>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>从上文的一些知识中，知道，真正的Application是注解生成的，并且继承与TinkerApplication。那么我们就来分析下。</p>
+<a id="more"></a>
+<the rest="" of="" contents="" |="" 余下全文="">
+
+
+<h3 id="attachBaseContext"><a href="#attachBaseContext" class="headerlink" title="attachBaseContext"></a>attachBaseContext</h3><p>首先看attachBaseContext这个方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">protected void attachBaseContext(Context base) &#123;</div><div class="line">    super.attachBaseContext(base);</div><div class="line">    Thread.setDefaultUncaughtExceptionHandler(new TinkerUncaughtHandler(this));</div><div class="line">    onBaseContextAttached(base);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>设置UncaughtExceptionHandler</li>
+<li>调用onBaseContextAttached方法。</li>
+</ul>
+<p>onBaseContextAttached方法代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">private void onBaseContextAttached(Context base) &#123;</div><div class="line">    applicationStartElapsedTime = SystemClock.elapsedRealtime();</div><div class="line">    applicationStartMillisTime = System.currentTimeMillis();</div><div class="line">    loadTinker();</div><div class="line">    ensureDelegate();</div><div class="line">    applicationLike.onBaseContextAttached(base);</div><div class="line">    //reset save mode</div><div class="line">    if (useSafeMode) &#123;</div><div class="line">        String processName = ShareTinkerInternals.getProcessName(this);</div><div class="line">        String preferName = ShareConstants.TINKER_OWN_PREFERENCE_CONFIG + processName;</div><div class="line">        SharedPreferences sp = getSharedPreferences(preferName, Context.MODE_PRIVATE);</div><div class="line">        sp.edit().putInt(ShareConstants.TINKER_SAFE_MODE_COUNT, 0).commit();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>获取系统已运行时间，作为applicationStartElapsedTime</li>
+<li>获取系统当前时间，作为applicationStartMillisTime</li>
+<li>loadTinker() load tinker</li>
+<li>ensureDelegate 确认下delegate是否没有初始化</li>
+<li>调用applicationLike的onBaseContextAttached方法，对应demo中的SampleApplicationLike的onBaseContextAttached方法。</li>
+<li>如果是安全模式，就获取当前进程名，preferName，并将安全模式count置为0。</li>
+</ul>
+<h4 id="loadTinker"><a href="#loadTinker" class="headerlink" title="loadTinker"></a>loadTinker</h4><p>代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">private void loadTinker() &#123;</div><div class="line">    //disable tinker, not need to install</div><div class="line">    if (tinkerFlags == TINKER_DISABLE) &#123;</div><div class="line">        return;</div><div class="line">    &#125;</div><div class="line">    tinkerResultIntent = new Intent();</div><div class="line">    try &#123;</div><div class="line">        //reflect tinker loader, because loaderClass may be define by user!</div><div class="line">        Class&lt;?&gt; tinkerLoadClass = Class.forName(loaderClassName, false, getClassLoader());</div><div class="line"></div><div class="line">        Method loadMethod = tinkerLoadClass.getMethod(TINKER_LOADER_METHOD, TinkerApplication.class, int.class, boolean.class);</div><div class="line">        Constructor&lt;?&gt; constructor = tinkerLoadClass.getConstructor();</div><div class="line">        tinkerResultIntent = (Intent) loadMethod.invoke(constructor.newInstance(), this, tinkerFlags, tinkerLoadVerifyFlag);</div><div class="line">    &#125; catch (Throwable e) &#123;</div><div class="line">        //has exception, put exception error code</div><div class="line">        ShareIntentUtil.setIntentReturnCode(tinkerResultIntent, ShareConstants.ERROR_LOAD_PATCH_UNKNOWN_EXCEPTION);</div><div class="line">        tinkerResultIntent.putExtra(INTENT_PATCH_EXCEPTION, e);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>首先判断flag，如果为TINKER_DISABLE，直接return</li>
+<li>生成tinkerLoadClass的Class</li>
+<li>获得tryLoad方法的Method</li>
+<li>获取tinkerLoadClass的构造方法</li>
+<li>调用tryLoad方法返回Intent对象</li>
+</ul>
+<h4 id="ensureDelegate"><a href="#ensureDelegate" class="headerlink" title="ensureDelegate"></a>ensureDelegate</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">private synchronized void ensureDelegate() &#123;</div><div class="line">     if (applicationLike == null) &#123;</div><div class="line">         applicationLike = createDelegate();</div><div class="line">     &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<p>在这个方法中，会判断applicationLike是不是null，如果是的话，就调用createDelegate去创建一个代理对象。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">private ApplicationLike createDelegate() &#123;</div><div class="line">    try &#123;</div><div class="line">        // Use reflection to create the delegate so it doesn&apos;t need to go into the primary dex.</div><div class="line">        // And we can also patch it</div><div class="line">        Class&lt;?&gt; delegateClass = Class.forName(delegateClassName, false, getClassLoader());</div><div class="line">        Constructor&lt;?&gt; constructor = delegateClass.getConstructor(Application.class, int.class, boolean.class,</div><div class="line">            long.class, long.class, Intent.class);</div><div class="line">        return (ApplicationLike) constructor.newInstance(this, tinkerFlags, tinkerLoadVerifyFlag,</div><div class="line">            applicationStartElapsedTime, applicationStartMillisTime, tinkerResultIntent);</div><div class="line">    &#125; catch (Throwable e) &#123;</div><div class="line">        throw new TinkerRuntimeException(&quot;createDelegate failed&quot;, e);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在这个方法中，通过反射构造出一个代理对象，根据demo传入的参数，这里构造出来的对象，是SampleApplicationLike。</p>
+<p>在看下SampleApplicationLike的构造方法吧。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">public SampleApplicationLike(Application application, int tinkerFlags, boolean tinkerLoadVerifyFlag,</div><div class="line">                             long applicationStartElapsedTime, long applicationStartMillisTime, Intent tinkerResultIntent) &#123;</div><div class="line">    super(application, tinkerFlags, tinkerLoadVerifyFlag, applicationStartElapsedTime, applicationStartMillisTime, tinkerResultIntent);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>参数很明显，我们还需要看下继承关系。SampleApplicationLike-&gt;DefaultApplicationLike-&gt;ApplicationLike,ApplicationLike实现了ApplicationLifeCycle的一系列接口。这个接口完全按照Application的一些方法，比如onCreate,onLowMemory等等。</p>
+<p>SampleApplicationLike的构造方法会调用父类的构造方法，最后调用到ApplicationLike的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">public ApplicationLike(Application application, int tinkerFlags, boolean tinkerLoadVerifyFlag,</div><div class="line">                       long applicationStartElapsedTime, long applicationStartMillisTime, Intent tinkerResultIntent) &#123;</div><div class="line">    this.application = application;</div><div class="line">    this.tinkerFlags = tinkerFlags;</div><div class="line">    this.tinkerLoadVerifyFlag = tinkerLoadVerifyFlag;</div><div class="line">    this.applicationStartElapsedTime = applicationStartElapsedTime;</div><div class="line">    this.applicationStartMillisTime = applicationStartMillisTime;</div><div class="line">    this.tinkerResultIntent = tinkerResultIntent;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里就是把参数进行初始化。</p>
+<h4 id="SampleApplicationLike-onBaseContextAttached"><a href="#SampleApplicationLike-onBaseContextAttached" class="headerlink" title="SampleApplicationLike#onBaseContextAttached"></a>SampleApplicationLike#onBaseContextAttached</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)</div><div class="line">@Override</div><div class="line">public void onBaseContextAttached(Context base) &#123;</div><div class="line">    super.onBaseContextAttached(base);</div><div class="line">    //you must install multiDex whatever tinker is installed!</div><div class="line">    MultiDex.install(base);</div><div class="line"></div><div class="line">    SampleApplicationContext.application = getApplication();</div><div class="line">    SampleApplicationContext.context = getApplication();</div><div class="line">    TinkerManager.setTinkerApplicationLike(this);</div><div class="line"></div><div class="line">    TinkerManager.initFastCrashProtect();</div><div class="line">    //should set before tinker is installed</div><div class="line">    TinkerManager.setUpgradeRetryEnable(true);</div><div class="line"></div><div class="line">    //optional set logIml, or you can use default debug log</div><div class="line">    TinkerInstaller.setLogIml(new MyLogImp());</div><div class="line"></div><div class="line">    //installTinker after load multiDex</div><div class="line">    //or you can put com.tencent.tinker.** to main dex</div><div class="line">    TinkerManager.installTinker(this);</div><div class="line">    Tinker tinker = Tinker.with(getApplication());</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>首先调用MultiDex.install方法</li>
+<li>然后初始化一些个参数</li>
+<li>调用TinkerManager的一些方法来初始化或者设置一些值</li>
+<li>然后installTinker</li>
+<li>生成一个Tinker对象</li>
+</ul>
+<p>### </p>
+<h4 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h4><p>从逻辑流程来看，核心部分在于TinkerLoadeClass的tryLoad，以及TinkerManager的一些方法。其他的方法就是做一些初始化之类的工作，当然，这些也很重要。</p>
+<h3 id="TinkerLoader-tryLoad方法"><a href="#TinkerLoader-tryLoad方法" class="headerlink" title="TinkerLoader#tryLoad方法"></a>TinkerLoader#tryLoad方法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">public Intent tryLoad(TinkerApplication app, int tinkerFlag, boolean tinkerLoadVerifyFlag) &#123;</div><div class="line">    Intent resultIntent = new Intent();</div><div class="line"></div><div class="line">    long begin = SystemClock.elapsedRealtime();</div><div class="line">    tryLoadPatchFilesInternal(app, tinkerFlag, tinkerLoadVerifyFlag, resultIntent);</div><div class="line">    long cost = SystemClock.elapsedRealtime() - begin;</div><div class="line">    ShareIntentUtil.setIntentPatchCostTime(resultIntent, cost);</div><div class="line">    return resultIntent;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这个方法内部主要是调用tryLoadPatchFilesInternal方法，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div></pre></td><td class="code"><pre><div class="line">private void tryLoadPatchFilesInternal(TinkerApplication app, int tinkerFlag, boolean tinkerLoadVerifyFlag, Intent resultIntent) &#123;</div><div class="line">        if (!ShareTinkerInternals.isTinkerEnabled(tinkerFlag)) &#123;</div><div class="line">            ShareIntentUtil.setIntentReturnCode(resultIntent, ShareConstants.ERROR_LOAD_DISABLE);</div><div class="line">            return;</div><div class="line">        &#125;</div><div class="line">        //tinker</div><div class="line">        File patchDirectoryFile = SharePatchFileUtil.getPatchDirectory(app);</div><div class="line">        if (patchDirectoryFile == null) &#123;</div><div class="line">            Log.w(TAG, &quot;tryLoadPatchFiles:getPatchDirectory == null&quot;);</div><div class="line">            //treat as not exist</div><div class="line">            ShareIntentUtil.setIntentReturnCode(resultIntent, ShareConstants.ERROR_LOAD_PATCH_DIRECTORY_NOT_EXIST);</div><div class="line">            return;</div><div class="line">        &#125;</div><div class="line">        String patchDirectoryPath = patchDirectoryFile.getAbsolutePath();</div><div class="line"></div><div class="line">        //check patch directory whether exist</div><div class="line">        if (!patchDirectoryFile.exists()) &#123;</div><div class="line">            Log.w(TAG, &quot;tryLoadPatchFiles:patch dir not exist:&quot; + patchDirectoryPath);</div><div class="line">            ShareIntentUtil.setIntentReturnCode(resultIntent, ShareConstants.ERROR_LOAD_PATCH_DIRECTORY_NOT_EXIST);</div><div class="line">            return;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        //tinker/patch.info</div><div class="line">        File patchInfoFile = SharePatchFileUtil.getPatchInfoFile(patchDirectoryPath);</div><div class="line"></div><div class="line">        //check patch info file whether exist</div><div class="line">        if (!patchInfoFile.exists()) &#123;</div><div class="line">            Log.w(TAG, &quot;tryLoadPatchFiles:patch info not exist:&quot; + patchInfoFile.getAbsolutePath());</div><div class="line">            ShareIntentUtil.setIntentReturnCode(resultIntent, ShareConstants.ERROR_LOAD_PATCH_INFO_NOT_EXIST);</div><div class="line">            return;</div><div class="line">        &#125;</div><div class="line">        //old = 641e634c5b8f1649c75caf73794acbdf</div><div class="line">        //new = 2c150d8560334966952678930ba67fa8</div><div class="line">        File patchInfoLockFile = SharePatchFileUtil.getPatchInfoLockFile(patchDirectoryPath);</div><div class="line"></div><div class="line">        patchInfo = SharePatchInfo.readAndCheckPropertyWithLock(patchInfoFile, patchInfoLockFile);</div><div class="line">        if (patchInfo == null) &#123;</div><div class="line">            ShareIntentUtil.setIntentReturnCode(resultIntent, ShareConstants.ERROR_LOAD_PATCH_INFO_CORRUPTED);</div><div class="line">            return;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        String oldVersion = patchInfo.oldVersion;</div><div class="line">        String newVersion = patchInfo.newVersion;</div><div class="line"></div><div class="line">        if (oldVersion == null || newVersion == null) &#123;</div><div class="line">            //it is nice to clean patch</div><div class="line">            Log.w(TAG, &quot;tryLoadPatchFiles:onPatchInfoCorrupted&quot;);</div><div class="line">            ShareIntentUtil.setIntentReturnCode(resultIntent, ShareConstants.ERROR_LOAD_PATCH_INFO_CORRUPTED);</div><div class="line">            return;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        resultIntent.putExtra(ShareIntentUtil.INTENT_PATCH_OLD_VERSION, oldVersion);</div><div class="line">        resultIntent.putExtra(ShareIntentUtil.INTENT_PATCH_NEW_VERSION, newVersion);</div><div class="line"></div><div class="line">        boolean mainProcess = ShareTinkerInternals.isInMainProcess(app);</div><div class="line">        boolean versionChanged = !(oldVersion.equals(newVersion));</div><div class="line"></div><div class="line">        String version = oldVersion;</div><div class="line">        if (versionChanged &amp;&amp; mainProcess) &#123;</div><div class="line">            version = newVersion;</div><div class="line">        &#125;</div><div class="line">        if (ShareTinkerInternals.isNullOrNil(version)) &#123;</div><div class="line">            Log.w(TAG, &quot;tryLoadPatchFiles:version is blank, wait main process to restart&quot;);</div><div class="line">            ShareIntentUtil.setIntentReturnCode(resultIntent, ShareConstants.ERROR_LOAD_PATCH_INFO_BLANK);</div><div class="line">            return;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        //patch-641e634c</div><div class="line">        String patchName = SharePatchFileUtil.getPatchVersionDirectory(version);</div><div class="line">        if (patchName == null) &#123;</div><div class="line">            Log.w(TAG, &quot;tryLoadPatchFiles:patchName is null&quot;);</div><div class="line">            //we may delete patch info file</div><div class="line">            ShareIntentUtil.setIntentReturnCode(resultIntent, ShareConstants.ERROR_LOAD_PATCH_VERSION_DIRECTORY_NOT_EXIST);</div><div class="line">            return;</div><div class="line">        &#125;</div><div class="line">        //tinker/patch.info/patch-641e634c</div><div class="line">        String patchVersionDirectory = patchDirectoryPath + &quot;/&quot; + patchName;</div><div class="line">        File patchVersionDirectoryFile = new File(patchVersionDirectory);</div><div class="line"></div><div class="line">        if (!patchVersionDirectoryFile.exists()) &#123;</div><div class="line">            Log.w(TAG, &quot;tryLoadPatchFiles:onPatchVersionDirectoryNotFound&quot;);</div><div class="line">            //we may delete patch info file</div><div class="line">            ShareIntentUtil.setIntentReturnCode(resultIntent, ShareConstants.ERROR_LOAD_PATCH_VERSION_DIRECTORY_NOT_EXIST);</div><div class="line">            return;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        //tinker/patch.info/patch-641e634c/patch-641e634c.apk</div><div class="line">        File patchVersionFile = new File(patchVersionDirectoryFile.getAbsolutePath(), SharePatchFileUtil.getPatchVersionFile(version));</div><div class="line"></div><div class="line">        if (!SharePatchFileUtil.isLegalFile(patchVersionFile)) &#123;</div><div class="line">            Log.w(TAG, &quot;tryLoadPatchFiles:onPatchVersionFileNotFound&quot;);</div><div class="line">            //we may delete patch info file</div><div class="line">            ShareIntentUtil.setIntentReturnCode(resultIntent, ShareConstants.ERROR_LOAD_PATCH_VERSION_FILE_NOT_EXIST);</div><div class="line">            return;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        ShareSecurityCheck securityCheck = new ShareSecurityCheck(app);</div><div class="line"></div><div class="line">        int returnCode = ShareTinkerInternals.checkTinkerPackage(app, tinkerFlag, patchVersionFile, securityCheck);</div><div class="line">        if (returnCode != ShareConstants.ERROR_PACKAGE_CHECK_OK) &#123;</div><div class="line">            Log.w(TAG, &quot;tryLoadPatchFiles:checkTinkerPackage&quot;);</div><div class="line">            resultIntent.putExtra(ShareIntentUtil.INTENT_PATCH_PACKAGE_PATCH_CHECK, returnCode);</div><div class="line">            ShareIntentUtil.setIntentReturnCode(resultIntent, ShareConstants.ERROR_LOAD_PATCH_PACKAGE_CHECK_FAIL);</div><div class="line">            return;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        resultIntent.putExtra(ShareIntentUtil.INTENT_PATCH_PACKAGE_CONFIG, securityCheck.getPackagePropertiesIfPresent());</div><div class="line"></div><div class="line">        final boolean isEnabledForDex = ShareTinkerInternals.isTinkerEnabledForDex(tinkerFlag);</div><div class="line"></div><div class="line">        if (isEnabledForDex) &#123;</div><div class="line">            //tinker/patch.info/patch-641e634c/dex</div><div class="line">            boolean dexCheck = TinkerDexLoader.checkComplete(patchVersionDirectory, securityCheck, resultIntent);</div><div class="line">            if (!dexCheck) &#123;</div><div class="line">                //file not found, do not load patch</div><div class="line">                Log.w(TAG, &quot;tryLoadPatchFiles:dex check fail&quot;);</div><div class="line">                return;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        final boolean isEnabledForNativeLib = ShareTinkerInternals.isTinkerEnabledForNativeLib(tinkerFlag);</div><div class="line"></div><div class="line">        if (isEnabledForNativeLib) &#123;</div><div class="line">            //tinker/patch.info/patch-641e634c/lib</div><div class="line">            boolean libCheck = TinkerSoLoader.checkComplete(patchVersionDirectory, securityCheck, resultIntent);</div><div class="line">            if (!libCheck) &#123;</div><div class="line">                //file not found, do not load patch</div><div class="line">                Log.w(TAG, &quot;tryLoadPatchFiles:native lib check fail&quot;);</div><div class="line">                return;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        //check resource</div><div class="line">        final boolean isEnabledForResource = ShareTinkerInternals.isTinkerEnabledForResource(tinkerFlag);</div><div class="line">        Log.w(TAG, &quot;tryLoadPatchFiles:isEnabledForResource:&quot; + isEnabledForResource);</div><div class="line">        if (isEnabledForResource) &#123;</div><div class="line">            boolean resourceCheck = TinkerResourceLoader.checkComplete(app, patchVersionDirectory, securityCheck, resultIntent);</div><div class="line">            if (!resourceCheck) &#123;</div><div class="line">                //file not found, do not load patch</div><div class="line">                Log.w(TAG, &quot;tryLoadPatchFiles:resource check fail&quot;);</div><div class="line">                return;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        //only work for art platform oat</div><div class="line">        boolean isSystemOTA = ShareTinkerInternals.isVmArt() &amp;&amp; ShareTinkerInternals.isSystemOTA(patchInfo.fingerPrint);</div><div class="line">        resultIntent.putExtra(ShareIntentUtil.INTENT_PATCH_SYSTEM_OTA, isSystemOTA);</div><div class="line"></div><div class="line">        //we should first try rewrite patch info file, if there is a error, we can&apos;t load jar</div><div class="line">        if (isSystemOTA</div><div class="line">            || (mainProcess &amp;&amp; versionChanged)) &#123;</div><div class="line">            patchInfo.oldVersion = version;</div><div class="line">            //update old version to new</div><div class="line">            if (!SharePatchInfo.rewritePatchInfoFileWithLock(patchInfoFile, patchInfo, patchInfoLockFile)) &#123;</div><div class="line">                ShareIntentUtil.setIntentReturnCode(resultIntent, ShareConstants.ERROR_LOAD_PATCH_REWRITE_PATCH_INFO_FAIL);</div><div class="line">                Log.w(TAG, &quot;tryLoadPatchFiles:onReWritePatchInfoCorrupted&quot;);</div><div class="line">                return;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        if (!checkSafeModeCount(app)) &#123;</div><div class="line">            resultIntent.putExtra(ShareIntentUtil.INTENT_PATCH_EXCEPTION, new TinkerRuntimeException(&quot;checkSafeModeCount fail&quot;));</div><div class="line">            ShareIntentUtil.setIntentReturnCode(resultIntent, ShareConstants.ERROR_LOAD_PATCH_UNCAUGHT_EXCEPTION);</div><div class="line">            Log.w(TAG, &quot;tryLoadPatchFiles:checkSafeModeCount fail&quot;);</div><div class="line">            return;</div><div class="line">        &#125;</div><div class="line">        //now we can load patch jar</div><div class="line">        if (isEnabledForDex) &#123;</div><div class="line">            boolean loadTinkerJars = TinkerDexLoader.loadTinkerJars(app, tinkerLoadVerifyFlag, patchVersionDirectory, resultIntent, isSystemOTA);</div><div class="line">            if (!loadTinkerJars) &#123;</div><div class="line">                Log.w(TAG, &quot;tryLoadPatchFiles:onPatchLoadDexesFail&quot;);</div><div class="line">                return;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        //now we can load patch resource</div><div class="line">        if (isEnabledForResource) &#123;</div><div class="line">            boolean loadTinkerResources = TinkerResourceLoader.loadTinkerResources(app, tinkerLoadVerifyFlag, patchVersionDirectory, resultIntent);</div><div class="line">            if (!loadTinkerResources) &#123;</div><div class="line">                Log.w(TAG, &quot;tryLoadPatchFiles:onPatchLoadResourcesFail&quot;);</div><div class="line">                return;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        //all is ok!</div><div class="line">        ShareIntentUtil.setIntentReturnCode(resultIntent, ShareConstants.ERROR_LOAD_OK);</div><div class="line">        Log.i(TAG, &quot;tryLoadPatchFiles: load end, ok!&quot;);</div><div class="line">        return;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>这个方法的代码特别长，但是逻辑并不是特别复杂：</p>
+<ul>
+<li>首先获取patchDirectoryFile，为/data/user/0/packageName/tinker</li>
+<li>获取patchInfoFile、patchInfoLockFile等等</li>
+<li>获取旧版本号、新版本号等信息</li>
+<li>获取其他的一些信息</li>
+<li>进行一些so、dex、resource的check</li>
+<li>然后进行load操作</li>
+<li>将结果写入intent返回</li>
+</ul>
+<h4 id="TinkerManager的一些方法"><a href="#TinkerManager的一些方法" class="headerlink" title="TinkerManager的一些方法"></a>TinkerManager的一些方法</h4><p>主要是进行参数设置以及Tinker的install操作，Tinker的install操作，由TinkerInstaller的install方法完成。</p>
+<h3 id="TinkerApplication的其他方法"><a href="#TinkerApplication的其他方法" class="headerlink" title="TinkerApplication的其他方法"></a>TinkerApplication的其他方法</h3><p>在这里的其他方法中，我们看到的代码几乎都是将这些操作，委托(代理)SampleApplicationLike中对应的方法来完成。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>过程如下，先loadTinker，在这里面会进行tryLoad操作，然后在创建代理对象，最后调用applicationLike的#onBaseContextAttached方法来初始化TinkerManager以及Tinker的安装。</p>
+<h3 id="最近访客"><a href="#最近访客" class="headerlink" title="最近访客"></a>最近访客</h3><ul class="ds-recent-visitors" data-num-items="46" data-avatar-size="40"></ul></the>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/tinker/" rel="tag"># tinker</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/08/tinker-注解部分/" rel="next" title="tinker-注解部分">
+                <i class="fa fa-chevron-left"></i> tinker-注解部分
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+  <p>热评文章</p>
+  <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/04/09/tinker-application/"
+           data-title="tinker-application" data-url="http://guolei1130.github.io/2017/04/09/tinker-application/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/img/head.png"
+               alt="_StriveG" />
+          <p class="site-author-name" itemprop="name">_StriveG</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">49</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://guolei1130.github.io/" target="_blank" title="博客首页">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  博客首页
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Guolei1130/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/qq_21430549" target="_blank" title="csdn博客">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  csdn博客
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://monsterlin.com/" target="_blank" title="友情链接">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  友情链接
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#attachBaseContext"><span class="nav-number">2.</span> <span class="nav-text">attachBaseContext</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#loadTinker"><span class="nav-number">2.1.</span> <span class="nav-text">loadTinker</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ensureDelegate"><span class="nav-number">2.2.</span> <span class="nav-text">ensureDelegate</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SampleApplicationLike-onBaseContextAttached"><span class="nav-number">2.3.</span> <span class="nav-text">SampleApplicationLike#onBaseContextAttached</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#小结"><span class="nav-number">2.4.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TinkerLoader-tryLoad方法"><span class="nav-number">3.</span> <span class="nav-text">TinkerLoader#tryLoad方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#TinkerManager的一些方法"><span class="nav-number">3.1.</span> <span class="nav-text">TinkerManager的一些方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TinkerApplication的其他方法"><span class="nav-number">4.</span> <span class="nav-text">TinkerApplication的其他方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最近访客"><span class="nav-number">6.</span> <span class="nav-text">最近访客</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">_StriveG</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"guolei1130"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>
