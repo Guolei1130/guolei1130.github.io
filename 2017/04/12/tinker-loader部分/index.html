@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="jvm," />
+  <meta name="keywords" content="tinker," />
 
 
 
@@ -84,37 +84,28 @@
 
 
 
-<meta name="description" content="前言
-深入理解java虚拟机
+<meta name="description" content="前言tinker-loader部分负责对补丁包进行检测和加载，分为三部分
 
-java是编译运行的，因此，在运行之前，会进行编译操作。在java中，有三种类型，如下：
-
-前期编译器:将.java编译成.class，常见的如javac
-JIT编译器(just in time compiler)：将.class字节码转化为机器码，如hotspot的C1,C2
-AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
+dex
+so
+resource">
 <meta property="og:type" content="article">
-<meta property="og:title" content="jvm编译器优化">
-<meta property="og:url" content="http://guolei1130.github.io/2017/01/19/jvm编译器优化/index.html">
+<meta property="og:title" content="tinker-loader部分">
+<meta property="og:url" content="http://guolei1130.github.io/2017/04/12/tinker-loader部分/index.html">
 <meta property="og:site_name" content="_StriveG Blog">
-<meta property="og:description" content="前言
-深入理解java虚拟机
+<meta property="og:description" content="前言tinker-loader部分负责对补丁包进行检测和加载，分为三部分
 
-java是编译运行的，因此，在运行之前，会进行编译操作。在java中，有三种类型，如下：
-
-前期编译器:将.java编译成.class，常见的如javac
-JIT编译器(just in time compiler)：将.class字节码转化为机器码，如hotspot的C1,C2
-AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
-<meta property="og:updated_time" content="2017-01-19T13:34:33.000Z">
+dex
+so
+resource">
+<meta property="og:updated_time" content="2017-04-12T13:01:10.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="jvm编译器优化">
-<meta name="twitter:description" content="前言
-深入理解java虚拟机
+<meta name="twitter:title" content="tinker-loader部分">
+<meta name="twitter:description" content="前言tinker-loader部分负责对补丁包进行检测和加载，分为三部分
 
-java是编译运行的，因此，在运行之前，会进行编译操作。在java中，有三种类型，如下：
-
-前期编译器:将.java编译成.class，常见的如javac
-JIT编译器(just in time compiler)：将.class字节码转化为机器码，如hotspot的C1,C2
-AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
+dex
+so
+resource">
 
 
 
@@ -142,13 +133,13 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
 
 
 
-  <link rel="canonical" href="http://guolei1130.github.io/2017/01/19/jvm编译器优化/"/>
+  <link rel="canonical" href="http://guolei1130.github.io/2017/04/12/tinker-loader部分/"/>
 
 
 
 
 
-  <title> jvm编译器优化 | _StriveG Blog </title>
+  <title> tinker-loader部分 | _StriveG Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -281,7 +272,7 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://guolei1130.github.io/2017/01/19/jvm编译器优化/">
+  <link itemprop="mainEntityOfPage" href="http://guolei1130.github.io/2017/04/12/tinker-loader部分/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="_StriveG">
@@ -305,7 +296,7 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
             
             
               
-                jvm编译器优化
+                tinker-loader部分
               
             
           </h1>
@@ -320,8 +311,8 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-19T21:33:35+08:00">
-                2017-01-19
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-04-12T21:00:20+08:00">
+                2017-04-12
               </time>
             
 
@@ -331,28 +322,6 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
           </span>
 
           
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
 
           
             
@@ -361,8 +330,8 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/01/19/jvm编译器优化/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/01/19/jvm编译器优化/" itemprop="commentCount"></span>
+                <a href="/2017/04/12/tinker-loader部分/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/04/12/tinker-loader部分/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -394,48 +363,25 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
 
       
         <p><excerpt in="" index="" |="" 首页摘要=""></excerpt></p>
-<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><blockquote>
-<p>深入理解java虚拟机</p>
-</blockquote>
-<p>java是编译运行的，因此，在运行之前，会进行编译操作。在java中，有三种类型，如下：</p>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>tinker-loader部分负责对补丁包进行检测和加载，分为三部分</p>
 <ul>
-<li>前期编译器:将.java编译成.class，常见的如javac</li>
-<li>JIT编译器(just in time compiler)：将.class字节码转化为机器码，如hotspot的C1,C2</li>
-<li>AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化为机器码的过程</li>
+<li>dex</li>
+<li>so</li>
+<li>resource</li>
 </ul>
 <a id="more"></a>
 <the rest="" of="" contents="" |="" 余下全文="">
 
 
-<h3 id="javac的编译过程"><a href="#javac的编译过程" class="headerlink" title="javac的编译过程"></a>javac的编译过程</h3><p>javac的编译过程分为下面三个步骤：</p>
-<ul>
-<li>解析与填充符号表的过程</li>
-<li>插入式注解处理器的注解处理过程</li>
-<li>分析与字节码生成过程</li>
-</ul>
-<h4 id="解析与填充符号表的过程"><a href="#解析与填充符号表的过程" class="headerlink" title="解析与填充符号表的过程"></a>解析与填充符号表的过程</h4><p>解析过程包括词法分析与语法分析两个过程。</p>
-<ul>
-<li>词法分析 词法分析是将源代码的字符流转化为标记(Token)集合，标记是编译过程中的最小元素、关键字、变量名、字面量、运算符等都可以成为标记</li>
-<li>语法分析 是根据token生成抽象语法树的过程</li>
-</ul>
-<h4 id="注解处理器"><a href="#注解处理器" class="headerlink" title="注解处理器"></a>注解处理器</h4><p>这个过程就是处理我们编译时注解的过程。</p>
-<h4 id="语义分析与字节码生成"><a href="#语义分析与字节码生成" class="headerlink" title="语义分析与字节码生成"></a>语义分析与字节码生成</h4><ul>
-<li>语义分析<ol>
-<li>标注检查，检查的内容包括变量使用前是否已被申明、变量与赋值过程的类型是否匹配等，在这个过程中，会进行一个重要的操作，叫做常量折叠，如 int A = 1 + 2,编译成 int A = 3</li>
-<li>数据及控制流分析，对程序上下文逻辑更进一步的验证，检查程序局部变量在使用前是否有赋值、方法的每条路径是否有返回值等等问题。<ol>
-<li>解语法糖，包括自动拆箱、装箱等</li>
-</ol>
-</li>
-</ol>
-</li>
-<li>字节码生成 将前面各个步骤生成的信息，写入到磁盘中。</li>
-</ul>
-<h3 id="Java中语法糖"><a href="#Java中语法糖" class="headerlink" title="Java中语法糖"></a>Java中语法糖</h3><ul>
-<li>泛型与类型擦除，讲ArrayList<int>,ArrayList<string>擦除程同一种类型</string></int></li>
-<li>自动装箱、拆箱与遍历循环</li>
-<li>条件编译 如果发现只会为true，或者false，只会编译对应分支。</li>
-</ul>
-<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p>来自经典好书 深入理解java虚拟机。建议入手一本，</p>
+<h3 id="TinkerLoader"><a href="#TinkerLoader" class="headerlink" title="TinkerLoader"></a>TinkerLoader</h3><p>这是loader的大管家，在他的tryLoad方法中，调用内部的tryLoadPatchFilesInternal方法，在这个方法中，进行各种验证。然后调用TinkerDexLoader#loadTinkerJars 加载dex，利用TinkerResourceLoader的loadTinkerResources来加载补丁resource。并将结果什么的写入到Intent中</p>
+<h3 id="TinkerDexLoader"><a href="#TinkerDexLoader" class="headerlink" title="TinkerDexLoader"></a>TinkerDexLoader</h3><p>这个类负责检查dex的合法性已经加载dex。加载过程的主要代码如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SystemClassLoaderAdder.installDexes(application, classLoader, optimizeDir, legalFiles);</div></pre></td></tr></table></figure>
+<p>在SystemClassLoaderAdder.installDexes中，根绝不同的版本，选择不同的方式去hook。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">if (!files.isEmpty()) &#123;</div><div class="line">    ClassLoader classLoader = loader;</div><div class="line">    if (Build.VERSION.SDK_INT &gt;= 24) &#123;</div><div class="line">        classLoader = AndroidNClassLoader.inject(loader, application);</div><div class="line">    &#125;</div><div class="line">    //because in dalvik, if inner class is not the same classloader with it wrapper class.</div><div class="line">    //it won&apos;t fail at dex2opt</div><div class="line">    if (Build.VERSION.SDK_INT &gt;= 23) &#123;</div><div class="line">        V23.install(classLoader, files, dexOptDir);</div><div class="line">    &#125; else if (Build.VERSION.SDK_INT &gt;= 19) &#123;</div><div class="line">        V19.install(classLoader, files, dexOptDir);</div><div class="line">    &#125; else if (Build.VERSION.SDK_INT &gt;= 14) &#123;</div><div class="line">        V14.install(classLoader, files, dexOptDir);</div><div class="line">    &#125; else &#123;</div><div class="line">        V4.install(classLoader, files, dexOptDir);</div><div class="line">    &#125;</div><div class="line">    //install done</div><div class="line">    sPatchDexCount = files.size();</div><div class="line">    Log.i(TAG, &quot;after loaded classloader: &quot; + classLoader + &quot;, dex size:&quot; + sPatchDexCount);</div><div class="line"></div><div class="line">    if (!checkDexInstall(classLoader)) &#123;</div><div class="line">        //reset patch dex</div><div class="line">        SystemClassLoaderAdder.uninstallPatchDex(classLoader);</div><div class="line">        throw new TinkerRuntimeException(ShareConstants.CHECK_DEX_INSTALL_FAIL);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>其中各个版本都是hook classLoader进行插桩处理，具体的代码，我们就不看了。</p>
+<h3 id="TinkerResourceLoader"><a href="#TinkerResourceLoader" class="headerlink" title="TinkerResourceLoader"></a>TinkerResourceLoader</h3><p>在这个类的loadTinkerResources方法中，有加载补丁资源包的代码。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">TinkerResourcePatcher.monkeyPatchExistingResources(context, resourceString);</div></pre></td></tr></table></figure>
+<p>加载的代码和dex的类似，都是hook一些东西，关于hook那些东西，由于需要对AssetManager比较熟悉，我这里不熟悉，就不记录了，可以去网上找点资料。</p>
 <h3 id="最近访客"><a href="#最近访客" class="headerlink" title="最近访客"></a>最近访客</h3><ul class="ds-recent-visitors" data-num-items="46" data-avatar-size="40"></ul></the>
       
     </div>
@@ -459,7 +405,7 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
       
         <div class="post-tags">
           
-            <a href="/tags/jvm/" rel="tag"># jvm</a>
+            <a href="/tags/tinker/" rel="tag"># tinker</a>
           
         </div>
       
@@ -468,8 +414,8 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/01/19/Android属性动画源码浅析/" rel="next" title="Android属性动画源码浅析">
-                <i class="fa fa-chevron-left"></i> Android属性动画源码浅析
+              <a href="/2017/04/09/tinker-application/" rel="next" title="tinker-application">
+                <i class="fa fa-chevron-left"></i> tinker-application
               </a>
             
           </div>
@@ -477,10 +423,6 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/01/20/jvm运行时优化/" rel="prev" title="jvm运行时优化">
-                jvm运行时优化 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -509,8 +451,8 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2017/01/19/jvm编译器优化/"
-           data-title="jvm编译器优化" data-url="http://guolei1130.github.io/2017/01/19/jvm编译器优化/">
+      <div class="ds-thread" data-thread-key="2017/04/12/tinker-loader部分/"
+           data-title="tinker-loader部分" data-url="http://guolei1130.github.io/2017/04/12/tinker-loader部分/">
       </div>
     
   </div>
@@ -648,7 +590,7 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#javac的编译过程"><span class="nav-number">2.</span> <span class="nav-text">javac的编译过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#解析与填充符号表的过程"><span class="nav-number">2.1.</span> <span class="nav-text">解析与填充符号表的过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#注解处理器"><span class="nav-number">2.2.</span> <span class="nav-text">注解处理器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#语义分析与字节码生成"><span class="nav-number">2.3.</span> <span class="nav-text">语义分析与字节码生成</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java中语法糖"><span class="nav-number">3.</span> <span class="nav-text">Java中语法糖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最近访客"><span class="nav-number">5.</span> <span class="nav-text">最近访客</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TinkerLoader"><span class="nav-number">2.</span> <span class="nav-text">TinkerLoader</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TinkerDexLoader"><span class="nav-number">3.</span> <span class="nav-text">TinkerDexLoader</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TinkerResourceLoader"><span class="nav-number">4.</span> <span class="nav-text">TinkerResourceLoader</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最近访客"><span class="nav-number">5.</span> <span class="nav-text">最近访客</span></a></li></ol></div>
             
 
           </div>
