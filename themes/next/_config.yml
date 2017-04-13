@@ -42,7 +42,7 @@ menu:
   tags: /tags
   about: /me
   #sitemap: /sitemap.xml
-  #commonweal: /404.html
+  commonweal: /404.html
 
 
 # Enable/Disable menu icons.
@@ -273,7 +273,7 @@ mathjax:
 # Duoshuo ShortName
 #duoshuo_shortname:
 
-duoshuo_hotartical: true
+# duoshuo_hotartical: true
 
 # Disqus
 #disqus_shortname:
@@ -282,7 +282,7 @@ duoshuo_hotartical: true
 #hypercomments_id:
 
 # Gentie productKey
-#gentie_productKey:
+gentie_productKey: fcc43674631548619718af151a342fdc
 
 # Support for youyan comments system.
 # You can get your uid from http://www.uyan.cc
@@ -321,11 +321,11 @@ duoshuo_hotartical: true
 # Make duoshuo show UA
 # user_id must NOT be null when admin_enable is true!
 # you can visit http://dev.duoshuo.com get duoshuo user id.
-duoshuo_info:
-  ua_enable: true
-  admin_enable: false
-  user_id: guolei1130
-  admin_nickname: 菜鸡郭
+#duoshuo_info:
+#  ua_enable: true
+#  admin_enable: false
+#  user_id: guolei1130
+#  admin_nickname: 菜鸡郭
 
 
 # Facebook SDK Support.
