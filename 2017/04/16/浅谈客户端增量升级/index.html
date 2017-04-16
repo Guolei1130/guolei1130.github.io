@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="jvm," />
+  <meta name="keywords" content="增量升级," />
 
 
 
@@ -84,37 +84,16 @@
 
 
 
-<meta name="description" content="前言
-深入理解java虚拟机
-
-java是编译运行的，因此，在运行之前，会进行编译操作。在java中，有三种类型，如下：
-
-前期编译器:将.java编译成.class，常见的如javac
-JIT编译器(just in time compiler)：将.class字节码转化为机器码，如hotspot的C1,C2
-AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
+<meta name="description" content="前言大家应该都有注意到，各大应用市场都在使用增量升级的技术。那么，今天，就来记录下，bsdiff和bspatch。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="jvm编译器优化">
-<meta property="og:url" content="http://guolei1130.github.io/2017/01/19/jvm编译器优化/index.html">
+<meta property="og:title" content="浅谈客户端增量升级">
+<meta property="og:url" content="http://guolei1130.github.io/2017/04/16/浅谈客户端增量升级/index.html">
 <meta property="og:site_name" content="_StriveG Blog">
-<meta property="og:description" content="前言
-深入理解java虚拟机
-
-java是编译运行的，因此，在运行之前，会进行编译操作。在java中，有三种类型，如下：
-
-前期编译器:将.java编译成.class，常见的如javac
-JIT编译器(just in time compiler)：将.class字节码转化为机器码，如hotspot的C1,C2
-AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
-<meta property="og:updated_time" content="2017-01-19T13:34:33.000Z">
+<meta property="og:description" content="前言大家应该都有注意到，各大应用市场都在使用增量升级的技术。那么，今天，就来记录下，bsdiff和bspatch。">
+<meta property="og:updated_time" content="2017-04-16T07:29:45.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="jvm编译器优化">
-<meta name="twitter:description" content="前言
-深入理解java虚拟机
-
-java是编译运行的，因此，在运行之前，会进行编译操作。在java中，有三种类型，如下：
-
-前期编译器:将.java编译成.class，常见的如javac
-JIT编译器(just in time compiler)：将.class字节码转化为机器码，如hotspot的C1,C2
-AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
+<meta name="twitter:title" content="浅谈客户端增量升级">
+<meta name="twitter:description" content="前言大家应该都有注意到，各大应用市场都在使用增量升级的技术。那么，今天，就来记录下，bsdiff和bspatch。">
 
 
 
@@ -142,13 +121,13 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
 
 
 
-  <link rel="canonical" href="http://guolei1130.github.io/2017/01/19/jvm编译器优化/"/>
+  <link rel="canonical" href="http://guolei1130.github.io/2017/04/16/浅谈客户端增量升级/"/>
 
 
 
 
 
-  <title> jvm编译器优化 | _StriveG Blog </title>
+  <title> 浅谈客户端增量升级 | _StriveG Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -291,7 +270,7 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://guolei1130.github.io/2017/01/19/jvm编译器优化/">
+  <link itemprop="mainEntityOfPage" href="http://guolei1130.github.io/2017/04/16/浅谈客户端增量升级/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="_StriveG">
@@ -315,7 +294,7 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
             
             
               
-                jvm编译器优化
+                浅谈客户端增量升级
               
             
           </h1>
@@ -330,8 +309,8 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-19T21:33:35+08:00">
-                2017-01-19
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-04-16T15:28:51+08:00">
+                2017-04-16
               </time>
             
 
@@ -341,28 +320,6 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
           </span>
 
           
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
 
           
             
@@ -371,8 +328,8 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/01/19/jvm编译器优化/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/01/19/jvm编译器优化/" itemprop="commentCount"></span>
+                <a href="/2017/04/16/浅谈客户端增量升级/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/04/16/浅谈客户端增量升级/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -404,49 +361,40 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
 
       
         <p><excerpt in="" index="" |="" 首页摘要=""></excerpt></p>
-<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><blockquote>
-<p>深入理解java虚拟机</p>
-</blockquote>
-<p>java是编译运行的，因此，在运行之前，会进行编译操作。在java中，有三种类型，如下：</p>
-<ul>
-<li>前期编译器:将.java编译成.class，常见的如javac</li>
-<li>JIT编译器(just in time compiler)：将.class字节码转化为机器码，如hotspot的C1,C2</li>
-<li>AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化为机器码的过程</li>
-</ul>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>大家应该都有注意到，各大应用市场都在使用增量升级的技术。那么，今天，就来记录下，bsdiff和bspatch。</p>
 <a id="more"></a>
 <the rest="" of="" contents="" |="" 余下全文="">
 
 
-<h3 id="javac的编译过程"><a href="#javac的编译过程" class="headerlink" title="javac的编译过程"></a>javac的编译过程</h3><p>javac的编译过程分为下面三个步骤：</p>
+<h3 id="尝试"><a href="#尝试" class="headerlink" title="尝试"></a>尝试</h3><p>我们先去<a href="http://www.daemonology.net/bsdiff/" target="_blank" rel="external">Binary diff/patch utility</a> 中，把相关的资源下载下来，下载下来之后，我们进行编译，在编译之前，我们需要修改一点东西。</p>
+<p>Makefile文件修改成如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">CFLAGS		+=	-O3 -lbz2</div><div class="line"></div><div class="line">PREFIX		?=	/usr/local</div><div class="line">INSTALL_PROGRAM	?=	$&#123;INSTALL&#125; -c -s -m 555</div><div class="line">INSTALL_MAN	?=	$&#123;INSTALL&#125; -c -m 444</div><div class="line"></div><div class="line">all:		bsdiff bspatch</div><div class="line">bsdiff:		bsdiff.c</div><div class="line">bspatch:	bspatch.c</div><div class="line"></div><div class="line">install:</div><div class="line">	$&#123;INSTALL_PROGRAM&#125; bsdiff bspatch $&#123;PREFIX&#125;/bin</div><div class="line">	.ifndef WITHOUT_MAN</div><div class="line">	$&#123;INSTALL_MAN&#125; bsdiff.1 bspatch.1 $&#123;PREFIX&#125;/man/man1</div><div class="line">	.endif</div></pre></td></tr></table></figure>
+<p>就是在倒数第一行和倒数第三行增加缩进。</p>
+<p>然后修改bspatch.c文件，增加如下代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">typedef unsigned char u_char;</div></pre></td></tr></table></figure>
+<p>然后就可以进行编译了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">make</div></pre></td></tr></table></figure>
+<p>编译完成之后，我们就能进行初次尝试了。</p>
+<p>首先我们用as，生成两个新旧的apk,old.apk new.apk</p>
+<p>然后，我们终端进入bsdiff的目录，执行如下命令生成patch包。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">#命令格式 bsdiff: usage: ./bsdiff oldfile newfile patchfile</div><div class="line"></div><div class="line">./bsdiff old.apk new.apk patch.apk</div></pre></td></tr></table></figure>
+<p>然后，我们再用旧的apk和patch包，生成新的new.apk</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">#命令格式 bspatch: usage: ./bspatch oldfile newfile patchfile</div><div class="line"></div><div class="line">./bspatch old.apk new_patch.apk patch.apk</div></pre></td></tr></table></figure>
+<p>最后，我们验证下new.apk 和我们生成的new_patch.apk的md5值和sha值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">md5 new.apk</div><div class="line">md5 new_patch.apk</div><div class="line"></div><div class="line">shasum new.apk</div><div class="line">shasum new_patch.apk</div></pre></td></tr></table></figure>
+<p>观察值是否相同，进行测试。</p>
+<h3 id="如何移植到Android"><a href="#如何移植到Android" class="headerlink" title="如何移植到Android"></a>如何移植到Android</h3><p>我们客户端要关心的，就是合成的过程，也就是bspatch，那么我们如何移植到Android上呢。</p>
+<p>目前有两种移植到Android上的方案。</p>
 <ul>
-<li>解析与填充符号表的过程</li>
-<li>插入式注解处理器的注解处理过程</li>
-<li>分析与字节码生成过程</li>
+<li>jni，讲bspatch.c稍微改造下，编译成so文件，但是我们这里需要注意的是，因为Android中没有bzip2相关的东西，我们需要将bzip2相关的源码也拿出来。具体参考<a href="http://www.bzip.org/index.html" target="_blank" rel="external">bzip</a>，源码也可在哪里下载。下载完成之后，将.c和.h等有效文件移植到我们的项目即可。</li>
+<li>使用bspatch.c的java翻译版本,tinker中有相关的翻译版本，我们可以使用.<a href="https://github.com/Tencent/tinker/blob/master/third-party/bsdiff-util/src/main/java/com/tencent/tinker/bsdiff/BSPatch.java" target="_blank" rel="external">java翻译版本</a> ，我大致看了下，没有对magic进行校验，如果有需要，可自行加上校验，校验规则，参考bspatch.c</li>
 </ul>
-<h4 id="解析与填充符号表的过程"><a href="#解析与填充符号表的过程" class="headerlink" title="解析与填充符号表的过程"></a>解析与填充符号表的过程</h4><p>解析过程包括词法分析与语法分析两个过程。</p>
-<ul>
-<li>词法分析 词法分析是将源代码的字符流转化为标记(Token)集合，标记是编译过程中的最小元素、关键字、变量名、字面量、运算符等都可以成为标记</li>
-<li>语法分析 是根据token生成抽象语法树的过程</li>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li>bsdiff生成的patch包，虽然比完整包小，但是还是比较大。</li>
+<li>版本多了之后，难以管理，建议控制在三个版本</li>
 </ul>
-<h4 id="注解处理器"><a href="#注解处理器" class="headerlink" title="注解处理器"></a>注解处理器</h4><p>这个过程就是处理我们编译时注解的过程。</p>
-<h4 id="语义分析与字节码生成"><a href="#语义分析与字节码生成" class="headerlink" title="语义分析与字节码生成"></a>语义分析与字节码生成</h4><ul>
-<li>语义分析<ol>
-<li>标注检查，检查的内容包括变量使用前是否已被申明、变量与赋值过程的类型是否匹配等，在这个过程中，会进行一个重要的操作，叫做常量折叠，如 int A = 1 + 2,编译成 int A = 3</li>
-<li>数据及控制流分析，对程序上下文逻辑更进一步的验证，检查程序局部变量在使用前是否有赋值、方法的每条路径是否有返回值等等问题。<ol>
-<li>解语法糖，包括自动拆箱、装箱等</li>
-</ol>
-</li>
-</ol>
-</li>
-<li>字节码生成 将前面各个步骤生成的信息，写入到磁盘中。</li>
-</ul>
-<h3 id="Java中语法糖"><a href="#Java中语法糖" class="headerlink" title="Java中语法糖"></a>Java中语法糖</h3><ul>
-<li>泛型与类型擦除，讲ArrayList<int>,ArrayList<string>擦除程同一种类型</string></int></li>
-<li>自动装箱、拆箱与遍历循环</li>
-<li>条件编译 如果发现只会为true，或者false，只会编译对应分支。</li>
-</ul>
-<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p>来自经典好书 深入理解java虚拟机。建议入手一本，</p>
-<h3 id="最近访客"><a href="#最近访客" class="headerlink" title="最近访客"></a>最近访客</h3><ul class="ds-recent-visitors" data-num-items="46" data-avatar-size="40"></ul></the>
+<p>如果想了解原理 <a href="http://blog.csdn.net/add_ada/article/details/51232889" target="_blank" rel="external">可以阅读这篇文章</a>，并结合源码进行。</p>
+<h3 id="最近访客"><a href="#最近访客" class="headerlink" title="最近访客"></a>最近访客</h3><ul class="ds-recent-visitors" data-num-items="46" data-avatar-size="40"></ul><excerpt in="" index="" |="" 首页摘要=""><br>- - - 删除本行，在下面编写内容 - - -<br><br><!-- more --><br><the rest="" of="" contents="" |="" 余下全文=""><br>除摘要外其他内容<em> </em> _<br>### 最近访客<br><ul class="ds-recent-visitors" data-num-items="46" data-avatar-size="40"></ul></the></excerpt></the>
       
     </div>
 
@@ -469,7 +417,7 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
       
         <div class="post-tags">
           
-            <a href="/tags/jvm/" rel="tag"># jvm</a>
+            <a href="/tags/增量升级/" rel="tag"># 增量升级</a>
           
         </div>
       
@@ -478,8 +426,8 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/01/19/Android属性动画源码浅析/" rel="next" title="Android属性动画源码浅析">
-                <i class="fa fa-chevron-left"></i> Android属性动画源码浅析
+              <a href="/2017/04/14/tinker-diff和patch/" rel="next" title="tinker-diff和patch">
+                <i class="fa fa-chevron-left"></i> tinker-diff和patch
               </a>
             
           </div>
@@ -487,10 +435,6 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/01/20/jvm运行时优化/" rel="prev" title="jvm运行时优化">
-                jvm运行时优化 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -516,8 +460,8 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2017/01/19/jvm编译器优化/"
-           data-title="jvm编译器优化" data-url="http://guolei1130.github.io/2017/01/19/jvm编译器优化/">
+      <div class="ds-thread" data-thread-key="2017/04/16/浅谈客户端增量升级/"
+           data-title="浅谈客户端增量升级" data-url="http://guolei1130.github.io/2017/04/16/浅谈客户端增量升级/">
       </div>
     
   </div>
@@ -655,7 +599,7 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#javac的编译过程"><span class="nav-number">2.</span> <span class="nav-text">javac的编译过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#解析与填充符号表的过程"><span class="nav-number">2.1.</span> <span class="nav-text">解析与填充符号表的过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#注解处理器"><span class="nav-number">2.2.</span> <span class="nav-text">注解处理器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#语义分析与字节码生成"><span class="nav-number">2.3.</span> <span class="nav-text">语义分析与字节码生成</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java中语法糖"><span class="nav-number">3.</span> <span class="nav-text">Java中语法糖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最近访客"><span class="nav-number">5.</span> <span class="nav-text">最近访客</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#尝试"><span class="nav-number">2.</span> <span class="nav-text">尝试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何移植到Android"><span class="nav-number">3.</span> <span class="nav-text">如何移植到Android</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最近访客"><span class="nav-number">5.</span> <span class="nav-text">最近访客</span></a></li></ol></div>
             
 
           </div>
