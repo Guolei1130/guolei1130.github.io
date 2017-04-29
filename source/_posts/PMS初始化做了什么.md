@@ -2,8 +2,7 @@
 title: PMS初始化做了什么
 date: 2017-01-05 17:21:21
 categories: Android
-tags: 
-- framework
+tags: framework
 
 ---
 <Excerpt in index | 首页摘要>
