@@ -26,7 +26,7 @@ tags: fresco
 * Supplier<MemoryCacheParams> 内存cache的配置参数
 * CacheKeyFactory 生成cachekey的工厂
 * Context
-* mDownsampleEnabled 是否允许下载相同的图片
+* mDownsampleEnabled 
 * mDecodeMemoryFileEnabled 
 * FileCacheFactory 文件缓存的工厂
 * mEncodedMemoryCacheParamsSupplier 
