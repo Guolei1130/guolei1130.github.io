@@ -1,0 +1,823 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Xposed," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="提起Xposed，大多数Android开发者都听过或者用过，甚至有一些开发过比较炫酷的模块。这是我前段时间在公司的分享内容，分享给大家。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Xposed简介以及小米去桌面广告的简单实现">
+<meta property="og:url" content="http://guolei1130.github.io/2017/11/18/Xposed简介以及小米去桌面广告的简单实现/index.html">
+<meta property="og:site_name" content="_StriveG Blog">
+<meta property="og:description" content="提起Xposed，大多数Android开发者都听过或者用过，甚至有一些开发过比较炫酷的模块。这是我前段时间在公司的分享内容，分享给大家。">
+<meta property="og:updated_time" content="2017-11-18T11:20:40.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Xposed简介以及小米去桌面广告的简单实现">
+<meta name="twitter:description" content="提起Xposed，大多数Android开发者都听过或者用过，甚至有一些开发过比较炫酷的模块。这是我前段时间在公司的分享内容，分享给大家。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"always"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://guolei1130.github.io/2017/11/18/Xposed简介以及小米去桌面广告的简单实现/"/>
+
+
+
+
+
+  <title> Xposed简介以及小米去桌面广告的简单实现 | _StriveG Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">_StriveG Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle">欢迎来到_StriveG Blog</p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/me" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://guolei1130.github.io/2017/11/18/Xposed简介以及小米去桌面广告的简单实现/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="_StriveG">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/img/head.png">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="_StriveG Blog">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="_StriveG Blog" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Xposed简介以及小米去桌面广告的简单实现
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-11-18T19:18:02+08:00">
+                2017-11-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/11/18/Xposed简介以及小米去桌面广告的简单实现/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/11/18/Xposed简介以及小米去桌面广告的简单实现/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <excerpt in="" index="" |="" 首页摘要="">
+
+<p>提起Xposed，大多数Android开发者都听过或者用过，甚至有一些开发过比较炫酷的模块。这是我前段时间在公司的分享内容，分享给大家。</p>
+<a id="more"></a>
+<p>#最先发表于个人博客 <a href="https://guolei1130.github.io/">https://guolei1130.github.io/</a></p>
+<h3 id="Xposed简介"><a href="#Xposed简介" class="headerlink" title="Xposed简介"></a>Xposed简介</h3><p>Xposed框架是一款可以在不修改APK的情况下影响程序运行(修改系统)的框架服务，基于它可以制作出许多功能强大的模块，且在功能不冲突的情况下同时运作。项目地址：<a href="https://github.com/rovo89" target="_blank" rel="external">https://github.com/rovo89</a> 包括以下几个部分：</p>
+<ol>
+<li>Xposed &amp; android_art ，Xposed framework，核心</li>
+<li>XposedBridge java 部分的framework，我们开发模块要用到</li>
+<li>XposedInstaller 安装器，用去安装Xposed framework以及管理Xposed 模块</li>
+</ol>
+<p>那么，Xposed有什么应用场景么，就目前来说，我们耳熟能详的应用场景就是抢红包了，xposed的应用场景取决于我们的思维和想法。现在比较火的模块如抢红包之类的，消息防撤回、绿色守护、黑狱、小米去广告等等。</p>
+<h3 id="如何使用Xposed"><a href="#如何使用Xposed" class="headerlink" title="如何使用Xposed"></a>如何使用Xposed</h3><p>就目前的国内情况来讲，要想用Xposed的话，我个人推荐小米手机。</p>
+<ol>
+<li>root</li>
+<li>安装Xposed，要找对应手机RAM对应Android版本的Xposed framework，可以去小米论坛上找</li>
+<li>从酷安市场或者Xposed installer里安装自己喜欢的模块，</li>
+<li>勾选，重启生效</li>
+</ol>
+<h3 id="如何开发自己的Xposed模块"><a href="#如何开发自己的Xposed模块" class="headerlink" title="如何开发自己的Xposed模块"></a>如何开发自己的Xposed模块</h3><p>关于开发自己的Xposed模块，在Xposed项目的wiki中，有很详细的介绍，并且开发Xposed模块的话确实比较简单，难点在于找到你想实现功能的切入点，我们这里以去掉小米桌面的广告为例。关于如何开发Xposed模块，前往<a href="https://github.com/rovo89/XposedBridge/wiki/Development-tutorial" target="_blank" rel="external">Xposed Wiki 查看学习</a></p>
+<p>要想实现去广告，首先我们需要想一些办法，我最初想到的办法是从广告的Api入手，替换掉url地址，经过试验，失败了。但是发现，小米桌面文件夹(就那个好几个app放在一起的地方)有个隐藏的功能，修改名称的时候，下面有个是否推荐那个，这里可以关掉广告，所以，从这里入手。</p>
+<p>第一步，我们需要拿到小米Home的代码，这个对于我们root了的手机，简单的很，不过，这里我们要对代码进行一些操作，因为我们能拿到的是odex文件，我们要将其转化为jar文件,转换过程odex-&gt;smail-&gt;dex-&gt;jar，这里我们借助两个开源项目可以轻松完成。<a href="https://github.com/JesusFreke/smali" target="_blank" rel="external">https://github.com/JesusFreke/smali</a> (<a href="https://bitbucket.org/JesusFreke/smali/downloads/" target="_blank" rel="external">https://bitbucket.org/JesusFreke/smali/downloads/</a>)</p>
+<p><a href="https://github.com/pxb1988/dex2jar" target="_blank" rel="external">https://github.com/pxb1988/dex2jar</a></p>
+<p>第二步，找到对应点击文件夹图标的方法，我们直接在Launcher中搜索openF(older)，关于Launcher，这里不多说。我们能搜索到如下代码。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">public void openFolder(FolderInfo paramFolderInfo, View paramView)</div><div class="line">&#123;</div><div class="line">  this.mFolderClosingInNormalEdit = false;</div><div class="line">  this.mWorkspace.post(new Runnable(this, paramFolderInfo)</div><div class="line">  &#123;</div><div class="line">    public void run()</div><div class="line">    &#123;</div><div class="line">      if (Launcher.access$1100(this.this$0).isOpened())</div><div class="line">        return;</div><div class="line">      Launcher.access$3702(this.this$0, false);</div><div class="line">      ShortcutIcon.setEnableLoadingAnim(true);</div><div class="line">      Launcher.access$1100(this.this$0).bind(this.val$folderInfo);</div><div class="line">      Launcher.access$1100(this.this$0).open();</div><div class="line">      this.this$0.updateStatusBarClock();</div><div class="line">      Launcher.access$3800(this.this$0).cancel();</div><div class="line">      if ((this.this$0.isInNormalEditing()) || (this.this$0.isSceneShowing()))</div><div class="line">        Launcher.access$3800(this.this$0).setDuration(Folder.DEFAULT_FOLDER_BACKGROUND_SHORT_DURATION);</div><div class="line">      while (true)</div><div class="line">      &#123;</div><div class="line">        do</div><div class="line">        &#123;</div><div class="line">          Launcher.access$3800(this.this$0).setFloatValues(new float[] &#123; 0F, 1F &#125;);</div><div class="line">          Launcher.access$3800(this.this$0).setInterpolator(new CubicEaseInOutInterpolater());</div><div class="line">          Launcher.access$3800(this.this$0).start();</div><div class="line">        &#125;</div><div class="line">        while (this.this$0.isInEditing();</div><div class="line">        this.val$folderInfo.onLaunch();</div><div class="line">        LauncherModel.updateItemFlagAndLaunchCount(this.this$0, this.val$folderInfo);</div><div class="line">        return;</div><div class="line">        Launcher.access$3800(this.this$0).setDuration(Folder.DEFAULT_FOLDER_OPEN_DURATION);</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我们这里，能发现FolderInfo这个类作为了一个参数，很明显，这是描述Folder的信息的，那么是否推荐这个属性，一定是在这里面了。我们进去看看。</p>
+<p>在这里搜索recommend，我们能发现这么一个变量。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">private boolean mEnbaleRecommendAppsView = false;</div></pre></td></tr></table></figure>
+<p>细心的同学发现他这个变量名是不是手抖了。。。</p>
+<p>private？那么，我们不管三七二十一，直接干掉get方法，直接返回false是不是就可以实现呢？尝试一波，写下如下代码。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">public class XposedDemo implements IXposedHookLoadPackage &#123;</div><div class="line">    private static final String TAG = &quot;myxposed&quot;;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable &#123;</div><div class="line">        Log.e(TAG, &quot;handleLoadPackage: &quot; + lpparam.packageName + &quot;-----&gt;&quot; + lpparam.appInfo.sourceDir);</div><div class="line">        if (lpparam.packageName.equals(&quot;com.miui.home&quot;)) &#123;</div><div class="line">            Log.e(TAG, &quot;handleLoadPackage: &quot; + &quot;miui.home &quot;);</div><div class="line"></div><div class="line">            findAndHookMethod(&quot;com.miui.home.launcher.FolderInfo&quot;, lpparam.classLoader, &quot;isRecommendAppsViewEnable&quot;, Context.class, new XC_MethodReplacement() &#123;</div><div class="line">                @Override</div><div class="line">                protected Object replaceHookedMethod(MethodHookParam param) throws Throwable &#123;</div><div class="line">                    Log.e(TAG, &quot;replaceHookedMethod: &quot; + &quot;被调用了&quot;);</div><div class="line">                    return false;</div><div class="line">                &#125;</div><div class="line">            &#125;);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>安装，勾选，重启。然后点开文件夹，发现，舒服的很，确实没了，在编辑文件夹属性，把这个推荐打开，哈，还是没有。果然，我们成功了。</p>
+<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>有没有学到呢？我把小米Home的jar包以及当时做的简陋的ppt放在了 <a href="https://github.com/Guolei1130/blog_resource" target="_blank" rel="external">blog_resource这个仓库</a>，有需要的可以去拿。</p>
+<h3 id="最近访客"><a href="#最近访客" class="headerlink" title="最近访客"></a>最近访客</h3><ul class="ds-recent-visitors" data-num-items="46" data-avatar-size="40"></ul></excerpt>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Xposed/" rel="tag"># Xposed</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/02/monkey和monkeyRunner/" rel="next" title="monkey和monkeyRunner">
+                <i class="fa fa-chevron-left"></i> monkey和monkeyRunner
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/11/18/Xposed简介以及小米去桌面广告的简单实现/"
+           data-title="Xposed简介以及小米去桌面广告的简单实现" data-url="http://guolei1130.github.io/2017/11/18/Xposed简介以及小米去桌面广告的简单实现/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/img/head.png"
+               alt="_StriveG" />
+          <p class="site-author-name" itemprop="name">_StriveG</p>
+          <p class="site-description motion-element" itemprop="description">稳住，我们能行！</p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">62</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://guolei1130.github.io/" target="_blank" title="博客首页">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  博客首页
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Guolei1130/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/qq_21430549" target="_blank" title="csdn博客">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  csdn博客
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://monsterlin.com/" target="_blank" title="友情链接">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  友情链接
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Xposed简介"><span class="nav-number">1.</span> <span class="nav-text">Xposed简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何使用Xposed"><span class="nav-number">2.</span> <span class="nav-text">如何使用Xposed</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何开发自己的Xposed模块"><span class="nav-number">3.</span> <span class="nav-text">如何开发自己的Xposed模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最后"><span class="nav-number">4.</span> <span class="nav-text">最后</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最近访客"><span class="nav-number">5.</span> <span class="nav-text">最近访客</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">_StriveG</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"guolei1130"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>
