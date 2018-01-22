@@ -15,6 +15,11 @@ tags: Android
 
 ### ProgressDrawable
 
+先看下效果
+
+![](https://github.com/Guolei1130/blog_resource/blob/master/art/progressdrawable.gif?raw=true)
+
+
 ```
 package com.guolei.customviews;
 
