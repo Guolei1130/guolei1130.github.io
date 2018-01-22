@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="jvm," />
+  <meta name="keywords" content="Android," />
 
 
 
@@ -84,37 +84,16 @@
 
 
 
-<meta name="description" content="前言
-深入理解java虚拟机
-
-java是编译运行的，因此，在运行之前，会进行编译操作。在java中，有三种类型，如下：
-
-前期编译器:将.java编译成.class，常见的如javac
-JIT编译器(just in time compiler)：将.class字节码转化为机器码，如hotspot的C1,C2
-AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
+<meta name="description" content="前言感觉qq聊天里面，传图片的效果很赞，感觉可以用到自己的项目里，因此，也写了一个这个效果，实现方式非常简单。就是一个Drawable。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="jvm编译器优化">
-<meta property="og:url" content="http://guolei1130.github.io/2017/01/19/jvm编译器优化/index.html">
+<meta property="og:title" content="一个仿qq图片上传的Drawable">
+<meta property="og:url" content="http://guolei1130.github.io/2018/01/22/一个仿qq图片上传的Drawable/index.html">
 <meta property="og:site_name" content="_StriveG Blog">
-<meta property="og:description" content="前言
-深入理解java虚拟机
-
-java是编译运行的，因此，在运行之前，会进行编译操作。在java中，有三种类型，如下：
-
-前期编译器:将.java编译成.class，常见的如javac
-JIT编译器(just in time compiler)：将.class字节码转化为机器码，如hotspot的C1,C2
-AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
-<meta property="og:updated_time" content="2017-08-21T15:11:46.000Z">
+<meta property="og:description" content="前言感觉qq聊天里面，传图片的效果很赞，感觉可以用到自己的项目里，因此，也写了一个这个效果，实现方式非常简单。就是一个Drawable。">
+<meta property="og:updated_time" content="2018-01-22T14:39:26.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="jvm编译器优化">
-<meta name="twitter:description" content="前言
-深入理解java虚拟机
-
-java是编译运行的，因此，在运行之前，会进行编译操作。在java中，有三种类型，如下：
-
-前期编译器:将.java编译成.class，常见的如javac
-JIT编译器(just in time compiler)：将.class字节码转化为机器码，如hotspot的C1,C2
-AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
+<meta name="twitter:title" content="一个仿qq图片上传的Drawable">
+<meta name="twitter:description" content="前言感觉qq聊天里面，传图片的效果很赞，感觉可以用到自己的项目里，因此，也写了一个这个效果，实现方式非常简单。就是一个Drawable。">
 
 
 
@@ -142,13 +121,13 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
 
 
 
-  <link rel="canonical" href="http://guolei1130.github.io/2017/01/19/jvm编译器优化/"/>
+  <link rel="canonical" href="http://guolei1130.github.io/2018/01/22/一个仿qq图片上传的Drawable/"/>
 
 
 
 
 
-  <title> jvm编译器优化 | _StriveG Blog </title>
+  <title> 一个仿qq图片上传的Drawable | _StriveG Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -291,7 +270,7 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://guolei1130.github.io/2017/01/19/jvm编译器优化/">
+  <link itemprop="mainEntityOfPage" href="http://guolei1130.github.io/2018/01/22/一个仿qq图片上传的Drawable/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="_StriveG">
@@ -315,7 +294,7 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
             
             
               
-                jvm编译器优化
+                一个仿qq图片上传的Drawable
               
             
           </h1>
@@ -330,8 +309,8 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-19T21:33:35+08:00">
-                2017-01-19
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-22T22:37:17+08:00">
+                2018-01-22
               </time>
             
 
@@ -341,28 +320,6 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
           </span>
 
           
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
 
           
             
@@ -371,8 +328,8 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/01/19/jvm编译器优化/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/01/19/jvm编译器优化/" itemprop="commentCount"></span>
+                <a href="/2018/01/22/一个仿qq图片上传的Drawable/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/01/22/一个仿qq图片上传的Drawable/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -404,48 +361,18 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
 
       
         <p><excerpt in="" index="" |="" 首页摘要=""></excerpt></p>
-<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><blockquote>
-<p>深入理解java虚拟机</p>
-</blockquote>
-<p>java是编译运行的，因此，在运行之前，会进行编译操作。在java中，有三种类型，如下：</p>
-<ul>
-<li>前期编译器:将.java编译成.class，常见的如javac</li>
-<li>JIT编译器(just in time compiler)：将.class字节码转化为机器码，如hotspot的C1,C2</li>
-<li>AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化为机器码的过程</li>
-</ul>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>感觉qq聊天里面，传图片的效果很赞，感觉可以用到自己的项目里，因此，也写了一个这个效果，实现方式非常简单。就是一个Drawable。</p>
 <a id="more"></a>
 <the rest="" of="" contents="" |="" 余下全文="">
 
 
-<h3 id="javac的编译过程"><a href="#javac的编译过程" class="headerlink" title="javac的编译过程"></a>javac的编译过程</h3><p>javac的编译过程分为下面三个步骤：</p>
+<h3 id="ProgressDrawable"><a href="#ProgressDrawable" class="headerlink" title="ProgressDrawable"></a>ProgressDrawable</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div></pre></td><td class="code"><pre><div class="line">package com.guolei.customviews;</div><div class="line"></div><div class="line">//                    _    _   _ _</div><div class="line">//__      _____  _ __| | _| |_(_) | ___</div><div class="line">//\ \ /\ / / _ \| &apos;__| |/ / __| | |/ _ \</div><div class="line">// \ V  V / (_) | |  |   &lt;| |_| | |  __/</div><div class="line">//  \_/\_/ \___/|_|  |_|\_\\__|_|_|\___|</div><div class="line"></div><div class="line"></div><div class="line">import android.graphics.Canvas;</div><div class="line">import android.graphics.Color;</div><div class="line">import android.graphics.ColorFilter;</div><div class="line">import android.graphics.Paint;</div><div class="line">import android.graphics.Path;</div><div class="line">import android.graphics.PixelFormat;</div><div class="line">import android.graphics.PorterDuff;</div><div class="line">import android.graphics.PorterDuffXfermode;</div><div class="line">import android.graphics.Rect;</div><div class="line">import android.graphics.RectF;</div><div class="line">import android.graphics.drawable.Drawable;</div><div class="line">import android.support.annotation.NonNull;</div><div class="line">import android.support.annotation.Nullable;</div><div class="line">import android.util.Log;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Copyright © 2013-2017 Worktile. All Rights Reserved.</div><div class="line"> * Author: guolei</div><div class="line"> * Email: 1120832563@qq.com</div><div class="line"> * Date: 18/1/17</div><div class="line"> * Time: 下午2:17</div><div class="line"> * Desc:</div><div class="line"> */</div><div class="line">public class ProgressDrawable extends Drawable &#123;</div><div class="line"></div><div class="line"></div><div class="line">    private float progress;</div><div class="line"></div><div class="line">    private Paint mPaint;</div><div class="line">    private Paint mTextPaint;</div><div class="line">    private Path path = new Path();</div><div class="line">    private RectF rectF = new RectF(0, 0, 0, 0);</div><div class="line"></div><div class="line">    private int mBaseline = 0;</div><div class="line"></div><div class="line">    public ProgressDrawable() &#123;</div><div class="line">        mPaint = new Paint();</div><div class="line">        mPaint.setAntiAlias(true);</div><div class="line">        mPaint.setDither(true);</div><div class="line">        mPaint.setColor(Color.parseColor(&quot;#99000000&quot;));</div><div class="line"></div><div class="line">        mTextPaint = new Paint(mPaint);</div><div class="line">        mTextPaint.setColor(Color.WHITE);</div><div class="line">        mTextPaint.setTextSize(40);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public float getProgress() &#123;</div><div class="line">        return progress;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void setProgress(float progress) &#123;</div><div class="line">        this.progress = progress;</div><div class="line">        invalidateSelf();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void draw(@NonNull Canvas canvas) &#123;</div><div class="line">        path.reset();</div><div class="line">        path.addRect(rectF, Path.Direction.CCW);</div><div class="line">        int radius = (int) (progress * ((rectF.right) / 2 * 1.414 - 100)) + 100;</div><div class="line">        path.addCircle(rectF.right / 2, rectF.right / 2, radius &gt; 100 ? radius : 100 , Path.Direction.CW);</div><div class="line">        canvas.drawPath(path, mPaint);</div><div class="line">        canvas.drawCircle(rectF.right / 2, rectF.right / 2, 80, mPaint);</div><div class="line">        String s = String.valueOf(progress * 100).substring(0,2) + &quot;%&quot;;</div><div class="line">        s = s.replace(&quot;.&quot;,&quot;&quot;);</div><div class="line">        int width = (int) mTextPaint.measureText(s);</div><div class="line">        canvas.drawText(s, rectF.right / 2 - (width / 2), mBaseline, mTextPaint);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void setAlpha(int i) &#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void setColorFilter(@Nullable ColorFilter colorFilter) &#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public int getOpacity() &#123;</div><div class="line">        return PixelFormat.TRANSLUCENT;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onBoundsChange(Rect bounds) &#123;</div><div class="line">        rectF.set(0, 0, bounds.right, bounds.bottom);</div><div class="line">        computeBaseline();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    private void computeBaseline() &#123;</div><div class="line">        mBaseline = (int) (rectF.height() / 2 + (Math.abs(mTextPaint.ascent()) - mTextPaint.descent()) / 2);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>代码很简单，根据进度去绘制，分为3个部分。</p>
 <ul>
-<li>解析与填充符号表的过程</li>
-<li>插入式注解处理器的注解处理过程</li>
-<li>分析与字节码生成过程</li>
+<li>外圈 由path合成</li>
+<li>内圈 Circle</li>
+<li>字 </li>
 </ul>
-<h4 id="解析与填充符号表的过程"><a href="#解析与填充符号表的过程" class="headerlink" title="解析与填充符号表的过程"></a>解析与填充符号表的过程</h4><p>解析过程包括词法分析与语法分析两个过程。</p>
-<ul>
-<li>词法分析 词法分析是将源代码的字符流转化为标记(Token)集合，标记是编译过程中的最小元素、关键字、变量名、字面量、运算符等都可以成为标记</li>
-<li>语法分析 是根据token生成抽象语法树的过程</li>
-</ul>
-<h4 id="注解处理器"><a href="#注解处理器" class="headerlink" title="注解处理器"></a>注解处理器</h4><p>这个过程就是处理我们编译时注解的过程。</p>
-<h4 id="语义分析与字节码生成"><a href="#语义分析与字节码生成" class="headerlink" title="语义分析与字节码生成"></a>语义分析与字节码生成</h4><ul>
-<li>语义分析<ol>
-<li>标注检查，检查的内容包括变量使用前是否已被申明、变量与赋值过程的类型是否匹配等，在这个过程中，会进行一个重要的操作，叫做常量折叠，如 int A = 1 + 2,编译成 int A = 3</li>
-<li>数据及控制流分析，对程序上下文逻辑更进一步的验证，检查程序局部变量在使用前是否有赋值、方法的每条路径是否有返回值等等问题。<ol>
-<li>解语法糖，包括自动拆箱、装箱等</li>
-</ol>
-</li>
-</ol>
-</li>
-<li>字节码生成 将前面各个步骤生成的信息，写入到磁盘中。</li>
-</ul>
-<h3 id="Java中语法糖"><a href="#Java中语法糖" class="headerlink" title="Java中语法糖"></a>Java中语法糖</h3><ul>
-<li>泛型与类型擦除，讲ArrayList<int>,ArrayList<string>擦除程同一种类型</string></int></li>
-<li>自动装箱、拆箱与遍历循环</li>
-<li>条件编译 如果发现只会为true，或者false，只会编译对应分支。</li>
-</ul>
-<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p>来自经典好书 深入理解java虚拟机。建议入手一本，</p>
 <h3 id="最近访客"><a href="#最近访客" class="headerlink" title="最近访客"></a>最近访客</h3><ul class="ds-recent-visitors" data-num-items="46" data-avatar-size="40"></ul></the>
       
     </div>
@@ -469,7 +396,7 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
       
         <div class="post-tags">
           
-            <a href="/tags/jvm/" rel="tag"># jvm</a>
+            <a href="/tags/Android/" rel="tag"># Android</a>
           
         </div>
       
@@ -478,8 +405,8 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/01/19/Android属性动画源码浅析/" rel="next" title="Android属性动画源码浅析">
-                <i class="fa fa-chevron-left"></i> Android属性动画源码浅析
+              <a href="/2018/01/21/ViewModel的一些思考/" rel="next" title="ViewModel的一些思考">
+                <i class="fa fa-chevron-left"></i> ViewModel的一些思考
               </a>
             
           </div>
@@ -487,10 +414,6 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/01/20/jvm运行时优化/" rel="prev" title="jvm运行时优化">
-                jvm运行时优化 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -516,8 +439,8 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2017/01/19/jvm编译器优化/"
-           data-title="jvm编译器优化" data-url="http://guolei1130.github.io/2017/01/19/jvm编译器优化/">
+      <div class="ds-thread" data-thread-key="2018/01/22/一个仿qq图片上传的Drawable/"
+           data-title="一个仿qq图片上传的Drawable" data-url="http://guolei1130.github.io/2018/01/22/一个仿qq图片上传的Drawable/">
       </div>
     
   </div>
@@ -655,7 +578,7 @@ AOT编译器(Ahead Of Time Compiler)：将.java文件直接转化">
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#javac的编译过程"><span class="nav-number">2.</span> <span class="nav-text">javac的编译过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#解析与填充符号表的过程"><span class="nav-number">2.1.</span> <span class="nav-text">解析与填充符号表的过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#注解处理器"><span class="nav-number">2.2.</span> <span class="nav-text">注解处理器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#语义分析与字节码生成"><span class="nav-number">2.3.</span> <span class="nav-text">语义分析与字节码生成</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java中语法糖"><span class="nav-number">3.</span> <span class="nav-text">Java中语法糖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最近访客"><span class="nav-number">5.</span> <span class="nav-text">最近访客</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ProgressDrawable"><span class="nav-number">2.</span> <span class="nav-text">ProgressDrawable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最近访客"><span class="nav-number">3.</span> <span class="nav-text">最近访客</span></a></li></ol></div>
             
 
           </div>
