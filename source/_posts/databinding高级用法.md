@@ -129,5 +129,7 @@ public class RecyclerViewAdapter extends android.support.v7.widget.RecyclerView.
 
 像这样，就能够绑定数据了，这样，我们的数据变化，我们也不需要显示的调用相应的notify方法，但是这里还有个问题就是，我用了OnListChangedCallback之后，clear数据，再添加，recyclerview会闪烁，原因，还没找出来，惭愧。
 
+更新：闪烁原因找到，clear,的时候notify，add的时候又notify，原则上应该clear之后，add完成之后在notify，可以更改ObservableArrayList来实现。
+
 ### 最近访客
 <ul class="ds-recent-visitors" data-num-items="46" data-avatar-size="40"></ul>
