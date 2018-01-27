@@ -35,9 +35,15 @@ tags: Android
 事实上，1和3是同一种写法，只不过在命名上有一点差别，EventBus的方法维护起来不方便。
 
 
+
+
 ### 父ViewModel和子ViewModel通信的问题
 
 这个是一个很常见的场景，比如说一个Activity的ViewModel中包含的子ViewModel，子ViewModel的变化能影响到父ViewModel，对于这样的场景，通常，我选择在父ViewModel构建子ViewModel的时候，注入一个CallBack接口，利用这个CallBack接口来做。
+
+**补充**
+
+上面的几种方法，不好解决viewmodel嵌套情况下，listener的传递问题，因此，可以使用IOC的思想，参考ViewModelProvider的设计，或者用dagger2去解决这个问题
 
 
 ### 多个界面共同组件问题
