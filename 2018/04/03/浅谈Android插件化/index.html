@@ -1,0 +1,871 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="插件化," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言Android P preview版本中，已限制对@hide api的反射调用，具体的原理可以阅读Android P调用隐藏API限制原理这篇文章。由于最近团队分享也在分享插件化、热修复相关的东西。因此，写一篇文章，好好记录一下。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅谈Android插件化">
+<meta property="og:url" content="http://guolei1130.github.io/2018/04/03/浅谈Android插件化/index.html">
+<meta property="og:site_name" content="_StriveG Blog">
+<meta property="og:description" content="前言Android P preview版本中，已限制对@hide api的反射调用，具体的原理可以阅读Android P调用隐藏API限制原理这篇文章。由于最近团队分享也在分享插件化、热修复相关的东西。因此，写一篇文章，好好记录一下。">
+<meta property="og:updated_time" content="2018-04-05T07:30:35.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="浅谈Android插件化">
+<meta name="twitter:description" content="前言Android P preview版本中，已限制对@hide api的反射调用，具体的原理可以阅读Android P调用隐藏API限制原理这篇文章。由于最近团队分享也在分享插件化、热修复相关的东西。因此，写一篇文章，好好记录一下。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"always"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://guolei1130.github.io/2018/04/03/浅谈Android插件化/"/>
+
+
+
+
+
+  <title> 浅谈Android插件化 | _StriveG Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">_StriveG Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle">欢迎来到_StriveG Blog</p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/me" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://guolei1130.github.io/2018/04/03/浅谈Android插件化/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="_StriveG">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/img/head.png">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="_StriveG Blog">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="_StriveG Blog" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                浅谈Android插件化
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-04-03T20:30:04+08:00">
+                2018-04-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/04/03/浅谈Android插件化/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/04/03/浅谈Android插件化/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <excerpt in="" index="" |="" 首页摘要="">
+
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>Android P preview版本中，已限制对@hide api的反射调用，具体的原理可以阅读<a href="https://mp.weixin.qq.com/s/sktB0x5yBexkn4ORQ1YofA" target="_blank" rel="external">Android P调用隐藏API限制原理</a>这篇文章。由于最近团队分享也在分享插件化、热修复相关的东西。因此，写一篇文章，好好记录一下。</p>
+<a id="more"></a>
+<the rest="" of="" contents="" |="" 余下全文="">
+
+<h3 id="准备知识"><a href="#准备知识" class="headerlink" title="准备知识"></a>准备知识</h3><ul>
+<li>反射、动态代理</li>
+<li>Android中的几个相关的ClassLoader,注意PathClassLoader在ART虚拟机上是可以加载未安装的APK的，Dalvik虚拟机则不可以。</li>
+<li>Android中四大组件的相关原理</li>
+<li>PackageManagerServer</li>
+<li>资源加载、资源打包</li>
+<li>其他</li>
+</ul>
+<p><strong>文章中所涉及到的代码均通过Nexus 5(dalvik虚拟机) Android 6.0版本的测试</strong></p>
+<p>文章中所涉及到的一切资源都在<a href="https://github.com/Guolei1130/blog_resource/tree/master/source_code/plugin_about" target="_blank" rel="external">这个仓库下</a></p>
+<p>特别说明，本博客不会特别解释过多原理性的东西。如果读者不具备相关的知识储备，建议先阅读weishu和gityuan两位大神的博客,资源打包的知识可以阅读 老罗的博客。</p>
+<ul>
+<li><a href="http://weishu.me/" target="_blank" rel="external">Weishu’s Notes</a></li>
+<li><a href="http://gityuan.com/" target="_blank" rel="external">gityuan</a></li>
+</ul>
+<h3 id="Activity的插件化"><a href="#Activity的插件化" class="headerlink" title="Activity的插件化"></a>Activity的插件化</h3><p>首先需要说明一点的是，启动一个完全没有在AndroidManifest注册的Activity是不可能的。因为在启动的过程中，存在一个校验的过程，而这个校验则是由PMS来完成的，这个我们无法干预。因此，Activity的插件化方案大多使用占坑的思想。不同的是如何在检验之前替换，在生成对象的时候还原。就目前来看，有三种方案：</p>
+<ul>
+<li>Hook Instrumentation方案</li>
+<li>Hook CallBack方案</li>
+<li>干预startActivity等方法，干预ClassLoader findClass的方案</li>
+</ul>
+<p>这里说一下Hook Instrumentation方法。根据上面提到的想法，我们需要在先绕过检查，那么，我们如何绕过检查呢？通过分析Activity的启动流程会发现，在Instrumentation#execStartActivity中，会有个checkStartActivityResult的方法去检查错误，因此，我们可以复写这个方法，让启动参数能通过系统的检查。那么，我们如何做呢？首先，我们需要检查要启动的Intent能不能匹配到，匹配不到的话，将ClassName修改为我们预先在AndroidManifest中配置的占坑Activity，并且吧当前的这个ClassName放到当前intent的extra中，以便后续做恢复，看下代码。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">public ActivityResult execStartActivity(</div><div class="line">        Context who, IBinder contextThread, IBinder token, Activity target,</div><div class="line">        Intent intent, int requestCode, Bundle options) &#123;</div><div class="line">    List&lt;ResolveInfo&gt; infos = mPackageManager.queryIntentActivities(intent, PackageManager.MATCH_ALL);</div><div class="line">    if (infos == null || infos.size() == 0) &#123;</div><div class="line">        //没查到，要启动的这个没注册</div><div class="line">        intent.putExtra(TARGET_ACTIVITY, intent.getComponent().getClassName());</div><div class="line">        intent.setClassName(who, &quot;com.guolei.plugindemo.StubActivity&quot;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    Class instrumentationClz = Instrumentation.class;</div><div class="line">    try &#123;</div><div class="line">        Method execMethod = instrumentationClz.getDeclaredMethod(&quot;execStartActivity&quot;,</div><div class="line">                Context.class, IBinder.class, IBinder.class, Activity.class, Intent.class, int.class, Bundle.class);</div><div class="line">        return (ActivityResult) execMethod.invoke(mOriginInstrumentation, who, contextThread, token,</div><div class="line">                target, intent, requestCode, options);</div><div class="line">    &#125; catch (Exception e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125;</div><div class="line">    return null;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我们绕过检测了，现在需要解决的问题是还原，我们知道，系统启动Activity的最后会调用到ActivityThread里面，在这里，会通过Instrumentation#newActivity方法去反射构造一个Activity的对象，因此，我们只需要在这里还原即可。代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">public Activity newActivity(ClassLoader cl, String className, Intent intent) throws InstantiationException,</div><div class="line">        IllegalAccessException, ClassNotFoundException &#123;</div><div class="line">    if (!TextUtils.isEmpty(intent.getStringExtra(TARGET_ACTIVITY))) &#123;</div><div class="line">        return super.newActivity(cl, intent.getStringExtra(TARGET_ACTIVITY), intent);</div><div class="line">    &#125;</div><div class="line">    return super.newActivity(cl, className, intent);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>一切准备就绪，我们最后的问题是，如何替换掉系统的Instrumentation。要替换掉也简单，替换掉ActivityThread中的mInstrumentation字段即可。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">private void hookInstrumentation() &#123;</div><div class="line">    Context context = getBaseContext();</div><div class="line">    try &#123;</div><div class="line">        Class contextImplClz = Class.forName(&quot;android.app.ContextImpl&quot;);</div><div class="line">        Field mMainThread = contextImplClz.getDeclaredField(&quot;mMainThread&quot;);</div><div class="line">        mMainThread.setAccessible(true);</div><div class="line">        Object activityThread = mMainThread.get(context);</div><div class="line">        Class activityThreadClz = Class.forName(&quot;android.app.ActivityThread&quot;);</div><div class="line">        Field mInstrumentationField = activityThreadClz.getDeclaredField(&quot;mInstrumentation&quot;);</div><div class="line">        mInstrumentationField.setAccessible(true);</div><div class="line">        mInstrumentationField.set(activityThread,</div><div class="line">                new HookInstrumentation((Instrumentation) mInstrumentationField.get(activityThread),</div><div class="line">                        context.getPackageManager()));</div><div class="line">    &#125; catch (Exception e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">        Log.e(&quot;plugin&quot;, &quot;hookInstrumentation: error&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这样，我们就能启动一个没有注册在AndroidManifest文件中的Activity了，但是这里要注意一下，由于我们这里使用的ClassLoader是宿主的ClassLoader，这样的话，我们需要将插件的dex文件添加到我们宿主中。这一点很重要。有一些多ClassLoader架构的实现，这里的代码需要变下。</p>
+<h3 id="Service的插件化"><a href="#Service的插件化" class="headerlink" title="Service的插件化"></a>Service的插件化</h3><p>启动一个未注册的Service，并不会崩溃退出，只不过有点警告。并且，service启动直接由ContextImpl交给AMS处理了，我们看下代码。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">private ComponentName startServiceCommon(Intent service, UserHandle user) &#123;</div><div class="line">    try &#123;</div><div class="line">        validateServiceIntent(service);</div><div class="line">        service.prepareToLeaveProcess(this);</div><div class="line">        ComponentName cn = ActivityManagerNative.getDefault().startService(</div><div class="line">            mMainThread.getApplicationThread(), service, service.resolveTypeIfNeeded(</div><div class="line">                        getContentResolver()), getOpPackageName(), user.getIdentifier());</div><div class="line">        if (cn != null) &#123;</div><div class="line">            if (cn.getPackageName().equals(&quot;!&quot;)) &#123;</div><div class="line">                throw new SecurityException(</div><div class="line">                        &quot;Not allowed to start service &quot; + service</div><div class="line">                        + &quot; without permission &quot; + cn.getClassName());</div><div class="line">            &#125; else if (cn.getPackageName().equals(&quot;!!&quot;)) &#123;</div><div class="line">                throw new SecurityException(</div><div class="line">                        &quot;Unable to start service &quot; + service</div><div class="line">                        + &quot;: &quot; + cn.getClassName());</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        return cn;</div><div class="line">    &#125; catch (RemoteException e) &#123;</div><div class="line">        throw e.rethrowFromSystemServer();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>并且创建对象的过程不由Instrumentation来创建了，而直接在ActivityThread#handleCreateService反射生成。那么，Activity的思路我们就不能用了，怎么办呢？既然我们无法做替换还原，那么，我们可以考虑代理，我们启动一个真实注册了的Service，我们启动这个Service，并让这个Service，就按照系统服务Service的处理，原模原样的处理我们插件的Service。</p>
+<p>说做就做，我们以startService为例。我们首先要做的是，hook掉AMS，因为AMS启动service的时候，假如要启动插件的Service，我们需要怎么做呢？把插件service替换成真是的代理Service，这样，代理Service就启动起来了，我们在代理Service中，构建插件的Service，并调用attach、onCreate等方法。</p>
+<p>Hook AMS代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">private void hookAMS() &#123;</div><div class="line">    try &#123;</div><div class="line">        Class activityManagerNative = Class.forName(&quot;android.app.ActivityManagerNative&quot;);</div><div class="line">        Field gDefaultField = activityManagerNative.getDeclaredField(&quot;gDefault&quot;);</div><div class="line">        gDefaultField.setAccessible(true);</div><div class="line">        Object origin = gDefaultField.get(null);</div><div class="line">        Class singleton = Class.forName(&quot;android.util.Singleton&quot;);</div><div class="line">        Field mInstanceField = singleton.getDeclaredField(&quot;mInstance&quot;);</div><div class="line">        mInstanceField.setAccessible(true);</div><div class="line">        Object originAMN = mInstanceField.get(origin);</div><div class="line">        Object proxy = Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),</div><div class="line">                new Class[]&#123;Class.forName(&quot;android.app.IActivityManager&quot;)&#125;,</div><div class="line">                new ActivityManagerProxy(getPackageManager(),originAMN));</div><div class="line">        mInstanceField.set(origin, proxy);</div><div class="line">        Log.e(TAG, &quot;hookAMS: success&quot; );</div><div class="line">    &#125; catch (Exception e) &#123;</div><div class="line">        Log.e(TAG, &quot;hookAMS: &quot; + e.getMessage());</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我们在看一下ActivityManagerProxy这个代理。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">public Object invoke(Object proxy, Method method, Object[] args) throws Throwable &#123;</div><div class="line">    if (method.getName().equals(&quot;startService&quot;)) &#123;</div><div class="line">        Intent intent = (Intent) args[1];</div><div class="line">        List&lt;ResolveInfo&gt; infos = mPackageManager.queryIntentServices(intent, PackageManager.MATCH_ALL);</div><div class="line">        if (infos == null || infos.size() == 0) &#123;</div><div class="line">            intent.putExtra(TARGET_SERVICE, intent.getComponent().getClassName());</div><div class="line">            intent.setClassName(&quot;com.guolei.plugindemo&quot;, &quot;com.guolei.plugindemo.StubService&quot;);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">    return method.invoke(mOrigin, args);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>代码很清晰、也很简单，不需要在做多余的了，那么，我们看下代理Service是如何启动并且调用我们的插件Service的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">public int onStartCommand(Intent intent, int flags, int startId) &#123;</div><div class="line">    Log.e(TAG, &quot;onStartCommand: stub service &quot;);</div><div class="line">    if (intent != null &amp;&amp; !TextUtils.isEmpty(intent.getStringExtra(TARGET_SERVICE))) &#123;</div><div class="line">        //启动真正的service</div><div class="line">        String serviceName = intent.getStringExtra(TARGET_SERVICE);</div><div class="line">        try &#123;</div><div class="line">            Class activityThreadClz = Class.forName(&quot;android.app.ActivityThread&quot;);</div><div class="line">            Method getActivityThreadMethod = activityThreadClz.getDeclaredMethod(&quot;getApplicationThread&quot;);</div><div class="line">            getActivityThreadMethod.setAccessible(true);</div><div class="line">            //获取ActivityThread</div><div class="line">            Class contextImplClz = Class.forName(&quot;android.app.ContextImpl&quot;);</div><div class="line">            Field mMainThread = contextImplClz.getDeclaredField(&quot;mMainThread&quot;);</div><div class="line">            mMainThread.setAccessible(true);</div><div class="line">            Object activityThread = mMainThread.get(getBaseContext());</div><div class="line">            Object applicationThread = getActivityThreadMethod.invoke(activityThread);</div><div class="line">            //获取token值</div><div class="line">            Class iInterfaceClz = Class.forName(&quot;android.os.IInterface&quot;);</div><div class="line">            Method asBinderMethod = iInterfaceClz.getDeclaredMethod(&quot;asBinder&quot;);</div><div class="line">            asBinderMethod.setAccessible(true);</div><div class="line">            Object token = asBinderMethod.invoke(applicationThread);</div><div class="line">            //Service的attach方法</div><div class="line">            Class serviceClz = Class.forName(&quot;android.app.Service&quot;);</div><div class="line">            Method attachMethod = serviceClz.getDeclaredMethod(&quot;attach&quot;,</div><div class="line">                    Context.class, activityThreadClz, String.class, IBinder.class, Application.class, Object.class);</div><div class="line">            attachMethod.setAccessible(true);</div><div class="line">            Class activityManagerNative = Class.forName(&quot;android.app.ActivityManagerNative&quot;);</div><div class="line">            Field gDefaultField = activityManagerNative.getDeclaredField(&quot;gDefault&quot;);</div><div class="line">            gDefaultField.setAccessible(true);</div><div class="line">            Object origin = gDefaultField.get(null);</div><div class="line">            Class singleton = Class.forName(&quot;android.util.Singleton&quot;);</div><div class="line">            Field mInstanceField = singleton.getDeclaredField(&quot;mInstance&quot;);</div><div class="line">            mInstanceField.setAccessible(true);</div><div class="line">            Object originAMN = mInstanceField.get(origin);</div><div class="line">            Service targetService = (Service) Class.forName(serviceName).newInstance();</div><div class="line">            attachMethod.invoke(targetService, this, activityThread, intent.getComponent().getClassName(), token,</div><div class="line">                    getApplication(), originAMN);</div><div class="line">            //service的oncreate方法</div><div class="line">            Method onCreateMethod = serviceClz.getDeclaredMethod(&quot;onCreate&quot;);</div><div class="line">            onCreateMethod.setAccessible(true);</div><div class="line">            onCreateMethod.invoke(targetService);</div><div class="line">            targetService.onStartCommand(intent, flags, startId);</div><div class="line">        &#125; catch (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">            Log.e(TAG, &quot;onStartCommand: &quot; + e.getMessage());</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    return super.onStartCommand(intent, flags, startId);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>代码较长，逻辑如下：</p>
+<ul>
+<li>检测到需要启动插件Service</li>
+<li>构建插件Service attach方法需要的参数</li>
+<li>构造一个插件Service</li>
+<li>调用插件Service的attach方法</li>
+<li>调用插件Service的onCreate方法</li>
+</ul>
+<p>这样，一个插件Service就启动起来了。</p>
+<h3 id="BroadcastReceiver的插件化"><a href="#BroadcastReceiver的插件化" class="headerlink" title="BroadcastReceiver的插件化"></a>BroadcastReceiver的插件化</h3><p>BroadcastReceiver分为两种，静态注册，和动态注册。静态注册的是PMS在安装或者系统启动的时候扫描APK，解析配置文件，并存储在PMS端的，这个我们无法干预，并且，我们的插件由于未安装，静态注册的是无法通过系统正常行为装载的。而动态注册的，由于没有检测这一步，因此，也不需要我们干预。我们现在需要解决的问题就是，怎么能装载插件中静态注册的。</p>
+<p>我们可以通过解析配置文件，自己调用动态注册的方法去注册这个。</p>
+<p>代码这里就不贴了，和下面ContentProvider的一起贴。</p>
+<h3 id="ContentProvider的插件化"><a href="#ContentProvider的插件化" class="headerlink" title="ContentProvider的插件化"></a>ContentProvider的插件化</h3><p>和其他三个组件不一样的是，ContentProvider是在进程启动入口，也就是ActivityThread中进行安装的。那么我们可以按照这个思路，自己去进行安装的操作。</p>
+<p>代码如下。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">Field providersField = packageClz.getDeclaredField(&quot;providers&quot;);</div><div class="line">  providersField.setAccessible(true);</div><div class="line">  ArrayList providers = (ArrayList) providersField.get(packageObject);</div><div class="line"></div><div class="line">  Class providerClz = Class.forName(&quot;android.content.pm.PackageParser$Provider&quot;);</div><div class="line">  Field providerInfoField = providerClz.getDeclaredField(&quot;info&quot;);</div><div class="line">  providersField.setAccessible(true);</div><div class="line">  List&lt;ProviderInfo&gt; providerInfos = new ArrayList&lt;&gt;();</div><div class="line">  for (int i = 0; i &lt; providers.size(); i++) &#123;</div><div class="line">      ProviderInfo providerInfo = (ProviderInfo) providerInfoField.get(providers.get(i));</div><div class="line">      providerInfo.applicationInfo = getApplicationInfo();</div><div class="line">      providerInfos.add(providerInfo);</div><div class="line">  &#125;</div><div class="line">  Class contextImplClz = Class.forName(&quot;android.app.ContextImpl&quot;);</div><div class="line">  Field mMainThread = contextImplClz.getDeclaredField(&quot;mMainThread&quot;);</div><div class="line">  mMainThread.setAccessible(true);</div><div class="line">  Object activityThread = mMainThread.get(this.getBaseContext());</div><div class="line">  Class activityThreadClz = Class.forName(&quot;android.app.ActivityThread&quot;);</div><div class="line">  Method installContentProvidersMethod = activityThreadClz.getDeclaredMethod(&quot;installContentProviders&quot;, Context.class, List.class);</div><div class="line">  installContentProvidersMethod.setAccessible(true);</div><div class="line">  installContentProvidersMethod.invoke(activityThread, this, providerInfos);</div></pre></td></tr></table></figure>
+<p>贴一下整体的代码,这里的代码，包括Multidex方法加dex，BroadcastReceiver的插件化以及ContentProvider的插件化。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div></pre></td><td class="code"><pre><div class="line">    private void loadClassByHostClassLoader() &#123;</div><div class="line">        File apkFile = new File(&quot;/sdcard/plugin_1.apk&quot;);</div><div class="line">        ClassLoader baseClassLoader = this.getClassLoader();</div><div class="line">        try &#123;</div><div class="line">            Field pathListField = baseClassLoader.getClass().getSuperclass().getDeclaredField(&quot;pathList&quot;);</div><div class="line">            pathListField.setAccessible(true);</div><div class="line">            Object pathList = pathListField.get(baseClassLoader);</div><div class="line"></div><div class="line">            Class clz = Class.forName(&quot;dalvik.system.DexPathList&quot;);</div><div class="line">            Field dexElementsField = clz.getDeclaredField(&quot;dexElements&quot;);</div><div class="line">            dexElementsField.setAccessible(true);</div><div class="line">            Object[] dexElements = (Object[]) dexElementsField.get(pathList);</div><div class="line"></div><div class="line">            Class elementClz = dexElements.getClass().getComponentType();</div><div class="line">            Object[] newDexElements = (Object[]) Array.newInstance(elementClz, dexElements.length + 1);</div><div class="line">            Constructor&lt;?&gt; constructor = elementClz.getConstructor(File.class, boolean.class, File.class, DexFile.class);</div><div class="line">            File file = new File(getFilesDir(), &quot;test.dex&quot;);</div><div class="line">            if (file.exists()) &#123;</div><div class="line">                file.delete();</div><div class="line">            &#125;</div><div class="line">            file.createNewFile();</div><div class="line">            Object pluginElement = constructor.newInstance(apkFile, false, apkFile, DexFile.loadDex(apkFile.getCanonicalPath(),</div><div class="line">                    file.getAbsolutePath(), 0));</div><div class="line">            Object[] toAddElementArray = new Object[]&#123;pluginElement&#125;;</div><div class="line">            System.arraycopy(dexElements, 0, newDexElements, 0, dexElements.length);</div><div class="line">            // 插件的那个element复制进去</div><div class="line">            System.arraycopy(toAddElementArray, 0, newDexElements, dexElements.length, toAddElementArray.length);</div><div class="line">            dexElementsField.set(pathList, newDexElements);</div><div class="line"></div><div class="line">            AssetManager assetManager = getResources().getAssets();</div><div class="line">            Method method = assetManager.getClass().getDeclaredMethod(&quot;addAssetPath&quot;, String.class);</div><div class="line">            method.invoke(assetManager, apkFile.getPath());</div><div class="line"></div><div class="line">//            PackageInfo packageInfo = getPackageManager().getPackageArchiveInfo(apkFile.getAbsolutePath(), PackageManager.GET_RECEIVERS);</div><div class="line">//            if (packageInfo != null) &#123;</div><div class="line">//                for (ActivityInfo info : packageInfo.receivers) &#123;</div><div class="line">//                    Log.e(TAG, &quot;loadClassByHostClassLoader: &quot; + info.name );</div><div class="line">//</div><div class="line">//                &#125;</div><div class="line">//            &#125;</div><div class="line">            Class packageParseClz = Class.forName(&quot;android.content.pm.PackageParser&quot;);</div><div class="line">            Object packageParser = packageParseClz.newInstance();</div><div class="line">            Method parseMethod = packageParseClz.getDeclaredMethod(&quot;parsePackage&quot;, File.class, int.class);</div><div class="line">            parseMethod.setAccessible(true);</div><div class="line">            Object packageObject = parseMethod.invoke(packageParser, apkFile, 1 &lt;&lt; 2);</div><div class="line">            Class packageClz = Class.forName(&quot;android.content.pm.PackageParser$Package&quot;);</div><div class="line">            Field receiversField = packageClz.getDeclaredField(&quot;receivers&quot;);</div><div class="line">            receiversField.setAccessible(true);</div><div class="line">            ArrayList receives = (ArrayList) receiversField.get(packageObject);</div><div class="line"></div><div class="line">            Class componentClz = Class.forName(&quot;android.content.pm.PackageParser$Component&quot;);</div><div class="line">            Field intents = componentClz.getDeclaredField(&quot;intents&quot;);</div><div class="line">            intents.setAccessible(true);</div><div class="line">            Field classNameField = componentClz.getDeclaredField(&quot;className&quot;);</div><div class="line">            classNameField.setAccessible(true);</div><div class="line">            for (int i = 0; i &lt; receives.size(); i++) &#123;</div><div class="line">                ArrayList&lt;IntentFilter&gt; intentFilters = (ArrayList&lt;IntentFilter&gt;) intents.get(receives.get(i));</div><div class="line">                String className = (String) classNameField.get(receives.get(i));</div><div class="line">                registerReceiver((BroadcastReceiver) getClassLoader().loadClass(className).newInstance(), intentFilters.get(0));</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            // 安装ContentProvider</div><div class="line">            Field providersField = packageClz.getDeclaredField(&quot;providers&quot;);</div><div class="line">            providersField.setAccessible(true);</div><div class="line">            ArrayList providers = (ArrayList) providersField.get(packageObject);</div><div class="line"></div><div class="line">            Class providerClz = Class.forName(&quot;android.content.pm.PackageParser$Provider&quot;);</div><div class="line">            Field providerInfoField = providerClz.getDeclaredField(&quot;info&quot;);</div><div class="line">            providersField.setAccessible(true);</div><div class="line">            List&lt;ProviderInfo&gt; providerInfos = new ArrayList&lt;&gt;();</div><div class="line">            for (int i = 0; i &lt; providers.size(); i++) &#123;</div><div class="line">                ProviderInfo providerInfo = (ProviderInfo) providerInfoField.get(providers.get(i));</div><div class="line">                providerInfo.applicationInfo = getApplicationInfo();</div><div class="line">                providerInfos.add(providerInfo);</div><div class="line">            &#125;</div><div class="line">            Class contextImplClz = Class.forName(&quot;android.app.ContextImpl&quot;);</div><div class="line">            Field mMainThread = contextImplClz.getDeclaredField(&quot;mMainThread&quot;);</div><div class="line">            mMainThread.setAccessible(true);</div><div class="line">            Object activityThread = mMainThread.get(this.getBaseContext());</div><div class="line">            Class activityThreadClz = Class.forName(&quot;android.app.ActivityThread&quot;);</div><div class="line">            Method installContentProvidersMethod = activityThreadClz.getDeclaredMethod(&quot;installContentProviders&quot;, Context.class, List.class);</div><div class="line">            installContentProvidersMethod.setAccessible(true);</div><div class="line">            installContentProvidersMethod.invoke(activityThread, this, providerInfos);</div><div class="line">        &#125; catch (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">            Log.e(TAG, &quot;loadClassByHostClassLoader: &quot; + e.getMessage());</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>到这里，四大组件的插件化方案介绍了一点点，虽然每种组件只介绍了一种方法。上面的内容忽略了大部分源码细节。这部分内容需要大家自己去补。</p>
+</blockquote>
+<h3 id="资源的插件化方案"><a href="#资源的插件化方案" class="headerlink" title="资源的插件化方案"></a>资源的插件化方案</h3><p>资源的插件化方案，目前有两种</p>
+<ul>
+<li>合并资源方案</li>
+<li>各个插件构造自己的资源方案</li>
+</ul>
+<p>今天，我们介绍第一种方案，合并资源方案，合并资源方案，我们只需要往现有的AssetManager中调用addAsset添加一个资源即可，当然，存在比较多适配问题，我们暂时忽略。合并资源方案最大的问题就是资源冲突。要解决资源冲突，有两种办法。</p>
+<ul>
+<li>修改AAPT，能自由修改PP段</li>
+<li>干预编译过程，修改ASRC和R文件</li>
+</ul>
+<p>为了简单演示，我直接只用VirtualApk的编译插件去做。实际上VirtualApk的编译插件来自以Small的编译插件。只要对文件格式熟悉，这个还是很好写的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">AssetManager assetManager = getResources().getAssets();</div><div class="line">Method method = assetManager.getClass().getDeclaredMethod(&quot;addAssetPath&quot;, String.class);</div><div class="line">method.invoke(assetManager, apkFile.getPath());</div></pre></td></tr></table></figure>
+<p>我们只需要上面简单的代码，就能完成资源的插件化。当然，这里忽略了版本差异。</p>
+<h3 id="SO的插件化方案"><a href="#SO的插件化方案" class="headerlink" title="SO的插件化方案"></a>SO的插件化方案</h3><p>so的插件化方案，我这里介绍修改dexpathlist的方案。我们要做的是什么呢？只需要往nativeLibraryPathElements中添加SO的Element，并且往nativeLibraryDirectories添加so路径就可以了。<br>代码如下。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line">            Method findLibMethod = elementClz.getDeclaredMethod(&quot;findNativeLibrary&quot;,String.class);</div><div class="line">            findLibMethod.setAccessible(true);</div><div class="line">//            Object soElement = constructor.newInstance(new File(&quot;/sdcard/&quot;), true, apkFile, DexFile.loadDex(apkFile.getCanonicalPath(),</div><div class="line">//                    file.getAbsolutePath(), 0));</div><div class="line">//            findLibMethod.invoke(pluginElement,System.mapLibraryName(&quot;native-lib&quot;));</div><div class="line">            ZipFile zipFile = new ZipFile(apkFile);</div><div class="line">            ZipEntry zipEntry = zipFile.getEntry(&quot;lib/armeabi/libnative-lib.so&quot;);</div><div class="line">            InputStream inputStream = zipFile.getInputStream(zipEntry);</div><div class="line">            File outSoFile = new File(getFilesDir(), &quot;libnative-lib.so&quot;);</div><div class="line">            if (outSoFile.exists()) &#123;</div><div class="line">                outSoFile.delete();</div><div class="line">            &#125;</div><div class="line">            FileOutputStream outputStream = new FileOutputStream(outSoFile);</div><div class="line">            byte[] cache = new byte[2048];</div><div class="line">            int count = 0;</div><div class="line">            while ((count = inputStream.read(cache)) != -1) &#123;</div><div class="line">                outputStream.write(cache, 0, count);</div><div class="line">            &#125;</div><div class="line">            outputStream.flush();</div><div class="line">            outputStream.close();</div><div class="line">            inputStream.close();</div><div class="line">            // 构造Element</div><div class="line">            Object soElement = constructor.newInstance(getFilesDir(), true, null, null);</div><div class="line">//            findLibMethod.invoke(soElement,System.mapLibraryName(&quot;native-lib&quot;));</div><div class="line"></div><div class="line">            // 将soElement填充到nativeLibraryPathElements中,</div><div class="line">            Field soElementField = clz.getDeclaredField(&quot;nativeLibraryPathElements&quot;);</div><div class="line">            soElementField.setAccessible(true);</div><div class="line">            Object[] soElements = (Object[]) soElementField.get(pathList);</div><div class="line">            Object[] newSoElements = (Object[]) Array.newInstance(elementClz, soElements.length + 1);</div><div class="line">            Object[] toAddSoElementArray = new Object[]&#123;soElement&#125;;</div><div class="line">            System.arraycopy(soElements, 0, newSoElements, 0, soElements.length);</div><div class="line">            // 插件的那个element复制进去</div><div class="line">            System.arraycopy(toAddSoElementArray, 0, newSoElements, soElements.length, toAddSoElementArray.length);</div><div class="line">            soElementField.set(pathList, newSoElements);</div><div class="line"></div><div class="line">            //将so的文件夹填充到nativeLibraryDirectories中</div><div class="line">            Field libDir = clz.getDeclaredField(&quot;nativeLibraryDirectories&quot;);</div><div class="line">            libDir.setAccessible(true);</div><div class="line">            List libDirs = (List) libDir.get(pathList);</div><div class="line">            libDirs.add(getFilesDir());</div><div class="line">            libDir.set(pathList,libDirs);</div></pre></td></tr></table></figure>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>在前人的精心研究下，插件化方案已经很成熟了。插件化方案的难点主要在适配方面。其他倒还好。</p>
+<p>PS:热修复的相关知识，PPT已经写好了，下篇应该会浅析一下热修复。</p>
+<h3 id="最近访客"><a href="#最近访客" class="headerlink" title="最近访客"></a>最近访客</h3><ul class="ds-recent-visitors" data-num-items="46" data-avatar-size="40"></ul></the></excerpt>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/插件化/" rel="tag"># 插件化</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/25/Android也需要防止SQL注入/" rel="next" title="Android也需要防止SQL注入">
+                <i class="fa fa-chevron-left"></i> Android也需要防止SQL注入
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2018/04/03/浅谈Android插件化/"
+           data-title="浅谈Android插件化" data-url="http://guolei1130.github.io/2018/04/03/浅谈Android插件化/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/img/head.png"
+               alt="_StriveG" />
+          <p class="site-author-name" itemprop="name">_StriveG</p>
+          <p class="site-description motion-element" itemprop="description">稳住，我们能行！</p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">71</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://guolei1130.github.io/" target="_blank" title="博客首页">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  博客首页
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Guolei1130/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/qq_21430549" target="_blank" title="csdn博客">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  csdn博客
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://monsterlin.com/" target="_blank" title="友情链接">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  友情链接
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#准备知识"><span class="nav-number">2.</span> <span class="nav-text">准备知识</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Activity的插件化"><span class="nav-number">3.</span> <span class="nav-text">Activity的插件化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Service的插件化"><span class="nav-number">4.</span> <span class="nav-text">Service的插件化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BroadcastReceiver的插件化"><span class="nav-number">5.</span> <span class="nav-text">BroadcastReceiver的插件化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ContentProvider的插件化"><span class="nav-number">6.</span> <span class="nav-text">ContentProvider的插件化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#资源的插件化方案"><span class="nav-number">7.</span> <span class="nav-text">资源的插件化方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SO的插件化方案"><span class="nav-number">8.</span> <span class="nav-text">SO的插件化方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">9.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最近访客"><span class="nav-number">10.</span> <span class="nav-text">最近访客</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">_StriveG</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"guolei1130"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>
