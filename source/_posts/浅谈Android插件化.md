@@ -1,8 +1,8 @@
 ---
 title: 浅谈Android插件化
 date: 2018-04-03 20:30:04
-tags: 插件化
-categories: Android
+tags: Android
+
 
 ---
 <Excerpt in index | 首页摘要>
